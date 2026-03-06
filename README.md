@@ -39,22 +39,22 @@ dotnet --version
 
 If it is not **10.0.102** then click [HERE](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) to go to the download place. Make sure to find the right version
 
-![dotnetv10](dotnetv10.png)
+![dotnetv10](wwwroot/image/readme/dotnetv10.png)
 
 1. Install [SQL Server Management Studio (SSMS)](https://learn.microsoft.com/en-us/ssms/install/install) and [Microsoft SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
 
 Be sure to choose the *SQL Server 2025 Express* when download the SQL server.
 
-![sqlserver](sqlserver.png)
+![sqlserver](wwwroot/image/readme/sqlserver.png)
 
 You will have to install the SQL Server and setup it first, then you can install the SSMS
 
-![sseissms](sseissms.png)
+![sseissms](wwwroot/image/readme/sseissms.png)
 
 1. Install [Visual Studio](https://visualstudio.microsoft.com/)
 Make sure when installing you will check **ASP.NET and web development**
 
-![checkbox](vscheckbox.png)
+![checkbox](wwwroot/image/readme/vscheckbox.png)
 
 ## Environment Variables
 
@@ -68,7 +68,7 @@ To run this project, you will need to do something first
 
 1. Open SSMS and copy the **Server name**
 
-![servername](servername.png)
+![servername](wwwroot/image/readme/servername.png)
 
 2. Open the project using VS
 
@@ -84,7 +84,7 @@ by **your server name**
 
 1. On the taskboard choose **Tools > NuGet Package Manager > Package Manager Console**
 
-![nuget](nuget.png)
+![nuget](wwwroot/image/readme/nuget.png)
 
 2. Install NuGet Package
 
