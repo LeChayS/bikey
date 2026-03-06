@@ -25,7 +25,6 @@ namespace bikey.Repository
         public DbSet<Banner> Banner { get; set; }
         public DbSet<ChiTietHopDong> ChiTietHopDong { get; set; }
         public DbSet<HinhAnhXe> HinhAnhXe { get; set; }
-        public DbSet<ThietHai> ThietHai { get; set; }
 
         // cấu hình thêm cho database (nếu cần)
         protected override void OnModelCreating(ModelBuilder modelBuilder)

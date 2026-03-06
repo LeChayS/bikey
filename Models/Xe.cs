@@ -42,10 +42,6 @@ namespace bikey.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal GiaTriXe { get; set; } = 0; // Giá trị để tính đền bù khi mất
 
-        [Display(Name = "Ngày gặp sự cố")]
-        [DataType(DataType.Date)]
-        public DateTime? NgayGapSuCo { get; set; }
-
         [Display(Name = "Mô tả thiệt hại")]
         [StringLength(1000)]
         public string? MoTaThietHai { get; set; }

@@ -12,7 +12,7 @@ using bikey.Repository;
 namespace bikey.Migrations
 {
     [DbContext(typeof(BikeyDbContext))]
-    [Migration("20260306013641_InitialCreate")]
+    [Migration("20260306071758_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -625,76 +625,6 @@ namespace bikey.Migrations
                     b.ToTable("PhanQuyen");
                 });
 
-            modelBuilder.Entity("bikey.Models.ThietHai", b =>
-                {
-                    b.Property<int>("MaThietHai")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaThietHai"));
-
-                    b.Property<string>("GhiChu")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<string>("LoaiThietHai")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int?>("MaHopDong")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("MaKhachHang")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("MaNguoiBaoCao")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MaXe")
-                        .HasColumnType("int");
-
-                    b.Property<string>("MoTaThietHai")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<DateTime?>("NgayCapNhat")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("NgayHoanThanh")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("NgayTao")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("NgayXayRa")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("PhuongAnXuLy")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<decimal>("SoTienDenBu")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("TrangThaiXuLy")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("MaThietHai");
-
-                    b.HasIndex("MaHopDong");
-
-                    b.HasIndex("MaKhachHang");
-
-                    b.HasIndex("MaNguoiBaoCao");
-
-                    b.HasIndex("MaXe");
-
-                    b.ToTable("ThietHai");
-                });
-
             modelBuilder.Entity("bikey.Models.VaiTro", b =>
                 {
                     b.Property<int>("MaVaiTro")
@@ -755,9 +685,6 @@ namespace bikey.Migrations
                     b.Property<string>("MoTaThietHai")
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
-
-                    b.Property<DateTime?>("NgayGapSuCo")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("TenXe")
                         .IsRequired()
@@ -880,35 +807,6 @@ namespace bikey.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("bikey.Models.ThietHai", b =>
-                {
-                    b.HasOne("bikey.Models.HopDong", "HopDong")
-                        .WithMany()
-                        .HasForeignKey("MaHopDong");
-
-                    b.HasOne("bikey.Models.NguoiDung", "KhachHang")
-                        .WithMany()
-                        .HasForeignKey("MaKhachHang");
-
-                    b.HasOne("bikey.Models.NguoiDung", "NguoiBaoCao")
-                        .WithMany()
-                        .HasForeignKey("MaNguoiBaoCao");
-
-                    b.HasOne("bikey.Models.Xe", "Xe")
-                        .WithMany()
-                        .HasForeignKey("MaXe")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("HopDong");
-
-                    b.Navigation("KhachHang");
-
-                    b.Navigation("NguoiBaoCao");
-
-                    b.Navigation("Xe");
                 });
 
             modelBuilder.Entity("bikey.Models.Xe", b =>
