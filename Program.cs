@@ -28,6 +28,8 @@ app.UseRouting();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+SeedData.EnsurePopulated(app);
+
 app.UseAuthentication();
 app.UseAuthorization();
 
