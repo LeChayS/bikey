@@ -1,4 +1,531 @@
-﻿@{
+﻿@model IEnumerable<bikey.Models.HopDong>
+@{
     Layout = "_AdminLayout";
     ViewData["Title"] = "Quản lý hợp đồng";
+    // int totalPages = (int)Math.Ceiling((double)ViewBag.TotalItems / ViewBag.PageSize);
+    // int currentPage = ViewBag.CurrentPage;
 }
+
+@section Styles {
+    <link rel="stylesheet" href="/css/hopdong/index.css" />
+}
+
+@section Scripts {
+    <script src="~/js/hopdong/filter.js"></script>
+}
+
+<div class="container-fluid">
+
+    <!-- Page Header -->
+    <div class="page-header d-flex justify-content-between align-items-center">
+        <div>
+            <h1><i class="bi bi-file-earmark-text"></i> Quản Lý Hợp Đồng</h1>
+            <p class="mb-0 mt-2">Theo dõi và quản lý các hợp đồng cho thuê xe</p>
+        </div>
+        <div>
+            <a asp-action="Create" class="btn btn-warning">
+                <i class="bi bi-plus-circle"></i> Tạo hợp đồng mới
+            </a>
+            <a asp-action="TimPhieuDatCho" class="btn btn-primary">
+                <i class="bi bi-search"></i> Tìm phiếu đặt chỗ
+            </a>
+            <a asp-action="LichSuKhachHang" class="btn btn-info">
+                <i class="bi bi-clock-history"></i> Lịch sử khách hàng
+            </a>
+        </div>
+    </div>
+
+    <!-- Notification Banner khi có đơn mới -->
+    @* @if (ViewBag.DonChoXuLyMoi > 0)
+    { *@
+        <div class="notification-banner" id="newOrderNotification">
+            <div class="notification-content">
+                <div class="notification-text">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <div>
+                        <strong>Có 
+                            @* @ViewBag.DonChoXuLyMoi *@
+                            10
+                            đơn đặt xe mới hôm nay!</strong>
+                        <div style="font-size: 14px; opacity: 0.9; margin-top: 2px;">
+                            Các đơn đang chờ xử lý cần được xác nhận và tạo hợp đồng.
+                        </div>
+                    </div>
+                </div>
+                <div class="notification-actions">
+                    <a href="@Url.Action("DonChoXuLy")" class="btn-notification">
+                        <i class="bi bi-arrow-right"></i> Xử lý ngay
+                    </a>
+                    <button type="button" class="close-notification" onclick="closeNotification()">
+                        <i class="bi bi-x"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    @* } *@
+
+
+    <!-- Statistics -->
+    <div class="row stat-cards">
+        @* card 1 *@
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stat-card">
+                <div class="stat-icon-container">
+                    <i class="bi bi-file-text" style="color: #666;"></i>
+                </div>
+                <div class="stat-number-container">
+                    <div class="stat-number">
+                        @* @ViewBag.TotalItems *@
+                        2
+                    </div>
+                </div>
+                <div class="stat-label-container">
+                    <div class="stat-label">Tổng hợp đồng</div>
+                </div>
+                <div class="stat-extra-container">
+                    <!-- Empty space for alignment -->
+                </div>
+            </div>
+        </div>
+        @* card 2 *@
+        <div class="col-lg-3 col-md-6 mb-3">
+            <a href="@Url.Action("DonChoXuLy")" class="text-decoration-none @(ViewBag.DonChoXuLyMoi > 0 ? "has-new-orders" : "")">
+                <div class="stat-card" style="cursor: pointer; transition: all 0.3s; border: 2px solid transparent;">
+                    <!-- Badge "new" chỉ hiện khi có đơn mới -->
+                    @* @if (ViewBag.DonChoXuLyMoi > 0)
+                    {
+                        <div class="new-notification-badge" title="@ViewBag.DonChoXuLyMoi đơn mới hôm nay">
+                            @ViewBag.DonChoXuLyMoi
+                        </div>
+                    } *@
+                    <div class="stat-icon-container">
+                        <i class="bi bi-hourglass-split" style="color: #ff6b35;"></i>
+                    </div>
+                    <div class="stat-number-container">
+                        <div class="stat-number" style="color: #ff6b35;">
+                            @* @ViewBag.DonChoXuLy *@
+                            10
+                        </div>
+                    </div>
+                    <div class="stat-label-container">
+                        <div class="stat-label">Đơn chờ xử lý</div>
+                    </div>
+                    <div class="stat-extra-container">
+                        <div class="text-muted small">
+                            @* @if (ViewBag.DonChoXuLyMoi > 0)
+                            {
+                                <span class="text-danger fw-bold">@ViewBag.DonChoXuLyMoi mới hôm nay!</span>
+                            }
+                            else
+                            { *@
+                                <span>Click để xử lý</span>
+                            @* } *@
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        @* card 3 *@
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stat-card">
+                <div class="stat-icon-container">
+                    <i class="bi bi-clock" style="color: #28a745;"></i>
+                </div>
+                <div class="stat-number-container">
+                    <div class="stat-number stat-active">
+                        @* @ViewBag.TongDangThue *@
+                        10
+                    </div>
+                </div>
+                <div class="stat-label-container">
+                    <div class="stat-label">Đang thuê</div>
+                </div>
+                <div class="stat-extra-container">
+                    <!-- Empty space for alignment -->
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stat-card">
+                <div class="stat-icon-container">
+                    <i class="bi bi-check-circle" style="color: #17a2b8;"></i>
+                </div>
+                <div class="stat-number-container">
+                    <div class="stat-number stat-completed">
+                        @* @ViewBag.TongHoanThanh *@
+                        16
+                    </div>
+                </div>
+                <div class="stat-label-container">
+                    <div class="stat-label">Hoàn thành</div>
+                </div>
+                <div class="stat-extra-container">
+                    <!-- Empty space for alignment -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter -->
+    <div class="filter-section">
+        <form method="get" class="row g-3 align-items-center">
+            <div class="col-md-2">
+                <label class="form-label">Từ ngày</label>
+                <input type="date" id="tuNgay" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Đến ngày</label>
+                <input type="date" id="denNgay" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Trạng thái</label>
+                <select id="trangThaiFilter" class="form-select">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="Đang thuê" selected="@(ViewBag.TrangThai == "Đang thuê" ? "selected" : null)">Đang thuê</option>
+                    <option value="Hoàn thành" selected="@(ViewBag.TrangThai == "Hoàn thành" ? "selected" : null)">Hoàn thành</option>
+                    <option value="Hủy" selected="@(ViewBag.TrangThai == "Hủy" ? "selected" : null)">Hủy</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">&nbsp;</label>
+                <button type="button" id="btnFilter" class="btn btn-primary w-100">
+                    <i class="bi bi-funnel"></i> Lọc
+                </button>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">&nbsp;</label>
+                <button type="button" id="btnReset" class="btn btn-secondary w-100">
+                    <i class="bi bi-arrow-clockwise"></i> Làm mới
+                </button>
+            </div>
+        </form>
+
+        <!-- Thông báo kết quả lọc -->
+        <div id="filterResult" class="mt-3" style="display: none;">
+            <div class="alert alert-info d-flex align-items-center">
+                <i class="bi bi-info-circle me-2"></i>
+                <span id="filterMessage"></span>
+            </div>
+        </div>
+
+        <!-- Shortcut lọc nhanh -->
+        @* <div class="mt-3">
+            <div class="d-flex flex-wrap gap-2">
+                <button type="button" class="btn btn-outline-primary btn-sm" onclick="setDateRange('today')">
+                    <i class="bi bi-calendar-day"></i> Hôm nay
+                </button>
+                <button type="button" class="btn btn-outline-primary btn-sm" onclick="setDateRange('yesterday')">
+                    <i class="bi bi-calendar-minus"></i> Hôm qua
+                </button>
+                <button type="button" class="btn btn-outline-primary btn-sm" onclick="setDateRange('thisWeek')">
+                    <i class="bi bi-calendar-week"></i> Tuần này
+                </button>
+                <button type="button" class="btn btn-outline-primary btn-sm" onclick="setDateRange('thisMonth')">
+                    <i class="bi bi-calendar-month"></i> Tháng này
+                </button>
+                <button type="button" class="btn btn-outline-primary btn-sm" onclick="setDateRange('lastMonth')">
+                    <i class="bi bi-calendar-x"></i> Tháng trước
+                </button>
+            </div>
+        </div> *@
+    </div>
+
+    <!-- Table -->
+    <div class="contract-table">
+        <div id="tableLoading" class="text-center py-5" style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Đang tải...</span>
+            </div>
+            <p class="mt-3 text-muted">Đang lọc dữ liệu...</p>
+        </div>
+
+        <div id="noResults" class="text-center py-5" style="display: none;">
+            <i class="bi bi-search" style="font-size: 3rem; color: #6c757d;"></i>
+            <h5 class="mt-3 text-muted">Không tìm thấy hợp đồng nào</h5>
+            <p class="text-muted">Thử thay đổi điều kiện lọc hoặc tìm kiếm</p>6
+        </div>
+
+        <table class="table table-hover mb-0" id="contractTable">
+            <thead class="table-light">
+                <tr>
+                    <th>Mã HĐ</th>
+                    <th>Khách hàng</th>
+                    <th>Xe</th>
+                    <th>Ngày nhận</th>
+                    <th>Ngày trả</th>
+                    <th>Tổng tiền</th>
+                    <th>Trạng thái</th>
+                    <th>Hóa đơn</th> <!-- Thêm cột này -->
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @* @foreach (var item in Model)
+                {
+                    <tr data-phone="@item.SoDienThoai">
+                        <td><strong>HD@(item.MaHopDong.ToString("D6"))</strong></td>
+                        <td>
+                            @item.HoTenKhach<br />
+                            <small class="text-muted phone-number">@item.SoDienThoai</small>
+                        </td>
+                        <td>
+                            @if (item.ChiTietHopDong?.Any() == true)
+                            {
+                                var xe = item.ChiTietHopDong.First();
+                                @xe.Xe?.TenXe
+                        
+                                <br />
+                                <small class="text-muted">@xe.Xe?.BienSoXe</small>
+
+                                @if (item.ChiTietHopDong.Count > 1)
+                                {
+                                    <small class="text-primary">(+@(item.ChiTietHopDong.Count - 1) xe khác)</small>
+                                }
+                            }
+                            else
+                            {
+                                <span class="text-muted">Chưa có xe</span>
+                            }
+                        </td>
+                        <td>@item.NgayNhanXe.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            @if (item.NgayTraXeThucTe.HasValue)
+                            {
+                                @item.NgayTraXeThucTe.Value.ToString("dd/MM/yyyy")
+                            }
+                            else
+                            {
+                                @item.NgayTraXeDuKien.ToString("dd/MM/yyyy")
+                                <small class="text-muted">(dự kiến)</small>
+                            }
+                        </td>
+                        <td class="text-danger fw-bold">@item.TongTien.ToString("N0")đ</td>
+                        <td>
+                            @{
+                                string statusClass = item.TrangThai switch
+                                {
+                                                "Đang thuê" => "status-active",
+                                                "Hoàn thành" => "status-completed",
+                                                "Hủy" => "status-cancelled",
+                                    _ => ""
+                                };
+                            }
+                            <span class="status-badge @statusClass">@item.TrangThai</span>
+                        </td>
+                        <!-- Thêm cột hóa đơn -->
+                        <td>
+                            @if (item.HoaDon != null)
+                            {
+                                <a asp-controller="QuanLyHoaDon" asp-action="ChiTiet" asp-route-id="@item.HoaDon.MaHoaDon"
+                                   class="badge bg-success text-decoration-none" title="Xem hóa đơn">
+                                    <i class="bi bi-check-circle"></i> HD@(item.HoaDon.MaHoaDon.ToString("D6"))
+                                </a>
+                            }
+                            else if (item.TrangThai == "Hoàn thành")
+                            {
+                                <span class="badge bg-warning">
+                                    <i class="bi bi-exclamation-triangle"></i> Chưa có
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">-</span>
+                            }
+                        </td>
+                        <td>
+                            <a asp-action="ChiTiet" asp-route-id="@item.MaHopDong" class="btn btn-sm btn-info" title="Chi tiết">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            @if (item.TrangThai == "Đang thuê")
+                            {
+                                <a asp-action="TraXe" asp-route-id="@item.MaHopDong" class="btn btn-sm btn-success" title="Trả xe">
+                                    <i class="bi bi-check-circle"></i>
+                                </a>
+                            }
+                            @if (item.TrangThai == "Hoàn thành" && item.HoaDon == null)
+                            {
+                                <button class="btn btn-sm btn-warning" onclick="taoHoaDonTuIndex(@item.MaHopDong, '@item.HoTenKhach')" title="Tạo hóa đơn thủ công (trường hợp đặc biệt)">
+                                    <i class="bi bi-receipt"></i>
+                                </button>
+                            }
+                        </td>
+                    </tr>
+                } *@
+                <tr>
+                    <td>HD010101</td>
+                    <td>tên khách hàng</td>
+                    <td>
+                        tên xe
+                        <br />
+                        <small class="text-muted">biển số xe</small>
+                    </td>
+                    <td>08/03/2026</td>
+                    <td>10/03/2026</td>
+                    <td>100,000đ</td>
+                    <td><span class="status-badge status-completed">Hoàn thành</span></td>
+                    <td>hóa đơn</td>
+                    <td>
+                        <a asp-action="ChiTiet" class="btn btn-sm btn-info" title="Chi tiết">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <a asp-action="TraXe" class="btn btn-sm btn-success" title="Trả xe">
+                            <i class="bi bi-check-circle"></i>
+                        </a>
+                        <button class="btn btn-sm btn-warning" title="Tạo hóa đơn thủ công (trường hợp đặc biệt)">
+                            <i class="bi bi-receipt"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Container cho phân trang AJAX -->
+        <div id="ajaxPaginationContainer" class="mt-3" style="display: none;">
+            <!-- Phân trang sẽ được thêm vào đây khi lọc -->
+        </div>
+
+        <!-- Phân trang cho dữ liệu ban đầu -->
+        @if (ViewBag.TotalItems > ViewBag.PageSize)
+        {
+            <div class="pagination-container mt-3">
+                <nav aria-label="Phân trang hợp đồng">
+                    <ul class="pagination justify-content-center mb-0">
+                        @{
+                            int totalPagesCount = (int)Math.Ceiling((double)ViewBag.TotalItems / ViewBag.PageSize);
+                            int currentPageNum = ViewBag.CurrentPage;
+                            int startPage = Math.Max(1, currentPageNum - 2);
+                            int endPage = Math.Min(totalPagesCount, currentPageNum + 2);
+                        }
+
+                        <!-- Nút Previous -->
+                        @if (currentPageNum > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("Index", new { trangThai = ViewBag.TrangThai, page = currentPageNum - 1 })">
+                                    <i class="bi bi-chevron-left"></i>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <span class="page-link"><i class="bi bi-chevron-left"></i></span>
+                            </li>
+                        }
+
+                        <!-- Hiển thị các trang -->
+                        @if (startPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("Index", new { trangThai = ViewBag.TrangThai, page = 1 })">1</a>
+                            </li>
+                            @if (startPage > 2)
+                            {
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                            }
+                        }
+
+                        @for (int i = startPage; i <= endPage; i++)
+                        {
+                            if (i == currentPageNum)
+                            {
+                                <li class="page-item active">
+                                    <span class="page-link">@i</span>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("Index", new { trangThai = ViewBag.TrangThai, page = i })">@i</a>
+                                </li>
+                            }
+                        }
+
+                        @if (endPage < totalPagesCount)
+                        {
+                            @if (endPage < totalPagesCount - 1)
+                            {
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                            }
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("Index", new { trangThai = ViewBag.TrangThai, page = totalPagesCount })">@totalPagesCount</a>
+                            </li>
+                        }
+
+                        <!-- Nút Next -->
+                        @if (currentPageNum < totalPagesCount)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("Index", new { trangThai = ViewBag.TrangThai, page = currentPageNum + 1 })">
+                                    <i class="bi bi-chevron-right"></i>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <span class="page-link"><i class="bi bi-chevron-right"></i></span>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+
+                <!-- Thông tin phân trang -->
+                <div class="text-center mt-2">
+                    <small class="text-muted">
+                        @{
+                            int startItem = (currentPageNum - 1) * ViewBag.PageSize + 1;
+                            int endItem = Math.Min(currentPageNum * ViewBag.PageSize, ViewBag.TotalItems);
+                        }
+                        Hiển thị @startItem-@endItem trong tổng số @ViewBag.TotalItems hợp đồng
+                    </small>
+                </div>
+            </div>
+        }
+
+
+
+    </div>
+
+</div>
+
+<!-- Modal tạo hóa đơn -->
+<div class="modal fade" id="taoHoaDonIndexModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tạo hóa đơn thanh toán</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="taoHoaDonIndexForm">
+                <div class="modal-body">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="maHopDongIndex" />
+
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>Xác nhận tạo hóa đơn</strong><br />
+                        Khách hàng: <span id="tenKhachHangIndex"></span><br />
+                        Hóa đơn sẽ được tạo với trạng thái "<b>Đã thanh toán</b>"
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Ghi chú (tùy chọn)</label>
+                        <textarea id="ghiChuHoaDonIndex" class="form-control" rows="3"
+                                  placeholder="Ghi chú thêm cho hóa đơn..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-success" onclick="xacNhanTaoHoaDonIndex()">
+                        <i class="bi bi-check-circle"></i> Xác nhận tạo
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
