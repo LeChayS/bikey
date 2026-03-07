@@ -1,0 +1,107 @@
+﻿@using bikey.Repository
+@using Microsoft.EntityFrameworkCore
+@* @using bikey.Services *@
+@inject BikeyDbContext _context
+@* @inject IPermissionService _permissionService *@
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/shared/adminsidebar.css" />
+}
+
+@* @{
+    var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+    var userId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0");
+
+    // Lấy số đơn chờ xử lý mới trong ngày
+    int donChoXuLyMoi = 0;
+    if (userRole == "Admin" || userRole == "Staff")
+    {
+        var homNay = DateTime.Today;
+        donChoXuLyMoi = await _context.DatCho
+            .CountAsync(d => (d.TrangThai == "Chờ xác nhận" || d.TrangThai == "Đang giữ chỗ")
+                           && d.NgayDat.Date == homNay);
+    }
+
+    // Lấy số thiệt hại chưa xử lý
+    int thietHaiChuaXuLy = 0;
+    if (userRole == "Admin" || userRole == "Staff")
+    {
+        thietHaiChuaXuLy = await _context.ThietHai
+            .CountAsync(t => t.TrangThaiXuLy == "Chưa xử lý" || t.TrangThaiXuLy == "Đang xử lý");
+    }
+} *@
+
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h3>ADMIN PANEL</h3>
+    </div>
+    <ul class="sidebar-menu">
+        @* Dashboard - Chỉ Admin *@
+        @* @if (userRole == "Admin")
+        { *@
+            <li>
+                <a asp-controller="Admin" asp-action="Index">
+                    <i class="bi bi-speedometer2"></i>
+                    <span class="menu-text">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a asp-controller="ThongKeBaoCao" asp-action="Index">
+                    <i class="bi bi-bar-chart-line"></i>
+                    <span class="menu-text">Thống kê & Báo cáo</span>
+                </a>
+            </li>
+        @* } *@
+
+        @* Menu cho Admin và Staff *@
+        @* @if (userRole == "Admin" || userRole == "Staff")
+        { *@
+            <li>
+                <a asp-controller="HopDong" asp-action="Index" style="position: relative;">
+                    <i class="bi bi-receipt"></i>
+                    <span class="menu-text">Quản lý hợp đồng</span>
+                    @* @if (donChoXuLyMoi > 0)
+                    {
+                        <span class="sidebar-notification-badge">@donChoXuLyMoi</span>
+                    } *@
+                </a>
+            </li>
+
+            <li>
+                <a asp-controller="HoaDon" asp-action="Index">
+                    <i class="bi bi-receipt-cutoff"></i>
+                    <span class="menu-text">Quản lý hóa đơn</span>
+                </a>
+            </li>
+            <li>
+                <a asp-controller="Xe" asp-action="Index">
+                    <i class="bi bi-scooter"></i>
+                    <span class="menu-text">Quản lý xe</span>
+                </a>
+            </li>
+            <li>
+                <a asp-controller="LoaiXe" asp-action="Index">
+                    <i class="bi bi-people"></i>
+                    <span class="menu-text">Quản lý loại xe</span>
+                </a>
+            </li>
+
+            <li>
+                <a asp-controller="Banner" asp-action="Index">
+                    <i class="bi bi-image"></i> <span class="menu-text">Quản lý banner</span>
+                </a>
+            </li>
+        @* } *@
+
+        @* Quản lý người dùng - Chỉ Admin *@
+        @* @if (userRole == "Admin")
+        { *@
+            <li>
+                <a asp-controller="NguoiDung" asp-action="Index">
+                    <i class="bi bi-people-fill"></i>
+                    <span class="menu-text">Quản lý người dùng</span>
+                </a>
+            </li>
+        @* } *@
+    </ul>
+</div>
