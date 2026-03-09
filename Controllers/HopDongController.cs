@@ -8,5 +8,10 @@ namespace bikey.Controllers
         {
             return View();
         }
+
+        public IActionResult DonChoXuLy()
+        {
+            return View();
+        }
     }
 }

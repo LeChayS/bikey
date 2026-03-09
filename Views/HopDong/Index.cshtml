@@ -16,7 +16,7 @@
 
 <div class="container-fluid">
 
-    <!-- Page Header -->
+    <!-- Header -->
     <div class="page-header d-flex justify-content-between align-items-center">
         <div>
             <h1>Quản Lý Hợp Đồng</h1>
@@ -38,29 +38,29 @@
     <!-- Notification Banner khi có đơn mới -->
     @* @if (ViewBag.DonChoXuLyMoi > 0)
     { *@
-        <div class="notification-banner" id="newOrderNotification">
-            <div class="notification-content">
-                <div class="notification-text">
-                    <i class="bi bi-exclamation-triangle-fill"></i>
-                    <div>
-                        <strong>Có 
-                            @* @ViewBag.DonChoXuLyMoi *@
-                            10
-                            đơn đặt xe mới hôm nay!</strong>
-                        <div style="font-size: 14px; opacity: 0.9; margin-top: 2px;">
-                            Các đơn đang chờ xử lý cần được xác nhận và tạo hợp đồng.
-                        </div>
-                    </div>
-                </div>
-                <div class="notification-actions">
-                    <a href="@Url.Action("DonChoXuLy")" class="btn-notification">
-                        <i class="bi bi-arrow-right"></i> Xử lý ngay
-                    </a>
-                    <button type="button" class="close-notification" onclick="closeNotification()">
-                        <i class="bi bi-x"></i>
-                    </button>
+        <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center justify-content-center">
+            <i class="bi bi-check-circle me-2 mt-1" style="font-size: 28px;"></i>
+
+            <div class="flex-grow-1">
+                <strong>
+                    Có
+                    @* @ViewBag.DonChoXuLyMoi *@
+                    10
+                    đơn đặt xe mới hôm nay!
+                </strong>
+
+                <div style="font-size:14px; opacity:0.9; margin-top:2px;">
+                    Các đơn đang chờ xử lý cần được xác nhận và tạo hợp đồng.
                 </div>
             </div>
+
+            <a href="@Url.Action("DonChoXuLy")" class="btn-notification me-3">
+                <i class="bi bi-arrow-right"></i> Xử lý ngay
+            </a>
+
+            <button type="button" class="close-notification" onclick="closeNotification()">
+                <i class="bi bi-x"></i>
+            </button>
         </div>
     @* } *@
 
@@ -145,6 +145,7 @@
                 </div>
             </div>
         </div>
+        @* card 4 *@
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="stat-card">
                 <div class="stat-icon-container">
@@ -207,27 +208,6 @@
                 <span id="filterMessage"></span>
             </div>
         </div>
-
-        <!-- Shortcut lọc nhanh -->
-        @* <div class="mt-3">
-            <div class="d-flex flex-wrap gap-2">
-                <button type="button" class="btn btn-outline-primary btn-sm" onclick="setDateRange('today')">
-                    <i class="bi bi-calendar-day"></i> Hôm nay
-                </button>
-                <button type="button" class="btn btn-outline-primary btn-sm" onclick="setDateRange('yesterday')">
-                    <i class="bi bi-calendar-minus"></i> Hôm qua
-                </button>
-                <button type="button" class="btn btn-outline-primary btn-sm" onclick="setDateRange('thisWeek')">
-                    <i class="bi bi-calendar-week"></i> Tuần này
-                </button>
-                <button type="button" class="btn btn-outline-primary btn-sm" onclick="setDateRange('thisMonth')">
-                    <i class="bi bi-calendar-month"></i> Tháng này
-                </button>
-                <button type="button" class="btn btn-outline-primary btn-sm" onclick="setDateRange('lastMonth')">
-                    <i class="bi bi-calendar-x"></i> Tháng trước
-                </button>
-            </div>
-        </div> *@
     </div>
 
     <!-- Table -->

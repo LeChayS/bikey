@@ -392,92 +392,37 @@ tr.highlight-row {
     }
 
 /* Notification Banner */
-.notification-banner {
-    background: linear-gradient(135deg, #ff4757 0%, #ff3838 100%);
-    color: white;
-    padding: 15px 20px;
-    border-radius: 10px;
-    margin-bottom: 25px;
-    box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
-    position: relative;
-    overflow: hidden;
-    animation: slideInDown 0.5s ease-out;
-}
-
-    .notification-banner::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-        animation: shimmer 2s infinite;
-    }
-
-.notification-content {
+.close-notification {
+    background: none;
+    border: none;
+    color: darkred;
+    font-size: 30px;
+    cursor: pointer;
+    padding: 0;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    position: relative;
-    z-index: 2;
-}
-
-.notification-text {
-    display: flex;
-    align-items: center;
-    font-weight: 600;
-}
-
-    .notification-text i {
-        font-size: 24px;
-        margin-right: 12px;
-        animation: pulse-icon 1.5s infinite;
-    }
-
-.notification-actions {
-    display: flex;
-    gap: 10px;
+    justify-content: center;
+/*    transition: all 0.3s;*/
 }
 
 .btn-notification {
-    background: rgba(255,255,255,0.2);
-    color: white;
-    border: 1px solid rgba(255,255,255,0.3);
+/*    background: rgba(255,255,255,0.2);*/
+    color: darkred;
+    border: 1px solid darkred;
     padding: 8px 16px;
     border-radius: 5px;
     font-size: 14px;
     font-weight: 600;
-    transition: all 0.3s;
+/*    transition: all 0.3s;*/
     text-decoration: none;
 }
 
     .btn-notification:hover {
-        background: rgba(255,255,255,0.3);
+        background: darkred;
         color: white;
-        transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-
-.close-notification {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 20px;
-    cursor: pointer;
-    padding: 0;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: all 0.3s;
-}
-
-    .close-notification:hover {
-        background: rgba(255,255,255,0.2);
-        transform: rotate(90deg);
     }
 
 @@keyframes slideInDown {
