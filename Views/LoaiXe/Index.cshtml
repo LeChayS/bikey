@@ -1,4 +1,135 @@
-﻿@{
+﻿@model IEnumerable<bikey.Models.LoaiXe>
+@{
     Layout = "_AdminLayout";
     ViewData["Title"] = "Quản lý loại xe";
 }
+@section Styles {
+    <link href="~/css/loaixe/index.css" rel="stylesheet" />
+}
+
+@section Scripts {
+    <script src="~/js/loaixe/index.js"></script>
+}
+
+<div class="container-fluid">
+    @Html.AntiForgeryToken()
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1>Quản Lý Loại Xe</h1>
+                <p class="mb-0">Theo dõi và quản lý các loại xe</p>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn-add" onclick="openCreateModal()">Thêm mới</button>
+            </div>
+            <a asp-action="Create" class="btn btn-add">
+                <i class="bi bi-plus-circle"></i> Thêm Mới
+            </a>
+        </div>
+    </div>
+    
+
+    <div id="alert-container"></div>
+
+    <div class="table-container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Mã loại xe</th>
+                    <th>Tên loại xe</th>
+                    <th>Ngày tạo</th>
+                    <th>Ngày cập nhật</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @* @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.MaLoaiXe</td>
+                        <td>@item.TenLoaiXe</td>
+                        <td>@item.NgayTao.ToString("dd/MM/yyyy")</td>
+                        <td>@(item.NgayCapNhat?.ToString("dd/MM/yyyy") ?? "-")</td>
+                        <td>
+                            <div class="actions">
+                                <button class="btn-edit" onclick="openEditModal(@item.MaLoaiXe, '@item.TenLoaiXe')">Sửa</button>
+                                <button class="btn-delete" onclick="openDeleteModal(@item.MaLoaiXe, '@item.TenLoaiXe')">Xóa</button>
+                            </div>
+                        </td>
+                    </tr>
+                } *@
+                <tr>
+                    <td colspan="9" class="text-center text-muted py-4">
+                        <i class="bi bi-search" style="font-size:2rem;"></i>
+                        <br>
+                        Chưa có loại xe mới
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@* <!-- Create Modal -->
+<div id="createModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Thêm loại xe mới</h3>
+            <button class="modal-close" onclick="closeModal('createModal')">&times;</button>
+        </div>
+        <form id="createForm">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="createTenLoaiXe">Tên loại xe</label>
+                    <input type="text" id="createTenLoaiXe" name="TenLoaiXe" class="form-input" required />
+                    <span id="createTenLoaiXeError" class="validation-error"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('createModal')">Hủy</button>
+                <button type="submit" class="btn btn-success">Lưu</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Sửa loại xe</h3>
+            <button class="modal-close" onclick="closeModal('editModal')">&times;</button>
+        </div>
+        <form id="editForm">
+            <div class="modal-body">
+                <input type="hidden" id="editMaLoaiXe" name="MaLoaiXe" />
+                <div class="form-group">
+                    <label class="form-label" for="editTenLoaiXe">Tên loại xe</label>
+                    <input type="text" id="editTenLoaiXe" name="TenLoaiXe" class="form-input" required />
+                    <span id="editTenLoaiXeError" class="validation-error"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('editModal')">Hủy</button>
+                <button type="submit" class="btn btn-primary">Cập nhật</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Xóa loại xe</h3>
+            <button class="modal-close" onclick="closeModal('deleteModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p id="deleteConfirmText"></p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('deleteModal')">Hủy</button>
+            <button type="button" class="btn btn-danger" onclick="confirmDelete()">Xóa</button>
+        </div>
+    </div>
+</div> *@
