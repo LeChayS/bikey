@@ -19,7 +19,8 @@ builder.Services.AddDbContext<BikeyDbContext>(options =>
             sqlOptions.CommandTimeout(120); // 2 phút timeout
         })
     .EnableSensitiveDataLogging(false)
-    .EnableDetailedErrors(false));
+    .EnableDetailedErrors(false)
+);
 
 var app = builder.Build();
 

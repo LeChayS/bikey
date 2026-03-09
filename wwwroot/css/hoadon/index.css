@@ -1,0 +1,67 @@
+﻿.page-header {
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+}
+
+.stat-cards {
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    transition: transform 0.3s;
+}
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+
+.stat-number {
+    font-size: 36px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.stat-label {
+    color: #666;
+    font-size: 14px;
+}
+
+.stat-revenue {
+    color: #4CAF50;
+}
+
+.stat-count {
+    color: #2196F3;
+}
+
+.filter-section {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.invoice-table {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.status-badge {
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    background: #d4edda;
+    color: #155724;
+}
