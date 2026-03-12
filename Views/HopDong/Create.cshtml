@@ -1,0 +1,410 @@
+﻿@model bikey.Models.HopDong
+
+@{
+    ViewData["Title"] = "Tạo Hợp Đồng Mới";
+    Layout = "_AdminLayout";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/hopdong/create.css" />
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <!-- Select2 CSS và JS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <!-- Pass vehicle data to JavaScript -->
+    <script>
+        window.XeList = @Html.Raw(Json.Serialize(ViewBag.XeList ?? new List<object>()));
+    </script>
+
+    <!-- File upload preview functionality -->
+    <script src="/js/quanlyhopdong/create1.js"></script>
+
+    <!-- External JavaScript file -->
+    <script src="~/js/quanlyhopdong/create2.js"></script>
+}
+
+<div class="create-container">
+    <div class="page-header">
+        <h2>Tạo Hợp Đồng Thuê Xe Mới</h2>
+        <p>Nhập đầy đủ thông tin để tạo hợp đồng</p>
+    </div>
+    <form asp-action="Create" method="post" id="createContractForm" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+
+        <!-- Chọn xe thuê -->
+        <div class="form-card">
+            <div class="section-title"><i class="bi bi-bicycle"></i> Chọn xe thuê</div>
+            <div class="vehicle-selection">
+                <div class="vehicle-filters">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label>Hãng xe</label>
+                            <select id="filterHang" class="form-select form-select-sm">
+                                <option value="">Tất cả hãng</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Loại xe</label>
+                            <select id="filterLoai" class="form-select form-select-sm">
+                                <option value="">Tất cả loại</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Khoảng giá (đ/ngày)</label>
+                            <select id="filterGia" class="form-select form-select-sm">
+                                <option value="">Tất cả giá</option>
+                                <option value="0-100000">Dưới 100k</option>
+                                <option value="100000-200000">100k - 200k</option>
+                                <option value="200000-300000">200k - 300k</option>
+                                <option value="300000-500000">300k - 500k</option>
+                                <option value="500000-999999999">Trên 500k</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <button type="button" id="btnClearFilters" class="btn btn-outline-secondary btn-sm">
+                                <i class="bi bi-arrow-clockwise"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    @* <div class="quick-filter-buttons">
+                        <button type="button" class="btn-quick-filter" data-filter="honda">Honda</button>
+                        <button type="button" class="btn-quick-filter" data-filter="yamaha">Yamaha</button>
+                        <button type="button" class="btn-quick-filter" data-filter="suzuki">Suzuki</button>
+                        <button type="button" class="btn-quick-filter" data-filter="cheap">Giá rẻ (&lt;150k)</button>
+                        <button type="button" class="btn-quick-filter" data-filter="premium">Cao cấp (&gt;300k)</button>
+                        <button type="button" class="btn-quick-filter" data-filter="xe-may">Xe máy</button>
+                        <button type="button" class="btn-quick-filter" data-filter="xe-so">Xe số</button>
+                    </div> *@
+                </div>
+
+                <div class="vehicle-search-info">
+                    <i class="bi bi-info-circle"></i>
+                    <span id="searchInfo">Hiển thị <span id="availableCount">0</span> xe khả dụng. Sử dụng tìm kiếm hoặc bộ lọc để tìm xe nhanh hơn.</span>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-10">
+                        <select id="availableVehicles" class="form-select">
+                            <option value="">-- Gõ để tìm kiếm xe (tên, biển số, hãng) --</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" id="btnAddVehicle" class="btn btn-success w-100">
+                            <i class="bi bi-plus-circle"></i> Thêm
+                        </button>
+                    </div>
+                </div>
+
+                <div class="vehicle-item">
+                    <div class="vehicle-info-display">
+                        <h6>tên xe - biển số xe</h6>
+                        <small>
+                            <span>
+                                hãng xe dòng xe - loại xe
+                            </span>
+                        </small>
+                    </div>
+                    <div class="vehicle-price">
+                        300,000đ/ngày
+                    </div>
+                    <button type="button" class="btn btn-danger btn-remove-vehicle" data-vehicle-id="">
+                        <i class="bi bi-trash"></i> Xóa
+                    </button>
+                </div>
+
+                <div id="selectedVehiclesList">
+                    <div class="no-vehicles-selected" id="noVehiclesMessage">
+                        <i class="bi bi-info-circle"></i> Chưa có xe nào được chọn
+                    </div>
+                </div>
+
+
+                <div class="text-danger" id="vehicleSelectionError"></div>
+            </div>
+
+            <div class="selected-vehicles-summary" id="vehiclesSummary" >
+                <h6><i class="bi bi-list-check"></i> Tóm tắt xe đã chọn:</h6>
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>Số lượng xe:</strong> <span id="totalVehicles">0</span>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Tổng giá thuê/ngày:</strong> <span id="totalDailyPrice" class="text-success">0đ</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Thông tin khách hàng -->
+        <div class="form-card">
+            <div class="section-title"><i class="bi bi-person"></i> Thông tin khách hàng</div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label asp-for="HoTenKhach" class="form-label">Họ tên khách <span class="text-danger">*</span></label>
+                        <input asp-for="HoTenKhach" class="form-control" id="HoTenKhach" placeholder="Nhập họ tên đầy đủ" />
+                        <div id="nameValidationMessage" class="validation-message"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="SoDienThoai" class="form-label">Số điện thoại <span class="text-danger">*</span></label>
+                        <input asp-for="SoDienThoai" class="form-control" id="SoDienThoai" placeholder="VD: 0901234567" maxlength="11" />
+                        <div id="phoneValidationMessage" class="validation-message"></div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label asp-for="SoCCCD" class="form-label">CCCD/CMND <span class="text-danger">*</span></label>
+                        <input asp-for="SoCCCD" class="form-control" id="SoCCCD" placeholder="Nhập số CCCD/CMND (12 số)" maxlength="12" />
+                        <div id="cccdValidationMessage" class="validation-message"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="DiaChi" class="form-label">Địa chỉ</label>
+                        <input asp-for="DiaChi" class="form-control" placeholder="Nhập địa chỉ (không bắt buộc)" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload giấy tờ -->
+        <div class="form-card">
+            <div class="section-title"><i class="bi bi-file-earmark-arrow-up"></i> Upload giấy tờ (không bắt buộc)</div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <div class="file-upload-container">
+                            <label for="cccdMatTruoc" class="file-upload-label">
+                                <div class="file-upload-icon">
+                                    <i class="bi bi-card-image"></i>
+                                </div>
+                                <div class="file-upload-text">CCCD mặt trước</div>
+                                <div class="file-upload-hint">Click để chọn file (JPG, PNG, PDF - tối đa 5MB)</div>
+                            </label>
+                            <input type="file" class="form-control" id="cccdMatTruoc" name="cccdMatTruoc" accept="image/*,.pdf" />
+                            <div class="file-preview" id="cccdMatTruocPreview">
+                                <div class="file-preview-content">
+                                    <div class="file-preview-info">
+                                        <div class="file-preview-name"></div>
+                                        <div class="file-preview-size"></div>
+                                    </div>
+                                </div>
+                                <div class="file-preview-actions">
+                                    <button type="button" class="btn-preview btn-preview-view" onclick="previewFile('cccdMatTruoc')">
+                                        <i class="bi bi-eye"></i> Xem
+                                    </button>
+                                    <button type="button" class="btn-preview btn-preview-delete" onclick="deleteFile('cccdMatTruoc')">
+                                        <i class="bi bi-trash"></i> Xóa
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="file-upload-container">
+                            <label for="bangLaiXe" class="file-upload-label">
+                                <div class="file-upload-icon">
+                                    <i class="bi bi-card-text"></i>
+                                </div>
+                                <div class="file-upload-text">Bằng lái xe</div>
+                                <div class="file-upload-hint">Click để chọn file (JPG, PNG, PDF - tối đa 5MB)</div>
+                            </label>
+                            <input type="file" class="form-control" id="bangLaiXe" name="bangLaiXe" accept="image/*,.pdf" />
+                            <div class="file-preview" id="bangLaiXePreview">
+                                <div class="file-preview-content">
+                                    <div class="file-preview-info">
+                                        <div class="file-preview-name"></div>
+                                        <div class="file-preview-size"></div>
+                                    </div>
+                                </div>
+                                <div class="file-preview-actions">
+                                    <button type="button" class="btn-preview btn-preview-view" onclick="previewFile('bangLaiXe')">
+                                        <i class="bi bi-eye"></i> Xem
+                                    </button>
+                                    <button type="button" class="btn-preview btn-preview-delete" onclick="deleteFile('bangLaiXe')">
+                                        <i class="bi bi-trash"></i> Xóa
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <div class="file-upload-container">
+                            <label for="cccdMatSau" class="file-upload-label">
+                                <div class="file-upload-icon">
+                                    <i class="bi bi-card-image"></i>
+                                </div>
+                                <div class="file-upload-text">CCCD mặt sau</div>
+                                <div class="file-upload-hint">Click để chọn file (JPG, PNG, PDF - tối đa 5MB)</div>
+                            </label>
+                            <input type="file" class="form-control" id="cccdMatSau" name="cccdMatSau" accept="image/*,.pdf" />
+                            <div class="file-preview" id="cccdMatSauPreview">
+                                <div class="file-preview-content">
+                                    <div class="file-preview-info">
+                                        <div class="file-preview-name"></div>
+                                        <div class="file-preview-size"></div>
+                                    </div>
+                                </div>
+                                <div class="file-preview-actions">
+                                    <button type="button" class="btn-preview btn-preview-view" onclick="previewFile('cccdMatSau')">
+                                        <i class="bi bi-eye"></i> Xem
+                                    </button>
+                                    <button type="button" class="btn-preview btn-preview-delete" onclick="deleteFile('cccdMatSau')">
+                                        <i class="bi bi-trash"></i> Xóa
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="file-upload-container">
+                            <label for="giayToKhac" class="file-upload-label">
+                                <div class="file-upload-icon">
+                                    <i class="bi bi-file-earmark"></i>
+                                </div>
+                                <div class="file-upload-text">Giấy tờ khác (nếu có)</div>
+                                <div class="file-upload-hint">Click để chọn file (JPG, PNG, PDF - tối đa 5MB)</div>
+                            </label>
+                            <input type="file" class="form-control" id="giayToKhac" name="giayToKhac" accept="image/*,.pdf" />
+                            <div class="file-preview" id="giayToKhacPreview">
+                                <div class="file-preview-content">
+                                    <div class="file-preview-info">
+                                        <div class="file-preview-name"></div>
+                                        <div class="file-preview-size"></div>
+                                    </div>
+                                </div>
+                                <div class="file-preview-actions">
+                                    <button type="button" class="btn-preview btn-preview-view" onclick="previewFile('giayToKhac')">
+                                        <i class="bi bi-eye"></i> Xem
+                                    </button>
+                                    <button type="button" class="btn-preview btn-preview-delete" onclick="deleteFile('giayToKhac')">
+                                        <i class="bi bi-trash"></i> Xóa
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i>
+                <strong>Lưu ý:</strong> Tất cả các giấy tờ trên đều không bắt buộc. Bạn có thể để trống khi tạo hợp đồng.
+            </div>
+        </div>
+
+        <!-- Thời gian thuê -->
+        <div class="form-card">
+            <div class="section-title"><i class="bi bi-calendar"></i> Thời gian thuê</div>
+            <div class="row mb-3">
+                <div>
+                    <label class="form-label">Số ngày thuê</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" id="rentalDays" min="1" max="30" placeholder="Nhập số ngày" />
+                        <span class="input-group-text">ngày</span>
+                    </div>
+                    <div class="preset-buttons">
+                        <button type="button" class="btn-preset" onclick="setRentalDays(1)">1 ngày</button>
+                        <button type="button" class="btn-preset" onclick="setRentalDays(3)">3 ngày</button>
+                        <button type="button" class="btn-preset" onclick="setRentalDays(7)">1 tuần</button>
+                        <button type="button" class="btn-preset" onclick="setRentalDays(14)">2 tuần</button>
+                    </div>
+                    @* <small class="form-text text-muted">*Ngày trả xe sẽ tự động tính nếu nhập số ngày</small> *@
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label asp-for="NgayNhanXe" class="form-label">Ngày nhận xe <span class="text-danger">*</span></label>
+                        <input asp-for="NgayNhanXe" type="date" class="form-control" id="NgayNhanXe" />
+                        <span asp-validation-for="NgayNhanXe" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label asp-for="NgayTraXeDuKien" class="form-label">Ngày trả xe dự kiến <span class="text-danger">*</span></label>
+                        <input asp-for="NgayTraXeDuKien" type="date" class="form-control" id="NgayTraXeDuKien" />
+                        <span asp-validation-for="NgayTraXeDuKien" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Thông tin tài chính -->
+        <div class="form-card">
+            <div class="section-title"><i class="bi bi-cash-coin"></i> Thông tin tài chính</div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">Tổng giá thuê/ngày</label>
+                        <input type="text" class="form-control" id="TotalDailyRateDisplay" readonly />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label asp-for="TienCoc" class="form-label">Tiền cọc</label>
+                        <input asp-for="TienCoc" class="form-control" id="TienCoc" type="number" min="0" step="1000" value="0" placeholder="Ví dụ: 500000" />
+                        <span asp-validation-for="TienCoc" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label asp-for="PhuPhi" class="form-label">Phụ phí</label>
+                        <input asp-for="PhuPhi" class="form-control" type="number" min="0" step="1000" value="0" id="PhuPhi" placeholder="Ví dụ: 100000" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="GhiChu" class="form-label">Ghi chú</label>
+                <textarea asp-for="GhiChu" class="form-control" rows="3" placeholder="Ghi chú thêm nếu có..."></textarea>
+            </div>
+        </div>
+
+        <!-- Tổng kết -->
+        <div class="summary-box">
+            <h4><strong>Tổng kết hợp đồng</strong></h4>
+            <div class="row mt-3">
+                <div class="col-6">
+                    <p>Số xe thuê:</p>
+                    <p>Số ngày thuê:</p>
+                    <p>Tiền thuê xe:</p>
+                    <p>Tiền cọc:</p>
+                    <p>Phụ phí:</p>
+                </div>
+                <div class="col-6 text-end">
+                    <p><span id="soXeThue">0</span> xe</p>
+                    <p><span id="soNgayThue">0</span> ngày</p>
+                    <p><span id="tienThue">0</span></p>
+                    <p><span id="tienCocDisplay">0</span></p>
+                    <p><span id="phuPhiDisplay">0</span></p>
+                </div>
+            </div>
+            <hr />
+            <div class="total-amount">
+                Tổng cộng: <span id="tongTien">0</span>
+            </div>
+        </div>
+
+        <input type="hidden" asp-for="TongTien" id="TongTienInput" />
+
+        <button type="submit" class="btn btn-success w-100 mb-3">
+            <i class="bi bi-check-circle"></i> Tạo Hợp Đồng
+        </button>
+
+        <a asp-action="Index" class="btn btn-secondary w-100">
+            <i class="bi bi-arrow-left"></i> Quay lại
+        </a>
+    </form>
+</div>
