@@ -12,8 +12,8 @@ using bikey.Repository;
 namespace bikey.Migrations
 {
     [DbContext(typeof(BikeyDbContext))]
-    [Migration("20260313065638_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260315024048_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
