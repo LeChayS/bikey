@@ -1,69 +1,89 @@
-﻿/* Thống kê & Báo cáo styles */
-.stats-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 30px;
-    border-radius: 15px;
+﻿.top-header {
+    color: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px 50px;
+}
+
+.wrapper{
+    padding: 0px 50px;
     margin-bottom: 30px;
 }
 
-.filter-section {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+.container-fluid {
+    background-color: white;
+    padding: 30px;
+    border-radius: 30px;
     margin-bottom: 30px;
 }
 
 /* Stat cards */
 .stat-card {
     background: white;
-    border-radius: 15px;
+    border-radius: 10px;
     padding: 25px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
     transition: transform 0.3s;
     height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: top;
 }
 
     .stat-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
     }
 
+ .stat-card.blue {
+     background: rgb(158, 198, 243, 0.3);
+ }
+ .stat-card.orange {
+     background: rgb(250, 206, 104, 0.3);
+ }
+ .stat-card.green {
+     background: rgb(199, 234, 187, 0.3);
+ }
+ .stat-card.purple {
+     background: rgb(203, 157, 240, 0.3);
+ }
+ .stat-card.red {
+     background: rgb(250, 104, 104, 0.3);
+ }
+ .stat-card.pink {
+     background: rgb(253, 121, 121, 0.3);
+ }
+
 .stat-icon {
-    width: 60px;
-    height: 60px;
-    border-radius: 15px;
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 24px;
-    margin-bottom: 15px;
 }
 
-    .stat-icon.blue {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    }
-
-    .stat-icon.orange {
-        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-    }
-
-    .stat-icon.green {
-        background: linear-gradient(135deg, #38ef7d 0%, #11998e 100%);
-    }
-
-    .stat-icon.purple {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-
-    .stat-icon.red {
-        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
-    }
-
-    .stat-icon.cyan {
-        background: linear-gradient(135deg, #17a2b8 0%, #20c997 100%);
-    }
+.stat-icon i {
+    font-size: 25px;
+    color: black;
+}
+.stat-icon.blue {
+    background: rgb(158, 198, 243, 0.3);
+}
+.stat-icon.orange {
+    background: rgb(250, 206, 104, 0.3);
+}
+.stat-icon.green {
+    background: rgb(199, 234, 187, 0.3);
+}
+.stat-icon.purple {
+    background: rgb(203, 157, 240, 0.3);
+}
+.stat-icon.red {
+    background: rgb(250, 104, 104, 0.3);
+}
+.stat-icon.pink {
+    background: rgb(253, 121, 121, 0.3);
+}
 
 .stat-value {
     font-size: 32px;
@@ -80,48 +100,24 @@
 /* Charts */
 .chart-card {
     background: white;
-    border-radius: 15px;
+    border-radius: 30px;
     padding: 25px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-    margin-bottom: 30px;
 }
 
 .chart-header {
+    margin-bottom: 10px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    /* căn giữa theo chiều dọc */
+    justify-content: space-between;
+    /* chữ trái – nút phải */
 }
 
-/* Tables */
-.table-card {
-    background: white;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-}
-
-.table-header {
-    padding: 20px 25px;
-    background: #f8f9fa;
-    border-bottom: 1px solid #e9ecef;
+.chart-header p {
     font-weight: bold;
+    font-size: 20px;
+    margin-bottom: 0px;
 }
-
-/* Top Vehicles Chart Styling */
-.chart-card .chart-header .bi-trophy {
-    font-size: 1.1em;
-    margin-right: 8px;
-}
-
-#topVehiclesChart {
-    max-height: 300px !important;
-    height: auto !important;
-}
-
-    #topVehiclesChart.chart-container {
-        height: 250px;
-    }
 
 /* Loading animation */
 .chart-loading {
@@ -142,7 +138,7 @@
     margin-right: 10px;
 }
 
-@@keyframes spin {
+@keyframes spin {
     0% {
         transform: rotate(0deg);
     }

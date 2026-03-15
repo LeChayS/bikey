@@ -5,7 +5,7 @@
 }
 
 @section Styles {
-    <link href="/css/thongkebaocao/index.css" rel="stylesheet">
+    <link href="/css/thongkebaocao/index.css" rel="stylesheet" asp-append-version="true">
 }
 
 @section Scripts {
@@ -13,97 +13,117 @@
     <script src="/js/thongkebaocao/index.js"></script>
 }
 
-<div class="container-fluid">
-    <!-- Header -->
-    <div class="stats-header">
-        <h1 class="mb-0"><i class="bi bi-bar-chart-line"></i> Thống Kê & Báo Cáo</h1>
-        <p class="mb-0 mt-2">Phân tích chi tiết dữ liệu kinh doanh</p>
-    </div>
+<!-- Top Header -->
+<div class="top-header">
+    <h1 class="mb-0"><i class="bi bi-bar-chart-line"></i> Thống Kê & Báo Cáo</h1>
+</div>
+
+<div class="wrapper">
 
     <!-- Statistics Cards -->
-    <div class="row mb-4">
-        <div class="col-lg-4 col-md-6 mb-3">
-            <div class="stat-card">
-                <div class="stat-icon blue text-white">
-                    <i class="bi bi-cash-stack"></i>
+    <div class="container-fluid">
+        @* Row 1 *@
+        <div class="row mb-4">
+            @* card 1 *@
+            <div class="col-lg-4 col-md-6">
+                <div class="stat-card blue">
+                    <div>
+                        <div class="stat-label" id="doanhThuLabel">Doanh thu tháng này</div>
+                        <div class="stat-value" id="doanhThuValue">
+                            @* @Model.DoanhThuHomNay.ToString("N0")đ *@
+                            100,000đ
+                        </div>
+                    </div>
+                    <div class="stat-icon blue text-white">
+                        <i class="bi bi-cash-stack"></i>
+                    </div>
                 </div>
-                <div class="stat-value" id="doanhThuValue">
-                    @* @Model.DoanhThuHomNay.ToString("N0")đ *@
-                    100,000đ
+            </div>
+            @* card 2 *@
+            <div class="col-lg-4 col-md-6">
+                <div class="stat-card orange">
+                    <div>
+                        <div class="stat-label" id="donDatLabel">Đơn đặt tháng này</div>
+                        <div class="stat-value" id="donDatValue">
+                            @* @Model.TongDonDatXe *@
+                            20
+                        </div>
+                    </div>
+                    <div class="stat-icon orange text-white">
+                        <i class="bi bi-calendar-check"></i>
+                    </div>
                 </div>
-                <div class="stat-label" id="doanhThuLabel">Doanh thu tháng này</div>
+            </div>
+            @* Cards 3 *@
+            <div class="col-lg-4 col-md-6">
+                <div class="stat-card green">
+                    <div>
+                        <div class="stat-label">Xe đang cho thuê</div>
+                        <div class="stat-value" id="xeDangThueValue">
+                            @* @Model.XeDangChoThue *@
+                            12
+                        </div>
+                    </div>
+                    <div class="stat-icon green text-white">
+                        <i class="bi bi-bicycle"></i>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="col-lg-4 col-md-6 mb-3">
-            <div class="stat-card">
-                <div class="stat-icon green text-white">
-                    <i class="bi bi-calendar-check"></i>
+        @* row 2 *@
+        <div class="row">
+            @* Cards 4 *@
+            <div class="col-lg-4 col-md-6">
+                <div class="stat-card purple">
+                    <div>
+                        <div class="stat-label" id="khachHangMoiLabel">Khách hàng mới tháng này</div>
+                        <div class="stat-value" id="khachHangMoiValue">
+                            @* @Model.KhachHangMoi *@
+                            10
+                        </div>
+                    </div>
+                    <div class="stat-icon purple text-white">
+                        <i class="bi bi-person-plus"></i>
+                    </div>
                 </div>
-                <div class="stat-value" id="donDatValue">
-                    @* @Model.TongDonDatXe *@
-                    20
-                </div>
-                <div class="stat-label" id="donDatLabel">Đơn đặt tháng này</div>
             </div>
-        </div>
-
-        <div class="col-lg-4 col-md-6 mb-3">
-            <div class="stat-card">
-                <div class="stat-icon purple text-white">
-                    <i class="bi bi-bicycle"></i>
+            @* Cards 5 *@
+            <div class="col-lg-4 col-md-6">
+                <div class="stat-card red">
+                    <div>
+                        <div class="stat-label" id="tongThietHaiLabel">Tổng tiền thiệt hại tháng này</div>
+                        <div class="stat-value" id="tongThietHaiValue">
+                            @* @Model.TongThietHai.ToString("N0")đ *@
+                            100,000đ
+                        </div>
+                    </div>
+                    <div class="stat-icon red text-white">
+                        <i class="bi bi-exclamation-triangle"></i>
+                    </div>
                 </div>
-                <div class="stat-value" id="xeDangThueValue">
-                    @* @Model.XeDangChoThue *@
-                    12
-                </div>
-                <div class="stat-label">Xe đang cho thuê</div>
             </div>
-        </div>
-
-        <div class="col-lg-4 col-md-6 mb-3">
-            <div class="stat-card">
-                <div class="stat-icon orange text-white">
-                    <i class="bi bi-person-plus"></i>
+            @* Cards 6 *@
+            <div class="col-lg-4 col-md-6">
+                <div class="stat-card pink">
+                    <div>
+                        <div class="stat-label" id="doanhThuGocLabel">Doanh thu gốc tháng này</div>
+                        <div class="stat-value" id="doanhThuGocValue">
+                            @* @Model.DoanhThuGoc.ToString("N0")đ *@
+                            30,000đ
+                        </div>
+                    </div>
+                    <div class="stat-icon pink text-white">
+                        <i class="bi bi-currency-dollar"></i>
+                    </div>
                 </div>
-                <div class="stat-value" id="khachHangMoiValue">
-                    @* @Model.KhachHangMoi *@
-                    10
-                </div>
-                <div class="stat-label" id="khachHangMoiLabel">Khách hàng mới tháng này</div>
-            </div>
-        </div>
-
-        <div class="col-lg-4 col-md-6 mb-3">
-            <div class="stat-card">
-                <div class="stat-icon cyan text-white">
-                    <i class="bi bi-exclamation-triangle"></i>
-                </div>
-                <div class="stat-value" id="tongThietHaiValue">
-                    @* @Model.TongThietHai.ToString("N0")đ *@
-                    100,000đ
-                </div>
-                <div class="stat-label" id="tongThietHaiLabel">Tổng tiền thiệt hại tháng này</div>
-            </div>
-        </div>
-
-        <div class="col-lg-4 col-md-6 mb-3">
-            <div class="stat-card">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                    <i class="bi bi-currency-dollar"></i>
-                </div>
-                <div class="stat-value" id="doanhThuGocValue">
-                    @* @Model.DoanhThuGoc.ToString("N0")đ *@
-                    30,000đ
-                </div>
-                <div class="stat-label" id="doanhThuGocLabel">Doanh thu gốc tháng này</div>
             </div>
         </div>
     </div>
 
     <!-- Filter Section -->
-    <div class="filter-section">
-        <div class="row g-3 align-items-end">
+    <div class="container-fluid">
+        <div class="row g-4 align-items-end">
             <div class="col-md-6">
                 <label class="form-label">Lọc dữ liệu theo:</label>
                 <select id="chartFilter" class="form-select">
@@ -125,22 +145,13 @@
     </div>
 
     <!-- Charts Section -->
-    <div class="row mb-3">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <h4 class="mb-0">📊 Biểu đồ thống kê</h4>
-                <small class="text-muted">Dữ liệu được cập nhật theo thời gian thực</small>
-            </div>
-        </div>
-    </div>
-
-    <!-- Charts Row 1 -->
-    <div class="row">
+    <!-- Row 1 -->
+    <div class="row mb-4">
         <!-- Biểu đồ doanh thu (Horizontal Bar Chart) -->
-        <div class="col-lg-6 mb-4">
+        <div class="col-lg-6">
             <div class="chart-card">
                 <div class="chart-header">
-                    <h5 class="mb-0" id="revenueTitle">Doanh thu theo thời gian</h5>
+                    <p id="revenueTitle">Doanh thu theo thời gian</p>
                     <small class="text-muted">Đơn vị: VNĐ</small>
                 </div>
                 <div id="revenueChartContainer" style="width: 100%; height: auto;">
@@ -150,10 +161,10 @@
         </div>
 
         <!-- Biểu đồ top 5 xe được thuê nhiều nhất (Bar Chart) -->
-        <div class="col-lg-6 mb-4">
+        <div class="col-lg-6">
             <div class="chart-card">
                 <div class="chart-header">
-                    <h5 class="mb-0" id="topVehiclesTitle">Top 5 xe được thuê nhiều nhất</h5>
+                    <p id="topVehiclesTitle">Top 5 xe được thuê nhiều nhất</p>
                     <small class="text-muted">Số lần thuê</small>
                 </div>
                 <div id="topVehiclesChartContainer" style="width: 100%; height: auto;">
@@ -162,13 +173,14 @@
             </div>
         </div>
     </div>
+
     <!-- Charts Row 2 -->
-    <div class="row">
+    <div class="row mb-4">
         <!-- Biểu đồ thống kê loại xe (Horizontal Bar Chart) -->
-        <div class="col-lg-6 mb-4">
+        <div class="col-lg-6">
             <div class="chart-card">
                 <div class="chart-header">
-                    <h5 class="mb-0" id="vehicleTypesTitle">Thống kê loại xe theo danh mục</h5>
+                    <p id="vehicleTypesTitle">Thống kê loại xe theo danh mục</p>
                     <small class="text-muted">Số lượng xe</small>
                 </div>
                 <div id="vehicleTypesChartContainer" style="width: 100%; height: auto;">
@@ -177,10 +189,10 @@
             </div>
         </div>
         <!-- Biểu đồ thống kê hợp đồng theo trạng thái (Line Chart) -->
-        <div class="col-lg-6 mb-4">
+        <div class="col-lg-6">
             <div class="chart-card">
                 <div class="chart-header">
-                    <h5 class="mb-0" id="contractStatusTitle">Thống kê hợp đồng theo trạng thái</h5>
+                    <p id="contractStatusTitle">Thống kê hợp đồng theo trạng thái</p>
                     <small class="text-muted">Số lượng hợp đồng</small>
                 </div>
                 <div id="contractStatusChartContainer" style="width: 100%; height: auto;">
@@ -189,127 +201,5 @@
             </div>
         </div>
     </div>
-    <!-- Charts Row 3 - Biểu đồ chi tiêu và thiệt hại -->
-    <div class="row">
-        <!-- Biểu đồ thiệt hại (Line Chart) -->
-        <div class="col-lg-6 mb-4">
-            <div class="chart-card">
-                <div class="chart-header">
-                    <h5 class="mb-0" id="thietHaiTitle">Biểu đồ tổng tiền thiệt hại theo thời gian</h5>
-                    <small class="text-muted">Đơn vị: VNĐ</small>
-                </div>
-                <div id="thietHaiChartContainer" style="width: 100%; height: auto;">
-                    <canvas id="thietHaiChart"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Tables Row -->
-    <div class="row">
-        <!-- Top xe thuê nhiều -->
-        <div class="col-lg-6 mb-4">
-            <div class="table-card">
-                <div class="table-header">
-                    <i class="bi bi-trophy"></i> Top 5 xe được thuê nhiều nhất
-                    <small class="text-muted ms-2">(chỉ tính hợp đồng đã hoàn thành)</small>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead>
-                            <tr>
-                                <th>Xe</th>
-                                <th>Biển số</th>
-                                <th>Số lần</th>
-                                <th>Doanh thu</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @* @if (Model.TopXeThueNhieu.Any())
-                            {
-                                @foreach (var xe in Model.TopXeThueNhieu)
-                                {
-                                    <tr>
-                                        <td>@xe.TenXe</td>
-                                        <td>@xe.BienSo</td>
-                                        <td><span class="badge bg-primary">@xe.SoLanThue</span></td>
-                                        <td class="text-danger fw-bold">@xe.DoanhThu.ToString("N0")đ</td>
-                                    </tr>
-                                }
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td colspan="4" class="text-center text-muted">
-                                        <i class="bi bi-info-circle"></i> Chưa có dữ liệu xe được thuê
-                                    </td>
-                                </tr>
-                            } *@
-                            <tr>
-                                <td>tên xe</td>
-                                <td>biển số xe</td>
-                                <td><span class="badge bg-primary">5</span></td>
-                                <td>20,000đ</td>
-                            </tr>
-                            <tr>
-                                <td colspan="4" class="text-center text-muted">
-                                    <i class="bi bg-info-circle"></i> chưa có dữ liệu xe được thuê
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Thống kê tổng quan -->
-        <div class="col-lg-6 mb-4">
-            <div class="table-card">
-                <div class="table-header">
-                    <i class="bi bi-info-circle"></i> Thống kê tổng quan
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <tbody>
-                            <tr>
-                                <td><strong>Tổng số xe:</strong></td>
-                                <td><span class="badge bg-info">
-                                    @* @Model.TongSoXe *@
-                                    30
-                                </span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Hợp đồng hoạt động:</strong></td>
-                                <td><span class="badge bg-warning">
-                                    @* @Model.HopDongHoatDong *@
-                                    23
-                                </span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Xe đang cho thuê:</strong></td>
-                                <td><span class="badge bg-success">
-                                    @* @Model.XeDangChoThue *@
-                                    22
-                                </span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Xe có sẵn:</strong></td>
-                                <td><span class="badge bg-primary">
-                                    @* @(Model.TongSoXe - Model.XeDangChoThue) *@
-                                    5
-                                </span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Số loại xe:</strong></td>
-                                <td><span class="badge bg-secondary">
-                                    @* @Model.BieuDoLoaiXe.Count *@
-                                    2
-                                </span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
