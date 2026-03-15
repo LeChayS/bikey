@@ -36,7 +36,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=HopDong}/{action=Index}/{id?}")
+    pattern: "{controller=ThongKeBaoCao}/{action=Index}/{id?}")
     .WithStaticAssets();
 
 app.Run();
@@ -89,7 +89,7 @@ app.Run();
 //    .EnableSensitiveDataLogging(false)
 //    .EnableDetailedErrors(false));
 
-//// THÊM AUTHENTICATION 
+//// THÊM AUTHENTICATION
 //builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 //    .AddCookie(options =>
 //    {

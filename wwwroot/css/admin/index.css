@@ -1,28 +1,48 @@
 ﻿/* Dashboard styles */
 .dashboard-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 30px;
-    border-radius: 15px;
+    color: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px 50px;
+}
+
+.dashboard-wrapper{
+    padding: 0px 50px;
     margin-bottom: 30px;
 }
 
-.filter-section {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+.container-fluid{
+    background-color: white;
+    padding: 30px;
+    border-radius: 30px;
     margin-bottom: 30px;
+}
+
+/* title each section */
+.title {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    /* căn giữa theo chiều dọc */
+    justify-content: space-between;
+    /* chữ trái – nút phải */
+}
+
+.title p {
+    font-weight: bold;
+    font-size: 25px;
+    margin-bottom: 0px;
 }
 
 /* Stat cards */
 .stat-card {
     background: white;
-    border-radius: 15px;
+    border-radius: 10px;
     padding: 25px;
     box-shadow: 0 5px 20px rgba(0,0,0,0.08);
     transition: transform 0.3s;
     height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: top;
 }
 
     .stat-card:hover {
@@ -30,32 +50,58 @@
         box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
     }
 
+ .stat-card.blue {
+     background: rgb(158, 198, 243, 0.3);
+ }
+ .stat-card.orange {
+     background: rgb(250, 206, 104, 0.3);
+ }
+ .stat-card.green {
+     background: rgb(199, 234, 187, 0.3);
+ }
+ .stat-card.purple {
+     background: rgb(203, 157, 240, 0.3);
+ }
+ .stat-card.red{
+    background: rgb(250, 104, 104, 0.3);
+ }
+ .stat-card.pink{
+    background: rgb(253, 121, 121, 0.3);
+ }
+
 .stat-icon {
-    width: 60px;
-    height: 60px;
-    border-radius: 15px;
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 24px;
-    margin-bottom: 15px;
 }
 
-    .stat-icon.blue {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    }
+.stat-icon i{
+    font-size: 25px;
+    color: black;
+}
 
-    .stat-icon.orange {
-        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-    }
-
-    .stat-icon.green {
-        background: linear-gradient(135deg, #38ef7d 0%, #11998e 100%);
-    }
-
-    .stat-icon.purple {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
+.stat-icon.blue {
+    background: rgb(158, 198, 243, 0.3);
+}
+.stat-icon.orange {
+    background: rgb(250, 206, 104, 0.3);
+}
+.stat-icon.green {
+    background: rgb(199, 234, 187, 0.3);
+}
+.stat-icon.purple {
+    background: rgb(203, 157, 240, 0.3);
+}
+.stat-icon.red {
+    background: rgb(250, 104, 104, 0.3);
+}
+.stat-icon.pink {
+    background: rgb(253, 121, 121, 0.3);
+}
 
 .stat-value {
     font-size: 32px;
@@ -82,15 +128,7 @@
         color: #dc3545;
     }
 
-/* Charts */
-.chart-card {
-    background: white;
-    border-radius: 15px;
-    padding: 25px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-    margin-bottom: 30px;
-}
-
+/* Quick action - Charts */
 .chart-header {
     display: flex;
     justify-content: space-between;
@@ -98,42 +136,115 @@
     margin-bottom: 20px;
 }
 
+.chart-cart a{
+    border-radius: 10px;
+    color: white;
+}
+
+.btn.blue{
+    background: #1E93AB;
+}
+.btn.green{
+    background: #06923E;
+}
+.btn.orange {
+    background: #E67514;
+}
+.btn.red {
+    background: #ED3500;
+}
+
 /* Tables */
-.table-card {
-    background: white;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+.table {
+    table-layout: fixed;
 }
 
-.table-header {
-    padding: 20px 25px;
-    background: #f8f9fa;
-    border-bottom: 1px solid #e9ecef;
-    font-weight: bold;
+.table th:nth-child(n+3),
+.table td:nth-child(n+3){
+    /* width: 1%; */
+    /* white-space: nowrap; */
+    text-align: center;
 }
 
-.status-badge {
+.table td,
+.table th {
+    vertical-align: middle;
+}
+
+/* top xe */
+.status-xe {
     padding: 5px 12px;
     border-radius: 15px;
-    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 15px;
     font-weight: 500;
 }
 
-.status-waiting {
-    background: #fff3cd;
-    color: #856404;
+.status-xe::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+        .status-ready {
+            color: #16A34A;
+        }
+
+        .status-ready::before {
+            background: #22C55E;
+        }
+
+        .status-renting {
+            color: #2563EB;
+        }
+
+        .status-renting::before {
+            background: #3B82F6;
+        }
+
+        .status-broken {
+            color: #DC2626;
+        }
+
+        .status-broken::before {
+            background: #EF4444;
+        }
+
+        .status-maintenance {
+            color: #D97706;
+        }
+
+        .status-maintenance::before {
+            background: #F59E0B;
+        }
+
+/* hợp đồng gần đây */
+.status-hopdong {
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 15px;
+    font-weight: 500;
 }
 
-.status-confirmed {
-    background: #d1ecf1;
-    color: #0c5460;
-}
-
-.status-completed {
-    background: #d4edda;
-    color: #155724;
-}
+    .status-waiting {
+        background: #FFF3CD;
+        color: #856404;
+    }
+    .status-confirmed {
+    background: #EDE9FE;
+        color: #5B21B6;
+    }
+    .status-completed {
+        background: #D4EDDA;
+        color: #155724;
+    }
+    .status-finished {
+        background: #CCE5FF;
+        color: #004085;
+    }
 
 /* Top Vehicles Chart Styling */
 .chart-card .chart-header .bi-trophy {
@@ -150,3 +261,4 @@
     #topVehiclesChart.chart-container {
         height: 250px;
     }
+
