@@ -7,182 +7,212 @@
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/hopdong/donchoxuly.css" />
+    <link rel="stylesheet" href="~/css/hopdong/donchoxuly.css" asp-append-version="true"/>
 }
 
 @section Scripts {
     <script src="/js/hopdong/donchoxuly.js"></script>
 }
 
-<div class="container-fluid">
-    <!-- Header -->
-    <div class="page-header">
-        <div class="d-flex justify-content-between align-items-center">
-            <div>
-                <h1>Đơn Chờ Xử Lý</h1>
-                <p class="mb-0">Có @ViewBag.TongDonCho 10 đơn cần xử lý</p>
-            </div>
-            <a asp-action="Index" class="btn">
-                <i class="bi bi-arrow-left"></i> Quay lại
-            </a>
-        </div>
+<!-- Header -->
+<div class="top-header">
+    <div>
+        <h1 class="mb-0">Đơn Chờ Xử Lý</h1>
+        <p class="mb-0">Có @ViewBag.TongDonCho 10 đơn cần xử lý</p>
     </div>
+    <a asp-action="Index" class="btn btn-primary">
+        <i class="bi bi-arrow-left"></i> Quay lại
+    </a>
+</div>
 
-    <!-- Filter -->
-    <div class="filter-section">
-        <form method="get" class="row g-3">
-            <div class="col-md-4">
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-search"></i></span>
-                    <input type="text" name="searchString" class="form-control"
-                           placeholder="Tìm theo tên, SĐT, email..."
-                           value="@ViewBag.SearchString" />
+<div class="wrapper">
+
+    <div class="container-fluid">
+
+        <!-- Filter -->
+        <div class="filter-section">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" name="searchString" class="form-control"
+                            placeholder="Tìm theo tên, SĐT, email..."
+                            value="@ViewBag.SearchString" />
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-3">
-                <input type="date" name="tuNgay" class="form-control"
-                       value="@ViewBag.TuNgay?.ToString("yyyy-MM-dd")"
-                       placeholder="Từ ngày" />
-            </div>
-            <div class="col-md-3">
-                <input type="date" name="denNgay" class="form-control"
-                       value="@ViewBag.DenNgay?.ToString("yyyy-MM-dd")"
-                       placeholder="Đến ngày" />
-            </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary w-100">
-                    <i class="bi bi-funnel"></i> Lọc
-                </button>
-            </div>
-        </form>
-    </div>
+                <div class="col-md-3">
+                    <input type="date" name="tuNgay" class="form-control"
+                        value="@ViewBag.TuNgay?.ToString("yyyy-MM-dd")"
+                        placeholder="Từ ngày" />
+                </div>
+                <div class="col-md-3">
+                    <input type="date" name="denNgay" class="form-control"
+                        value="@ViewBag.DenNgay?.ToString("yyyy-MM-dd")"
+                        placeholder="Đến ngày" />
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-funnel"></i> Lọc
+                    </button>
+                </div>
+            </form>
+        </div>
 
-    <!-- Danh sách đơn -->
-    @* @if (Model.Any())
-    {
-        @foreach (var don in Model)
+        <!-- Danh sách đơn -->
+        @* @if (Model.Any())
         {
+            @foreach (var don in Model)
+            {
+                <div class="order-card">
+                    <div class="order-header">
+                        <div>
+                            <div class="order-number">Đơn #DC@(don.MaDatCho.ToString("D6"))</div>
+                            <div class="order-date">
+                                <i class="bi bi-clock"></i> @don.NgayDat.ToString("dd/MM/yyyy HH:mm")
+                            </div>
+                        </div>
+                        <span class="status-badge">
+                            <i class="bi bi-hourglass"></i> @don.TrangThai
+                        </span>
+                    </div>
+
+                    <div class="order-body">
+                        <div class="info-group">
+                            <div class="info-label">Khách hàng</div>
+                            <div class="info-value">@don.HoTen</div>
+                            <div class="text-muted small">
+                                <i class="bi bi-telephone"></i> @don.SoDienThoai<br />
+                                <i class="bi bi-envelope"></i> @don.Email
+                            </div>
+                        </div>
+
+                        <div class="info-group">
+                            <div class="info-label">Xe thuê</div>
+                            <div class="info-value">@don.Xe?.TenXe</div>
+                            <div class="text-muted small">
+                                Biển số: @don.Xe?.BienSoXe<br />
+                                Giá: <span class="text-danger">@don.Xe?.GiaThue.ToString("N0")đ/ngày</span>
+                            </div>
+                        </div>
+
+                        <div class="info-group">
+                            <div class="info-label">Thời gian thuê</div>
+                            <div class="info-value">@don.SoNgayThue ngày</div>
+                            <div class="text-muted small">
+                                Từ: @don.NgayNhanXe.ToString("dd/MM/yyyy")<br />
+                                Đến: @don.NgayTraXe.ToString("dd/MM/yyyy")
+                            </div>
+                        </div>
+
+                        <div class="info-group">
+                            <div class="info-label">Tổng tiền dự kiến</div>
+                            <div class="info-value text-danger">@don.TongTienDuKien.ToString("N0")đ</div>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(don.GhiChu))
+                    {
+                        <div class="alert alert-info mb-3">
+                            <i class="bi bi-info-circle"></i> Ghi chú: @don.GhiChu
+                        </div>
+                    }
+
+                    <div class="order-actions">
+                        <button class="btn btn-info btn-sm" onclick="xemChiTiet(@don.MaDatCho)">
+                            <i class="bi bi-eye"></i> Chi tiết
+                        </button>
+                        <form asp-action="XuLyDon" method="post" class="d-inline"
+                            onsubmit="return confirm('Xác nhận xử lý đơn này và tạo hợp đồng?');">
+                            <input type="hidden" name="id" value="@don.MaDatCho" />
+                            <button type="submit" class="btn btn-process btn-sm">
+                                <i class="bi bi-check-circle"></i> Xử lý & Tạo HĐ
+                            </button>
+                        </form>
+                        <button class="btn btn-cancel btn-sm" onclick="huyDon(@don.MaDatCho)">
+                            <i class="bi bi-x-circle"></i> Hủy đơn
+                        </button>
+                    </div>
+                </div>
+            }
+        }
+        else
+        { *@
             <div class="order-card">
                 <div class="order-header">
                     <div>
-                        <div class="order-number">Đơn #DC@(don.MaDatCho.ToString("D6"))</div>
+                        <div class="order-number">Đơn #DC00001</div>
                         <div class="order-date">
-                            <i class="bi bi-clock"></i> @don.NgayDat.ToString("dd/MM/yyyy HH:mm")
+                            <i class="bi bi-clock"></i> 20/0/2026 12:34
                         </div>
                     </div>
                     <span class="status-badge">
-                        <i class="bi bi-hourglass"></i> @don.TrangThai
+                        <i class="bi bi-hourglass"></i> Chờ xác nhận
                     </span>
                 </div>
 
                 <div class="order-body">
                     <div class="info-group">
                         <div class="info-label">Khách hàng</div>
-                        <div class="info-value">@don.HoTen</div>
+                        <div class="info-value">tên khách</div>
                         <div class="text-muted small">
-                            <i class="bi bi-telephone"></i> @don.SoDienThoai<br />
-                            <i class="bi bi-envelope"></i> @don.Email
+                            <i class="bi bi-telephone"></i> 0987654321<br />
+                            <i class="bi bi-envelope"></i> khach@gmail.com
                         </div>
                     </div>
 
                     <div class="info-group">
                         <div class="info-label">Xe thuê</div>
-                        <div class="info-value">@don.Xe?.TenXe</div>
+                        <div class="info-value">tên xe</div>
                         <div class="text-muted small">
-                            Biển số: @don.Xe?.BienSoXe<br />
-                            Giá: <span class="text-danger">@don.Xe?.GiaThue.ToString("N0")đ/ngày</span>
+                            Biển số: biển số xe<br />
+                            Giá: <span class="text-danger">20,000đ/ngày</span>
                         </div>
                     </div>
 
                     <div class="info-group">
                         <div class="info-label">Thời gian thuê</div>
-                        <div class="info-value">@don.SoNgayThue ngày</div>
+                        <div class="info-value">5 ngày</div>
                         <div class="text-muted small">
-                            Từ: @don.NgayNhanXe.ToString("dd/MM/yyyy")<br />
-                            Đến: @don.NgayTraXe.ToString("dd/MM/yyyy")
+                            Từ: 20/03/2026<br />
+                            Đến: 25/03/2026
                         </div>
                     </div>
 
                     <div class="info-group">
                         <div class="info-label">Tổng tiền dự kiến</div>
-                        <div class="info-value text-danger">@don.TongTienDuKien.ToString("N0")đ</div>
+                        <div class="info-value text-danger">200,000đ</div>
                     </div>
                 </div>
 
-                @if (!string.IsNullOrEmpty(don.GhiChu))
-                {
-                    <div class="alert alert-info mb-3">
-                        <i class="bi bi-info-circle"></i> Ghi chú: @don.GhiChu
-                    </div>
-                }
+                    @* @if (!string.IsNullOrEmpty(don.GhiChu))
+                    { *@
+                        <div class="alert alert-info mb-3">
+                            <i class="bi bi-info-circle"></i> Ghi chú: Ghi chú của đơn là
+                        </div>
+                    @* } *@
 
-                <div class="order-actions">
-                    <button class="btn btn-info btn-sm" onclick="xemChiTiet(@don.MaDatCho)">
-                        <i class="bi bi-eye"></i> Chi tiết
-                    </button>
-                    <form asp-action="XuLyDon" method="post" class="d-inline"
-                          onsubmit="return confirm('Xác nhận xử lý đơn này và tạo hợp đồng?');">
-                        <input type="hidden" name="id" value="@don.MaDatCho" />
-                        <button type="submit" class="btn btn-process btn-sm">
-                            <i class="bi bi-check-circle"></i> Xử lý & Tạo HĐ
+                    <div class="order-actions">
+                        <form method="post" class="d-inline">
+                            <input type="hidden" name="id" />
+                            <button type="submit" class="btn btn-process btn-sm">
+                                <i class="bi bi-check-circle"></i> Xử lý & Tạo HĐ
+                            </button>
+                        </form>
+                        <button class="btn btn-cancel btn-sm">
+                            <i class="bi bi-x-circle"></i> Hủy đơn
                         </button>
-                    </form>
-                    <button class="btn btn-cancel btn-sm" onclick="huyDon(@don.MaDatCho)">
-                        <i class="bi bi-x-circle"></i> Hủy đơn
-                    </button>
-                </div>
+                    </div>
             </div>
-        }
-    }
-    else
-    { *@
-        <div class="empty-state">
-            <i class="bi bi-inbox empty-icon"></i>
-            <h3>Không có đơn chờ xử lý</h3>
-            <p class="text-muted">Tất cả các đơn đã được xử lý hoặc không có đơn nào phù hợp với bộ lọc.</p>
-            <a asp-action="Index" class="btn btn-primary mt-3">
-                <i class="bi bi-arrow-left"></i> Quay lại trang chính
-            </a>
-        </div>
-    @* } *@
-</div>
 
-@* <!-- Custom Modal Hủy đơn -->
-<div id="huyDonModal" class="custom-modal">
-    <div class="custom-modal-content">
-        <div class="custom-modal-header">
-            <h5 class="custom-modal-title">Hủy đơn đặt chỗ</h5>
-            <button type="button" class="custom-modal-close" onclick="closeModal('huyDonModal')">&times;</button>
-        </div>
-        <div class="custom-modal-body">
-            <form id="huyDonForm">
-                @Html.AntiForgeryToken()
-                <input type="hidden" id="maDatChoHuy" />
-                <div class="custom-form-group">
-                    <label class="custom-form-label">Lý do hủy <span class="custom-text-danger">*</span></label>
-                    <textarea id="lyDoHuy" class="custom-form-control" rows="3"
-                              placeholder="Nhập lý do hủy đơn..." required></textarea>
-                </div>
-            </form>
-        </div>
-        <div class="custom-modal-footer">
-            <button type="button" class="custom-btn custom-btn-secondary" onclick="closeModal('huyDonModal')">Đóng</button>
-            <button type="button" class="custom-btn custom-btn-danger" onclick="xacNhanHuyDon()">
-                <i class="bi bi-x-circle"></i> Xác nhận hủy
-            </button>
-        </div>
+            <div class="empty-state">
+                <i class="bi bi-inbox empty-icon"></i>
+                <h3>Không có đơn chờ xử lý</h3>
+                <p class="text-muted">Tất cả các đơn đã được xử lý hoặc không có đơn nào phù hợp với bộ lọc.</p>
+                <a asp-action="Index" class="btn btn-primary mt-3">
+                    <i class="bi bi-arrow-left"></i> Quay lại trang chính
+                </a>
+            </div>
+        @* } *@
     </div>
-</div>
 
-<!-- Custom Modal Chi tiết -->
-<div id="chiTietModal" class="custom-modal">
-    <div class="custom-modal-content" style="max-width: 800px;">
-        <div class="custom-modal-header">
-            <h5 class="custom-modal-title">Chi tiết đơn đặt chỗ</h5>
-            <button type="button" class="custom-modal-close" onclick="closeModal('chiTietModal')">&times;</button>
-        </div>
-        <div class="custom-modal-body" id="chiTietContent">
-            <!-- Nội dung chi tiết sẽ được load ở đây -->
-        </div>
-    </div>
-</div> *@
+</div>

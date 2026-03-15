@@ -160,8 +160,6 @@
 
 .table th:nth-child(n+3),
 .table td:nth-child(n+3){
-    /* width: 1%; */
-    /* white-space: nowrap; */
     text-align: center;
 }
 

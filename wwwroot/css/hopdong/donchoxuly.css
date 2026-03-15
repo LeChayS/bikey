@@ -1,26 +1,49 @@
-﻿.page-header {
-    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-    color: white;
+﻿.top-header {
+    color: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.wrapper {
+    padding: 0px 50px;
+    margin-bottom: 30px;
+}
+
+.container-fluid {
+    background-color: white;
     padding: 30px;
-    border-radius: 15px;
+    border-radius: 30px;
     margin-bottom: 30px;
 }
 
+/* filter */
 .filter-section {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
     margin-bottom: 30px;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* order card */
 .order-card {
-    background: white;
     border-radius: 10px;
     padding: 20px;
     margin-bottom: 20px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
     transition: all 0.3s;
+    border: 1px solid rgb(194, 194, 194) ;
 }
 
     .order-card:hover {
@@ -31,19 +54,28 @@
 .order-header {
     display: flex;
     justify-content: space-between;
-    align-items: start;
+    align-items: center;
     margin-bottom: 15px;
 }
 
 .order-number {
-    font-size: 18px;
+    font-size: 25px;
     font-weight: bold;
-    color: #333;
+    color: #000000;
 }
 
 .order-date {
     color: #666;
+    font-size: 16px;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 8px 15px;
+    border-radius: 20px;
     font-size: 14px;
+    background: #fcd969;
+    color: #0f0c03;
 }
 
 .order-body {
@@ -66,8 +98,8 @@
 }
 
 .info-value {
-    color: #333;
-    font-size: 16px;
+    color: black;
+    font-size: 28px;
     font-weight: 500;
 }
 
@@ -80,15 +112,20 @@
     border-top: 1px solid #eee;
 }
 
+.order-actions .btn{
+    height: 45px;
+    padding: 0px 20px;
+}
+
 .btn-process {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: #2563EB;
     border: none;
+    color: white;
 }
 
     .btn-process:hover {
+        background: #0e349c;
         color: white;
-        transform: translateY(-2px);
     }
 
 .btn-cancel {
@@ -102,14 +139,7 @@
         color: white;
     }
 
-.status-badge {
-    display: inline-block;
-    padding: 5px 15px;
-    border-radius: 20px;
-    font-size: 12px;
-    background: #fff3cd;
-    color: #856404;
-}
+
 
 .empty-state {
     text-align: center;
@@ -124,172 +154,7 @@
     margin-bottom: 20px;
 }
 
-/* Custom Modal Styles */
-.custom-modal {
-    display: none;
-    position: fixed;
-    z-index: 9999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    animation: fadeIn 0.3s ease-in-out;
-}
-
-    .custom-modal.show {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-.custom-modal-content {
-    background-color: #fff;
-    margin: auto;
-    border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    animation: slideIn 0.3s ease-out;
-    max-width: 90%;
-    max-height: 90%;
-    overflow: hidden;
-}
-
-.custom-modal-header {
-    padding: 20px 25px;
-    border-bottom: 1px solid #e9ecef;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-}
-
-.custom-modal-title {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 600;
-}
-
-.custom-modal-close {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 24px;
-    cursor: pointer;
-    padding: 0;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: background-color 0.3s;
-}
-
-    .custom-modal-close:hover {
-        background-color: rgba(255, 255, 255, 0.2);
-    }
-
-.custom-modal-body {
-    padding: 25px;
-    max-height: 60vh;
-    overflow-y: auto;
-}
-
-.custom-modal-footer {
-    padding: 20px 25px;
-    border-top: 1px solid #e9ecef;
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    background-color: #f8f9fa;
-}
-
-.custom-btn {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.3s;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.custom-btn-secondary {
-    background-color: #6c757d;
-    color: white;
-}
-
-    .custom-btn-secondary:hover {
-        background-color: #5a6268;
-        color: white;
-    }
-
-.custom-btn-danger {
-    background-color: #dc3545;
-    color: white;
-}
-
-    .custom-btn-danger:hover {
-        background-color: #c82333;
-        color: white;
-    }
-
-.custom-btn-primary {
-    background-color: #007bff;
-    color: white;
-}
-
-    .custom-btn-primary:hover {
-        background-color: #0056b3;
-        color: white;
-    }
-
-.custom-form-group {
-    margin-bottom: 20px;
-}
-
-.custom-form-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
-    color: #333;
-}
-
-.custom-form-control {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 14px;
-    transition: border-color 0.3s;
-}
-
-    .custom-form-control:focus {
-        outline: none;
-        border-color: #007bff;
-        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-    }
-
-.custom-text-danger {
-    color: #dc3545;
-}
-
-.custom-spinner {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border: 2px solid #ffffff;
-    border-radius: 50%;
-    border-top-color: transparent;
-    animation: spin 1s linear infinite;
-}
-
-@@keyframes fadeIn {
+@keyframes fadeIn {
     from {
         opacity: 0;
     }
@@ -300,7 +165,7 @@
 }
 
 
-@@keyframes slideIn {
+@keyframes slideIn {
     from {
         opacity: 0;
         transform: translateY(-50px) scale(0.9);
@@ -312,14 +177,14 @@
     }
 }
 
-@@keyframes spin {
+@keyframes spin {
     to {
         transform: rotate(360deg);
     }
 }
 
 /* Responsive */
-@@media (max-width: 768px) {
+@media (max-width: 768px) {
     .custom-modal-content {
         margin: 20px;
         max-width: calc(100% - 40px);
