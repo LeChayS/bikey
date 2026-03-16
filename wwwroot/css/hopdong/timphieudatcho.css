@@ -66,9 +66,7 @@
 
 .search-input::placeholder {
     color: #999;
-    /* màu bạn muốn */
     opacity: 1;
-    /* tránh bị mờ trên vài browser */
 }
 
 .search-input:focus {

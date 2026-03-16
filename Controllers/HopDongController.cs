@@ -18,5 +18,10 @@ namespace bikey.Controllers
         {
             return View();
         }
+
+        public IActionResult LichSuKhachHang()
+        {
+            return View();
+        }
     }
 }
