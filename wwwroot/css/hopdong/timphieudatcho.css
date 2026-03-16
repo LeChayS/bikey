@@ -1,7 +1,10 @@
 .top-header {
-    color: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     margin-bottom: 30px;
     text-align: center;
+    display: flex;
+    align-items: center;
+    position: relative;
+    margin-bottom: 5px;
 }
 
 .wrapper {
@@ -13,13 +16,6 @@
     background-color: white;
     padding: 30px 60px;
     margin-bottom: 30px;
-}
-
-.top-header {
-    display: flex;
-    align-items: center;
-    position: relative;
-    margin-bottom: 5px;
 }
 
 .top-header>a {

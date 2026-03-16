@@ -1,0 +1,444 @@
+.wrapper {
+    padding: 0px 60px;
+    margin-bottom: 30px;
+}
+
+.container-header {
+    background: linear-gradient(135deg, #4f7cff, #2b59ff);
+    padding: 30px 60px;
+    margin-bottom: 30px;
+}
+
+.container-fluid {
+    background-color: white;
+    padding: 10px 30px;
+    border-radius: 30px;
+    margin-bottom: 30px;
+}
+
+.contract-header {
+    color: white;
+    text-align: center;
+}
+
+.contract-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+}
+
+.contract-status {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 9999px;
+    margin-top: 0.75rem;
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+}
+
+/* contract body */
+.contract-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+}
+
+.info-section {
+    margin-bottom: 2rem;
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--primary);
+}
+
+/* customer info rows */
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px dashed #eee;
+}
+
+.info-label {
+    color: #888;
+}
+
+.info-value {
+    font-weight: 600;
+}
+
+/* Vehicle cards */
+.vehicle-card {
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    margin: 15px 0px;
+    padding: 20px 25px;
+    transition: .25s;
+}
+    .vehicle-card:hover{
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    }
+
+.vehicle-header {
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.vehicle-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.vehicle-info-item {
+    background: var(--light-gray);
+    padding: 1rem;
+    border-radius: 6px;
+    border-left: 3px solid var(--primary);
+}
+
+.vehicle-info-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.vehicle-info-value {
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Color Palette - Maximum 3 main colors */
+:root {
+    --primary: #2563eb;
+    --secondary: #6b7280;
+    --white: #ffffff;
+    --light-gray: #f9fafb;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --success: #059669;
+    --warning: #d97706;
+    --danger: #dc2626;
+}
+
+
+
+
+
+
+/* Status badges */
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.status-renting {
+    background: var(--warning);
+    color: var(--white);
+}
+
+.status-completed {
+    background: var(--success);
+    color: var(--white);
+}
+
+/* Financial section */
+.financial-summary {
+    background: var(--primary);
+    color: var(--white);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-top: 1.5rem;
+}
+
+.financial-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.financial-row:last-child {
+    border-bottom: none;
+}
+
+.financial-total {
+    font-size: 1.5rem;
+    font-weight: 700;
+    border-top: 2px solid rgba(255, 255, 255, 0.3);
+    padding-top: 1rem;
+    margin-top: 1rem;
+}
+
+/* Action buttons */
+.action-section {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-print {
+    background: var(--secondary);
+    color: var(--white);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-print:hover {
+    background: #4b5563;
+    color: var(--white);
+}
+
+.btn-return {
+    background: var(--success);
+    color: var(--white);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-return:hover {
+    background: #047857;
+    color: var(--white);
+}
+
+/* Time info */
+.time-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.time-item {
+    text-align: center;
+    padding: 0.75rem;
+    background: var(--light-gray);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+}
+
+.time-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+}
+
+.time-value {
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+/* Notes section */
+.notes-section {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--light-gray);
+    border-radius: 6px;
+    border-left: 3px solid var(--secondary);
+}
+
+.notes-text {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .info-row {
+        flex-direction: column;
+    }
+
+    .info-label {
+        min-width: auto;
+        border-radius: 6px 6px 0 0;
+    }
+
+    .vehicle-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .action-section {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .time-info {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Document cards */
+.document-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
+}
+
+.document-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.document-header {
+    background: var(--primary);
+    color: var(--white);
+    padding: 0.75rem 1rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.document-body {
+    padding: 1rem;
+}
+
+.document-preview {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.document-image {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.document-image:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.document-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.document-actions .btn {
+    flex: 1;
+    max-width: 120px;
+}
+
+/* Document preview modal */
+.document-modal .modal-dialog {
+    max-width: 90%;
+    max-height: 90vh;
+}
+
+.document-modal .modal-body {
+    text-align: center;
+    padding: 0;
+}
+
+.document-modal img {
+    max-width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+}
+
+/* Print styles */
+@media print {
+    .no-print {
+        display: none;
+    }
+
+    .contract-card {
+        box-shadow: none;
+    }
+}

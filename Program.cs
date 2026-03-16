@@ -36,7 +36,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=HopDong}/{action=LichSuKhachHang}/{id?}")
+    pattern: "{controller=HopDong}/{action=ChiTiet}/{id?}")
     .WithStaticAssets();
 
 app.Run();

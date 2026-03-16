@@ -23,5 +23,10 @@ namespace bikey.Controllers
         {
             return View();
         }
+
+        public IActionResult ChiTiet()
+        {
+            return View();
+        }
     }
 }
