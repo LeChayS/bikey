@@ -23,20 +23,6 @@
     margin-bottom: 30px;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* order card */
 .order-card {
     border-radius: 10px;
@@ -47,8 +33,9 @@
 }
 
     .order-card:hover {
+        border-color: #667eea;
         transform: translateY(-2px);
-        box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
 
 .order-header {
@@ -61,7 +48,7 @@
 .order-number {
     font-size: 25px;
     font-weight: bold;
-    color: #000000;
+    color: black;
 }
 
 .order-date {

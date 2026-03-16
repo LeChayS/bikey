@@ -14,7 +14,7 @@ namespace bikey.Controllers
             return View();
         }
 
-        public IActionResult Create()
+        public IActionResult TimPhieuDatCho()
         {
             return View();
         }

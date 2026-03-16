@@ -1,0 +1,171 @@
+@{
+    Layout = "_AdminLayout";
+	ViewData["Title"] = "Tìm Phiếu Đặt Chỗ";
+}
+
+@section Styles{
+    <link rel="stylesheet" href="/css/hopdong/timphieudatcho.css" asp-append-version="true"/>
+}
+
+@section Scripts {
+    <script>
+        // Focus vào ô nhập số điện thoại
+        $(document).ready(function() {
+            $('input[name="soDienThoai"]').focus();
+        });
+    </script>
+}
+
+
+<div class="container-header">
+    <div class="top-header">
+        <a asp-action="Index" class="btn btn-primary">
+            <i class="bi bi-arrow-left"></i> Quay lại
+        </a>
+        <div>
+            <h2><i class="bi bi-search"></i> Tìm Phiếu Đặt Chỗ</h2>
+            <p class="text-muted">Nhập số điện thoại khách hàng để tìm phiếu đặt chỗ</p>
+        </div>
+    </div>
+
+    <div class="search-card">
+        <form method="post" class="search-form">
+            <div class="search-input-wrapper">
+                <input type="tel"
+                    name="soDienThoai"
+                    class="form-control search-input"
+                    placeholder="Nhập số điện thoại"
+                    value="@ViewBag.SoDienThoai"
+                    pattern="[0-9]{10}"
+                    required />
+
+                <button type="submit" class="btn btn-search">
+                    <span>Tìm kiếm</span>
+                </button>
+            </div>
+
+            <p class="search-hint">Nhập số điện thoại khách hàng để xem danh sách phiếu đặt chỗ gần đây.</p>
+        </form>
+    </div>
+</div>
+
+<div class="wrapper">
+
+
+    <div class="container-fluid">
+
+        <!-- Kết quả tìm kiếm -->
+        @* @if (ViewBag.DanhSachPhieu != null)
+        { *@
+            <div class="results-section">
+                <h3 class="mb-3">Kết quả tìm kiếm</h3>
+
+                @* @if (((List<bikey.Models.DatCho>)ViewBag.DanhSachPhieu).Any())
+                {
+                    @foreach (var phieu in (List<bikey.Models.DatCho>)ViewBag.DanhSachPhieu)
+                    { *@
+                        <div class="result-card">
+
+                            <div class="result-card-header">
+                                <div>
+                                    <div class="booking-code">Mã: DC000011</div>
+                                    <p class="mb-0">Ngày đặt: 19/03/2026</p>
+                                </div>
+                                <span class="status-badge status-waiting">
+                                    Chờ xác nhận
+                                </span>
+                            </div>
+
+                            <div class="result-card-body">
+                                <div class="info-group">
+                                    <div class="info-label">Khách hàng</div>
+                                    <div class="info-value">tên khách</div>
+                                </div>
+
+                                <div class="info-group">
+                                    <div class="info-label">Xe thuê</div>
+                                    <div class="info-value">tên xe</div>
+                                    <div class="text-muted small">
+                                        Biển số: biển số xe<br />
+                                    </div>
+                                </div>
+
+                                <div class="info-group">
+                                    <div class="info-label">Thời gian thuê</div>
+                                    <div class="info-value">
+                                        Từ: 20/03/2026<br />
+                                        Đến: 25/03/2026
+                                    </div>
+                                </div>
+
+                                <div class="info-group">
+                                    <div class="info-label">Tổng tiền dự kiến</div>
+                                    <div class="info-value text-danger">200,000đ</div>
+                                </div>
+                            </div>
+                            <div class="result-card-actions">
+                                <a asp-action="TaoHopDong" class="btn btn-create-contract">
+                                    <i class="bi bi-file-earmark-text"></i> Tạo hợp đồng
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="result-card">
+
+                            <div class="result-card-header">
+                                <div>
+                                    <div class="booking-code">Mã: DC000011</div>
+                                    <p class="mb-0">Ngày đặt: 19/03/2026</p>
+                                </div>
+                                <span class="status-badge status-holding">
+                                    Đang giữ chỗ
+                                </span>
+                            </div>
+
+                            <div class="result-card-body">
+                                <div class="info-group">
+                                    <div class="info-label">Khách hàng</div>
+                                    <div class="info-value">tên khách</div>
+                                </div>
+
+                                <div class="info-group">
+                                    <div class="info-label">Xe thuê</div>
+                                    <div class="info-value">tên xe</div>
+                                    <div class="text-muted small">
+                                        Biển số: biển số xe<br />
+                                    </div>
+                                </div>
+
+                                <div class="info-group">
+                                    <div class="info-label">Thời gian thuê</div>
+                                    <div class="info-value">
+                                        Từ: 20/03/2026<br />
+                                        Đến: 25/03/2026
+                                    </div>
+                                </div>
+
+                                <div class="info-group">
+                                    <div class="info-label">Tổng tiền dự kiến</div>
+                                    <div class="info-value text-danger">200,000đ</div>
+                                </div>
+                            </div>
+                            <div class="result-card-actions">
+                                <a asp-action="TaoHopDong" class="btn btn-create-contract">
+                                    <i class="bi bi-file-earmark-text"></i> Tạo hợp đồng
+                                </a>
+                            </div>
+                        </div>
+                    @* }
+                }
+                else
+                { *@
+                    <div class="no-results">
+                        <i class="bi bi-inbox" style="font-size: 60px;"></i>
+                        <p class="mt-3">Không tìm thấy phiếu đặt chỗ nào với số điện thoại này</p>
+                    </div>
+                @* } *@
+            </div>
+        @* } *@
+    </div>
+
+</div>
