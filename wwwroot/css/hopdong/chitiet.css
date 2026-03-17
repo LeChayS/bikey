@@ -40,7 +40,7 @@
 /* contract body */
 .contract-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 2fr 1fr;
     gap: 22px;
 }
 
@@ -65,7 +65,7 @@
 
 /* customer info rows */
 .info-row {
-    display: flex;
+    /* display: flex; */
     justify-content: space-between;
     padding: 10px 0;
     border-bottom: 1px dashed #eee;
@@ -94,7 +94,7 @@
 
 .vehicle-header {
     font-weight: 500;
-    display: flex;
+    /* display: flex; */
     justify-content: space-between;
     align-items: center;
     margin-bottom: 15px;
@@ -102,9 +102,9 @@
 
 .vehicle-info-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-bottom: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
 }
 
 .vehicle-info-item {
@@ -129,10 +129,134 @@
     font-weight: 600;
 }
 
+/* Status badges */
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
 
+.status-problem {
+    background: var(--danger);
+    color: var(--white);
+}
+.status-renting {
+    background: var(--warning);
+    color: var(--white);
+}
+.status-completed {
+    background: var(--success);
+    color: var(--white);
+}
 
+/* Notes section */
+.notes-section {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--light-gray);
+    border-radius: 6px;
+    border-left: 3px solid var(--secondary);
+}
 
+.notes-text {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
 
+/* Financial section */
+.financial-summary {
+    background: linear-gradient(135deg, #3a5edb, #5c8dff);
+    color: var(--white);
+    padding: 30px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+}
+
+.financial-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1rem;
+    padding: 5px 0;
+}
+
+.financial-row:last-child {
+    border-bottom: none;
+}
+
+.financial-total {
+    font-size: 1.5rem;
+    font-weight: 700;
+    border-top: 2px solid rgba(255, 255, 255, 0.3);
+    padding-top: 20px;
+    margin-top: 20px;
+}
+
+/* Action buttons */
+.action-section .btn {
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.25s;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.return {
+    background: var(--success);
+    color: white;
+    width: 100%;
+    margin-bottom: 10px;
+    height: 50px;
+}
+
+.return:hover {
+    background: #0b5c42;
+    color: white;
+}
+
+.print {
+    background: var(--warning);
+    color: white;
+    width: 100%;
+    height: 50px;
+    margin-bottom: 10px;
+}
+
+.print:hover {
+    background: #945003;
+    color: white;
+}
+
+.back {
+    background: var(--secondary);
+    color: white;
+    width: 100%;
+    height: 50px;
+}
+
+.back:hover {
+    background: #3c4047;
+    color: white;
+}
+
+/* customer payment */
+.cus-pay{
+    margin-bottom: 24px;
+}
+
+.cus-pay .cus-row{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
 
 
@@ -197,138 +321,15 @@
 
 
 
-/* Status badges */
-.status-badge {
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
 
-.status-renting {
-    background: var(--warning);
-    color: var(--white);
-}
 
-.status-completed {
-    background: var(--success);
-    color: var(--white);
-}
 
-/* Financial section */
-.financial-summary {
-    background: var(--primary);
-    color: var(--white);
-    padding: 1.5rem;
-    border-radius: 8px;
-    margin-top: 1.5rem;
-}
 
-.financial-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.75rem;
-    font-size: 1rem;
-    padding: 0.5rem 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
 
-.financial-row:last-child {
-    border-bottom: none;
-}
 
-.financial-total {
-    font-size: 1.5rem;
-    font-weight: 700;
-    border-top: 2px solid rgba(255, 255, 255, 0.3);
-    padding-top: 1rem;
-    margin-top: 1rem;
-}
 
-/* Action buttons */
-.action-section {
-    margin-top: 2rem;
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-}
 
-.btn-print {
-    background: var(--secondary);
-    color: var(--white);
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 6px;
-    font-weight: 500;
-    transition: all 0.2s;
-}
 
-.btn-print:hover {
-    background: #4b5563;
-    color: var(--white);
-}
-
-.btn-return {
-    background: var(--success);
-    color: var(--white);
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 6px;
-    font-weight: 500;
-    transition: all 0.2s;
-}
-
-.btn-return:hover {
-    background: #047857;
-    color: var(--white);
-}
-
-/* Time info */
-.time-info {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-top: 1rem;
-}
-
-.time-item {
-    text-align: center;
-    padding: 0.75rem;
-    background: var(--light-gray);
-    border-radius: 6px;
-    border: 1px solid var(--border);
-}
-
-.time-label {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    margin-bottom: 0.25rem;
-    font-weight: 500;
-}
-
-.time-value {
-    font-size: 0.875rem;
-    color: var(--text-primary);
-    font-weight: 600;
-}
-
-/* Notes section */
-.notes-section {
-    margin-top: 1rem;
-    padding: 1rem;
-    background: var(--light-gray);
-    border-radius: 6px;
-    border-left: 3px solid var(--secondary);
-}
-
-.notes-text {
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-    margin: 0;
-}
 
 /* Responsive design */
 @media (max-width: 768px) {
@@ -354,6 +355,33 @@
         grid-template-columns: 1fr;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* Document cards */
 .document-card {

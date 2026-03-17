@@ -34,27 +34,111 @@
     <div class="contract-grid">
         @* left *@
         <div>
+            <!-- Thông tin xe -->
+            <div class="info-section">
+                <h3 class="section-title mb-0">
+                    <i class="bi bi-bicycle"></i> Thông tin xe thuê
+                </h3>
+
+                @* @if (Model.ChiTietHopDong?.Any() == true)
+                {
+                    foreach (var chiTiet in Model.ChiTietHopDong)
+                    { *@
+                        <div class="vehicle-card">
+                            <div class="vehicle-header">
+                                <div style="font-size: 20px;"><strong>Tên xe - Biển số xe</strong></div>
+                                <div> hãng xe - dòng xe</div>
+                            </div>
+                            <div class="vehicle-body">
+                                <div class="vehicle-info-grid">
+                                    <div class="vehicle-info-item">
+                                        <div class="vehicle-info-label">Giá thuê/ngày</div>
+                                        <div class="vehicle-info-value">20,000đ</div>
+                                    </div>
+                                    <div class="vehicle-info-item">
+                                        <div class="vehicle-info-label">Số ngày thuê</div>
+                                        <div class="vehicle-info-value">5 ngày</div>
+                                    </div>
+                                    <div class="vehicle-info-item">
+                                        <div class="vehicle-info-label">Thành tiền</div>
+                                        <div class="vehicle-info-value">100,000đ</div>
+                                    </div>
+                                    @* @if (!string.IsNullOrEmpty(chiTiet.TinhTrangTraXe))
+                                    { *@
+                                        <div class="vehicle-info-item">
+                                            <div class="vehicle-info-label">Tình trạng</div>
+                                            <div class="vehicle-info-value">
+                                                <span
+                                                    class="status-badge status-completed">
+                                                    Bình thường
+                                                </span>
+                                                <span
+                                                    class="status-badge status-renting">
+                                                    Đang thuê
+                                                </span>
+                                                <span
+                                                    class="status-badge status-problem">
+                                                    Có sự cố
+                                                </span>
+                                            </div>
+                                        </div>
+                                    @* } *@
+                                </div>
+
+                                <!-- Ghi chú -->
+                                @* @if (!string.IsNullOrEmpty(chiTiet.GhiChu))
+                                { *@
+                                    <div class="notes-section">
+                                        <div class="notes-text">
+                                            <i class="bi bi-chat-text"></i> <strong>Ghi chú:</strong> đây là Ghi chú
+                                        </div>
+                                    </div>
+                                @* } *@
+                            </div>
+                        </div>
+                    @* }
+                }
+                else
+                { *@
+                    <div class="alert alert-warning mb-0">
+                        <i class="bi bi-exclamation-triangle"></i> Chưa có thông tin xe
+                    </div>
+                @* } *@
+            </div>
+
             <!-- Thông tin khách hàng -->
             <div class="info-section">
                 <h3 class="section-title">
                     <i class="bi bi-person-fill"></i> Thông tin khách hàng
                 </h3>
 
-                <div class="info-row">
-                    <div class="info-label">Họ và tên</div>
-                    <div class="info-value">tên khách hàng</div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="info-row">
+                            <div class="info-label">Họ và tên</div>
+                            <div class="info-value">tên khách hàng</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-row">
+                            <div class="info-label">Số điện thoại</div>
+                            <div class="info-value">0987654321</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="info-row">
-                    <div class="info-label">Số điện thoại</div>
-                    <div class="info-value">0987654321</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">CCCD/CMND</div>
-                    <div class="info-value">0987654321234567890</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Địa chỉ</div>
-                    <div class="info-value">Địa chỉ / không có</div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="info-row">
+                            <div class="info-label">CCCD/CMND</div>
+                            <div class="info-value">0987654321234567890</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-row">
+                            <div class="info-label">Địa chỉ</div>
+                            <div class="info-value">Địa chỉ / không có</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -201,74 +285,6 @@
 
         @* right *@
         <div>
-            <!-- Thông tin xe -->
-            <div class="info-section">
-                <h3 class="section-title mb-0">
-                    <i class="bi bi-bicycle"></i> Thông tin xe thuê
-                </h3>
-
-                @* @if (Model.ChiTietHopDong?.Any() == true)
-                {
-                    foreach (var chiTiet in Model.ChiTietHopDong)
-                    { *@
-                        <div class="vehicle-card">
-                            <div class="vehicle-header">
-                                <div style="font-size: 20px;"><strong>Tên xe - Biển số xe</strong></div>
-                                <div> hãng xe - dòng xe</div>
-                            </div>
-                            <div class="vehicle-body">
-                                <div class="vehicle-info-grid">
-                                    <div class="vehicle-info-item">
-                                        <div class="vehicle-info-label">Giá thuê/ngày</div>
-                                        <div class="vehicle-info-value">20,000đ</div>
-                                    </div>
-                                    <div class="vehicle-info-item">
-                                        <div class="vehicle-info-label">Số ngày thuê</div>
-                                        <div class="vehicle-info-value">5 ngày</div>
-                                    </div>
-                                    <div class="vehicle-info-item">
-                                        <div class="vehicle-info-label">Thành tiền</div>
-                                        <div class="vehicle-info-value">100,000đ</div>
-                                    </div>
-                                    @* @if (!string.IsNullOrEmpty(chiTiet.TinhTrangTraXe))
-                                    { *@
-                                        <div class="vehicle-info-item">
-                                            <div class="vehicle-info-label">Tình trạng trả xe</div>
-                                            <div class="vehicle-info-value">
-                                                <span
-                                                    class="status-badge status-completed">
-                                                    Bình thường
-                                                </span>
-                                                <span
-                                                    class="status-badge status-renting">
-                                                    Đang thuê
-                                                </span>
-                                            </div>
-                                        </div>
-                                    @* } *@
-                                </div>
-
-                                <!-- Ghi chú -->
-                                @* @if (!string.IsNullOrEmpty(chiTiet.GhiChu))
-                                { *@
-                                    <div class="notes-section">
-                                        <div class="notes-text">
-                                            <i class="bi bi-chat-text"></i> <strong>Ghi chú:</strong> đây là Ghi chú
-                                        </div>
-                                    </div>
-                                @* } *@
-                            </div>
-                        </div>
-                    @* }
-                }
-                else
-                { *@
-                    <div class="alert alert-warning mb-0">
-                        <i class="bi bi-exclamation-triangle"></i> Chưa có thông tin xe
-                    </div>
-                @* } *@
-            </div>
-
 
             <!-- Thời gian thuê -->
             <div class="info-section">
@@ -322,56 +338,56 @@
             </div>
 
             <!-- Thông tin tài chính -->
-            <div class="info-section">
+            @* <div class="info-section">
                 <h3 class="section-title">
                     <i class="bi bi-cash-stack"></i> Thông tin tài chính
-                </h3>
+                </h3> *@
 
                 <div class="financial-summary">
                     @* @if (Model.ChiTietHopDong?.Any() == true)
                     { *@
                         @* var tongTienThueXe = Model.ChiTietHopDong.Sum(ct => ct.ThanhTien); *@
                         <div class="financial-row">
-                            <span><i class="bi bi-bicycle"></i> Tiền thuê xe:</span>
+                            <span>Tiền thuê xe:</span>
                             <span>100,000đ</span>
                         </div>
                     @* } *@
                     <div class="financial-row">
-                        <span><i class="bi bi-shield-check"></i> Tiền cọc:</span>
+                        <span>Tiền cọc:</span>
                         <span>30,000đ</span>
                     </div>
                     @* @if (Model.PhuPhi > 0)
                     { *@
                         <div class="financial-row">
-                            <span><i class="bi bi-plus-circle"></i> Phụ phí:</span>
+                            <span>Phụ phí:</span>
                             <span>0đ</span>
                         </div>
                     @* } *@
                     <div class="financial-row financial-total">
-                        <span><i class="bi bi-calculator"></i> Tổng cộng:</span>
+                        <span>Tổng cộng:</span>
                         <span>100,000đ</span>
                     </div>
                 </div>
 
                 <!-- Tổng tiền khách đã trả (bao gồm phí đền bù) -->
-                <div class="mt-3" id="tongTienKhachDaTraSection"">
-                    <div class="alert alert-info">
+                <div class="cus-pay" id="tongTienKhachDaTraSection">
+                    <div class="alert alert-info mb-0">
                         <h6><i class="bi bi-calculator"></i> Tổng tiền khách đã trả</h6>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <strong>Tiền thuê xe:</strong> <span>0đ</span>
+                        <div style="display:flex; flex-direction:column; gap:10px; margin-top:10px"">
+                            <div class="cus-row">
+                                <strong>Tiền thuê xe:</strong><span>0đ</span>
                             </div>
-                            <div class="col-md-4">
-                                <strong>Phí đền bù:</strong> <span>0đ</span>
+                            <div class="cus-row">
+                                <strong>Phí đền bù:</strong><span>0đ</span>
                             </div>
-                            <div class="col-md-4">
+                            <div class="cus-row">
                                 <strong>Tổng cộng:</strong> <span class="text-success fw-bold">0đ</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="alert alert-success mt-3">
+                <div class="alert alert-success mb-4">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <i class="bi bi-check-circle-fill"></i>
@@ -387,27 +403,20 @@
 
                 <!-- Action buttons -->
                 <div class="action-section no-print">
-                    <a class="btn btn-print">
+                    <a class="btn print">
                         <i class="bi bi-printer"></i> In hợp đồng
                     </a>
                     @* @if (Model.TrangThai == "Đang thuê" && !Context.Request.Query.ContainsKey("newlyCreated"))
                     { *@
-                        <a asp-action="TraXe" class="btn btn-return">
+                        <a asp-action="TraXe" class="btn return">
                             <i class="bi bi-check-circle"></i> Xử lý trả xe
                         </a>
-                    @* }
-                    @if (Model.HoaDon != null)
-                    { *@
-                        <a asp-controller="HoaDon" asp-action="ChiTiet"
-                            class="btn btn-success">
-                            <i class="bi bi-receipt"></i> Xem hóa đơn
-                        </a>
                     @* } *@
-                    <a asp-action="Index" class="btn btn-secondary">
+                    <a asp-action="Index" class="btn back">
                         <i class="bi bi-arrow-left"></i> Quay lại
                     </a>
                 </div>
-            </div>
+            @* </div> *@
 
 
         </div>
