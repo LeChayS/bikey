@@ -28,5 +28,10 @@ namespace bikey.Controllers
         {
             return View();
         }
+
+        public IActionResult TraXe()
+        {
+            return View();
+        }
     }
 }

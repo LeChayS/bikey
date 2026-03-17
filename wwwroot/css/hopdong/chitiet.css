@@ -1,3 +1,16 @@
+/* Color Palette - Maximum 3 main colors */
+:root {
+    --primary: #2563eb;
+    --secondary: #6b7280;
+    --white: #ffffff;
+    --light-gray: #f9fafb;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --success: #059669;
+    --warning: #d97706;
+    --danger: #dc2626;
+}
+
 .wrapper {
     padding: 0px 60px;
     margin-bottom: 30px;
@@ -216,12 +229,10 @@
     margin-bottom: 10px;
     height: 50px;
 }
-
-.return:hover {
-    background: #0b5c42;
-    color: white;
-}
-
+    .return:hover {
+        background: #0b5c42;
+        color: white;
+    }
 .print {
     background: var(--warning);
     color: white;
@@ -229,23 +240,20 @@
     height: 50px;
     margin-bottom: 10px;
 }
-
-.print:hover {
-    background: #945003;
-    color: white;
-}
-
+    .print:hover {
+        background: #945003;
+        color: white;
+    }
 .back {
     background: var(--secondary);
     color: white;
     width: 100%;
     height: 50px;
 }
-
-.back:hover {
-    background: #3c4047;
-    color: white;
-}
+    .back:hover {
+        background: #3c4047;
+        color: white;
+    }
 
 /* customer payment */
 .cus-pay{
@@ -257,79 +265,6 @@
     justify-content: space-between;
     align-items: center;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* Color Palette - Maximum 3 main colors */
-:root {
-    --primary: #2563eb;
-    --secondary: #6b7280;
-    --white: #ffffff;
-    --light-gray: #f9fafb;
-    --text-primary: #111827;
-    --text-secondary: #6b7280;
-    --success: #059669;
-    --warning: #d97706;
-    --danger: #dc2626;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* Responsive design */
 @media (max-width: 768px) {
