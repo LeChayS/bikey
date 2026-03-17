@@ -37,6 +37,7 @@
     height: 100%;
     flex-direction: column;
     text-align: center;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
 }
 
     .stat-card:hover {
@@ -86,7 +87,6 @@ a .stat-card:hover {
 
 /* filter */
 .filter-section {
-    border-radius: 10px;
     margin-bottom: 30px;
 }
 
