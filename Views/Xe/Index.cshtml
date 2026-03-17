@@ -4,8 +4,8 @@
     ViewData["Title"] = "Quản lý xe";
 }
 @section Styles {
-    <link rel="stylesheet" href="~/css/xe/index.css" />
-    <link rel="stylesheet" href="~/css/shared/responsive.css" />
+    <link rel="stylesheet" href="~/css/xe/index.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/shared/responsive.css" asp-append-version="true"/>
     @* <link rel="stylesheet" href="~/css/custom-modal.css" /> *@
     @* <link rel="stylesheet" href="~/css/xe/xe-details-modal.css" /> *@
 }
@@ -14,294 +14,158 @@
     <script src="/js/xe/index.js"></script>
 }
 
-<div class="container-fluid">
-    <!-- Header -->
-    <div class="page-header">
-        <div class="d-flex justify-content-between align-items-center">
-            <div>
-                <h1>Quản Lý Xe</h1>
-                <p class="mb-0">Theo dõi và quản lý các xe</p>
+<div class="top-header">
+    <h1><i class="bi bi-scooter"></i> Quản Lý Xe</h1>
+    <div>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-eye"></i> Xem xe hoạt động
+        </a>
+        <a asp-action="Index" asp-route-showDeleted="true" class="btn btn-outline-warning">
+            <i class="bi bi-trash"></i> Xem xe đã xóa
+        </a>
+        <a asp-action="Create" class="btn btn-add">
+            <i class="bi bi-plus-circle"></i> Thêm Xe Mới
+        </a>
+    </div>
+</div>
+
+<div class="wrapper">
+
+    <!-- Statistics -->
+    <div class="container-fluid">
+        <div class="row">
+            @* card 1 *@
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card blue">
+                    <div class="stat-label">Tổng số xe</div>
+                    <div class="stat-value">
+                        @* @ViewBag.TongSoXe *@
+                        2
+                    </div>
+                </div>
             </div>
-            <div class="d-flex gap-2">
-                @* @if (ViewBag.ShowDeleted == true)
-                { *@
-                    <a asp-action="Index" class="btn btn-outline-secondary">
-                        <i class="bi bi-eye"></i> Xem xe hoạt động
-                    </a>
-                @* }
-                else
-                { *@
-                    <a asp-action="Index" asp-route-showDeleted="true" class="btn btn-outline-warning">
-                        <i class="bi bi-trash"></i> Xem xe đã xóa
-                    </a>
-                @* } *@
-                <a asp-action="Create" class="btn btn-add">
-                    <i class="bi bi-plus-circle"></i> Thêm Xe Mới
-                </a>
+            @* card 2 *@
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card red">
+                    <div class="stat-label">Xe sẵn sàng</div>
+                    <div class="stat-value">
+                        @* @ViewBag.XeSanSang *@
+                        10
+                    </div>
+                </div>
+            </div>
+            @* card 3 *@
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card purple">
+                    <div class="stat-label">Đang cho thuê</div>
+                    <div class="stat-value">
+                        @* @ViewBag.DangChoThue *@
+                        10
+                    </div>
+                </div>
+            </div>
+            @* card 4 *@
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card green">
+                    <div class="stat-label">Bảo trì</div>
+                    <div class="stat-value">
+                        @* @ViewBag.BaoTri *@
+                        16
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    
 
-    <!-- Thống kê -->
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="stat-card">
-                <div class="stat-number">20 @ViewBag.TongSoXe</div>
-                <div>Tổng số xe</div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="stat-card">
-                <div class="stat-number">12 @ViewBag.XeSanSang</div>
-                <div>Xe sẵn sàng</div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="stat-card">
-                <div class="stat-number">10 @ViewBag.DangChoThue</div>
-                <div>Đang cho thuê</div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="stat-card">
-                <div class="stat-number">2 @ViewBag.BaoTri</div>
-                <div>Bảo trì</div>
-            </div>
-        </div>
-    </div>
+    <!-- table & filter -->
+    <div class="container-fluid">
 
-    <!-- Bộ lọc -->
-    @* <div class="row g-3 mb-4">
-        <div class="col-md-3">
-            <input type="text" id="searchString" class="form-control" placeholder="Tìm kiếm xe..." value="@ViewBag.CurrentSearchString" />
+        @* filter *@
+        <div class="filter-section">
+            <div class="row g-3 align-items-center">
+                <div class="col">
+                    <label class="form-label">Loại xe</label>
+                    <select id="loaiXe" class="form-select">
+                        <option value="">--- Loại xe ---</option>
+                        @* @foreach (var item in ViewBag.LoaiXeList as SelectList)
+                        {
+                            if (item.Value == ViewBag.CurrentLoaiXe?.ToString())
+                            {
+                                <option value="@item.Value" selected>@item.Text</option>
+                            }
+                            else
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        } *@
+                        <option>xe đạp</option>
+                        <option>xe máy</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label class="form-label">Hãng xe</label>
+                    <select id="hangXe" class="form-select">
+                        <option value="">--- Hãng xe ---</option>
+                        @* @foreach (var item in ViewBag.HangXeList as SelectList)
+                        {
+                            if (item.Value == ViewBag.CurrentHangXe?.ToString())
+                            {
+                                <option value="@item.Value" selected>@item.Text</option>
+                            }
+                            else
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        } *@
+                        <option>honda</option>
+                        <option>vision</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label class="form-label">Trạng thái</label>
+                    <select id="trangThai" class="form-select">
+                        <option value="">--- Trạng thái xe ---</option>
+                        @* @foreach (var item in ViewBag.TrangThaiList as SelectList)
+                        {
+                            if (item.Value == ViewBag.CurrentTrangThai?.ToString())
+                            {
+                                <option value="@item.Value" selected>@item.Text</option>
+                            }
+                            else
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        } *@
+                        <option>Sẵn sàng</option>
+                        <option>Đang thuê</option>
+                        <option>Bảo trì</option>
+                        <option>Hư hỏng</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label class="form-label">&nbsp;</label>
+                    <button type="button" id="filterBtn" class="btn btn-primary w-100">
+                        <i class="bi bi-funnel"></i> Lọc
+                    </button>
+                </div>
+                <div class="col">
+                    <label class="form-label">&nbsp;</label>
+                    <button type="button" id="clearFilterBtn" class="btn btn-secondary w-100">
+                        <i class="bi bi-arrow-clockwise"></i> Làm mới
+                    </button>
+                </div>
+            </div>
         </div>
-        <div class="col-md-2">
-            <select id="loaiXe" class="form-select">
-                <option value="">Loại xe</option>
-                @foreach (var item in ViewBag.LoaiXeList as SelectList)
-                {
-                    if (item.Value == ViewBag.CurrentLoaiXe?.ToString())
-                    {
-                        <option value="@item.Value" selected>@item.Text</option>
-                    }
-                    else
-                    {
-                        <option value="@item.Value">@item.Text</option>
-                    }
-                }
-            </select>
-        </div>
-        <div class="col-md-2">
-            <select id="hangXe" class="form-select">
-                <option value="">Hãng xe</option>
-                @foreach (var item in ViewBag.HangXeList as SelectList)
-                {
-                    if (item.Value == ViewBag.CurrentHangXe?.ToString())
-                    {
-                        <option value="@item.Value" selected>@item.Text</option>
-                    }
-                    else
-                    {
-                        <option value="@item.Value">@item.Text</option>
-                    }
-                }
-            </select>
-        </div>
-        <div class="col-md-2">
-            <select id="trangThai" class="form-select">
-                <option value="">Trạng thái xe</option>
-                @foreach (var item in ViewBag.TrangThaiList as SelectList)
-                {
-                    if (item.Value == ViewBag.CurrentTrangThai?.ToString())
-                    {
-                        <option value="@item.Value" selected>@item.Text</option>
-                    }
-                    else
-                    {
-                        <option value="@item.Value">@item.Text</option>
-                    }
-                }
-            </select>
-        </div>
-        <div class="col-md-3">
-            <button type="button" id="filterBtn" class="btn btn-secondary">
-                <i class="bi bi-funnel"></i> Lọc
-            </button>
-            <button type="button" id="clearFilterBtn" class="btn btn-outline-secondary" style="display: none;">
-                <i class="bi bi-x-circle"></i> Xóa lọc
-            </button>
-        </div>
-    </div> *@
 
-    <!-- Bảng danh sách -->
-    <div class="card">
-        <div class="card-header">
-            <h5>Danh sách xe</h5>
-        </div>
+        <!-- table -->
         <div class="card-body" id="xeTableContainer">
             @Html.Partial("_XeTablePartial", Model)
         </div>
     </div>
+
 </div>
 
-@* <!-- Xe Details Modal -->
-<div class="xe-details-modal-overlay" id="xeDetailsModal">
-    <div class="xe-details-modal">
-        <div class="xe-details-modal-header">
-            <h3 class="xe-details-modal-title">
-                <i class="bi bi-car-front"></i>
-                <span id="modalTitle">Chi tiết xe</span>
-            </h3>
-            <button type="button" class="xe-details-modal-close" onclick="closeXeDetailsModal()">
-                <i class="bi bi-x"></i>
-            </button>
-        </div>
-        <div class="xe-details-modal-body">
-            <div class="xe-details-loading" id="xeDetailsLoading">
-                <div class="spinner"></div>
-                <p>Đang tải thông tin xe...</p>
-            </div>
-            <div class="xe-details-content" id="xeDetailsContent" style="display: none;">
-                <div class="xe-details-left">
-                    <!-- Image Section -->
-                    <div class="xe-details-image-section">
-                        <div id="xeImageContainer">
-                            <!-- Image will be loaded here -->
-                        </div>
-                    </div>
 
-                    <!-- Basic Info -->
-                    <div class="xe-details-info-card">
-                        <h4><i class="bi bi-info-circle"></i> Thông tin cơ bản</h4>
-                        <div class="xe-details-info-grid">
-                            <div class="xe-details-info-item">
-                                <span class="xe-details-info-label">Mã xe</span>
-                                <span class="xe-details-info-value" id="xeMaXe">-</span>
-                            </div>
-                            <div class="xe-details-info-item">
-                                <span class="xe-details-info-label">Tên xe</span>
-                                <span class="xe-details-info-value" id="xeTenXe">-</span>
-                            </div>
-                            <div class="xe-details-info-item">
-                                <span class="xe-details-info-label">Biển số</span>
-                                <span class="xe-details-info-value" id="xeBienSo">-</span>
-                            </div>
-                            <div class="xe-details-info-item">
-                                <span class="xe-details-info-label">Hãng xe</span>
-                                <span class="xe-details-info-value" id="xeHangXe">-</span>
-                            </div>
-                            <div class="xe-details-info-item">
-                                <span class="xe-details-info-label">Dòng xe</span>
-                                <span class="xe-details-info-value" id="xeDongXe">-</span>
-                            </div>
-                            <div class="xe-details-info-item">
-                                <span class="xe-details-info-label">Loại xe</span>
-                                <span class="xe-details-info-value" id="xeLoaiXe">-</span>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Financial Info -->
-                    <div class="xe-details-info-card">
-                        <h4><i class="bi bi-currency-dollar"></i> Thông tin tài chính</h4>
-                        <div class="xe-details-info-grid">
-                            <div class="xe-details-info-item">
-                                <span class="xe-details-info-label">Giá thuê/ngày</span>
-                                <span class="xe-details-info-value" id="xeGiaThue">-</span>
-                            </div>
-                            <div class="xe-details-info-item">
-                                <span class="xe-details-info-label">Giá trị xe</span>
-                                <span class="xe-details-info-value" id="xeGiaTriXe">-</span>
-                            </div>
-                            <div class="xe-details-info-item">
-                                <span class="xe-details-info-label">Tổng chi phí</span>
-                                <span class="xe-details-info-value" id="xeTongChiPhi">-</span>
-                            </div>
-                            <div class="xe-details-info-item">
-                                <span class="xe-details-info-label">Chi phí sửa chữa</span>
-                                <span class="xe-details-info-value" id="xeChiPhiSuaChua">-</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="xe-details-right">
-                    <!-- Status -->
-                    <div class="xe-details-info-card">
-                        <h4><i class="bi bi-flag"></i> Trạng thái</h4>
-                        <div id="xeTrangThaiContainer">
-                            <!-- Status badge will be loaded here -->
-                        </div>
-                    </div>
 
-                    <!-- Statistics -->
-                    <div class="xe-details-info-card">
-                        <h4><i class="bi bi-graph-up"></i> Thống kê</h4>
-                        <div class="xe-details-stats">
-                            <div class="xe-details-stat-item">
-                                <div class="xe-details-stat-number" id="xeSoHopDong">0</div>
-                                <div class="xe-details-stat-label">Hợp đồng</div>
-                            </div>
-                            <div class="xe-details-stat-item">
-                                <div class="xe-details-stat-number" id="xeSoHinhAnh">0</div>
-                                <div class="xe-details-stat-label">Hình ảnh</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Incident Info (if any) -->
-                    <div class="xe-details-info-card" id="xeSuCoCard" style="display: none;">
-                        <h4><i class="bi bi-exclamation-triangle"></i> Thông tin sự cố</h4>
-                        <div class="xe-details-info-grid">
-                            <div class="xe-details-info-item">
-                                <span class="xe-details-info-label">Ngày gặp sự cố</span>
-                                <span class="xe-details-info-value" id="xeNgaySuCo">-</span>
-                            </div>
-                            <div class="xe-details-info-item">
-                                <span class="xe-details-info-label">Mô tả thiệt hại</span>
-                                <span class="xe-details-info-value" id="xeMoTaThietHai">-</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Contract History Section -->
-            <div class="xe-details-contract-history" id="xeContractHistory" style="display: none;">
-                <div class="xe-details-contract-header">
-                    <h4 class="xe-details-contract-title">
-                        <i class="bi bi-clock-history"></i>
-                        Lịch sử hợp đồng
-                    </h4>
-                    <button type="button" class="btn btn-primary btn-sm" id="btnViewContractHistory" onclick="viewContractHistory()">
-                        <i class="bi bi-arrow-right"></i>
-                        Xem chi tiết lịch sử
-                    </button>
-                </div>
-                <!-- Contract Statistics -->
-                <div class="xe-details-contract-stats" id="xeContractStats">
-                    <div class="xe-details-contract-stat">
-                        <div class="xe-details-contract-stat-number" id="xeTongHopDong">0</div>
-                        <div class="xe-details-contract-stat-label">Tổng hợp đồng</div>
-                    </div>
-                    <div class="xe-details-contract-stat">
-                        <div class="xe-details-contract-stat-number" id="xeDaHoanThanh">0</div>
-                        <div class="xe-details-contract-stat-label">Đã hoàn thành</div>
-                    </div>
-                    <div class="xe-details-contract-stat">
-                        <div class="xe-details-contract-stat-number" id="xeDangThue">0</div>
-                        <div class="xe-details-contract-stat-label">Đang thuê</div>
-                    </div>
-                    <div class="xe-details-contract-stat">
-                        <div class="xe-details-contract-stat-number" id="xeTongDoanhThu">0đ</div>
-                        <div class="xe-details-contract-stat-label">Tổng doanh thu</div>
-                    </div>
-                </div>
-                <!-- Contract Table -->
-                <div class="xe-details-contract-table" id="xeContractTable">
-                    <!-- Table content will be loaded here -->
-                </div>
-            </div>
-        </div>
-    </div>
-</div> *@
