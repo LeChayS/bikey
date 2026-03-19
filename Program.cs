@@ -36,7 +36,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Xe}/{action=Create}/{id?}")
+    pattern: "{controller=Xe}/{action=Edit}/{id?}")
     .WithStaticAssets();
 
 app.Run();
