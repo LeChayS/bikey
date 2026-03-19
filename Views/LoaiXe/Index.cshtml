@@ -4,69 +4,63 @@
     ViewData["Title"] = "Quản lý loại xe";
 }
 @section Styles {
-    <link href="~/css/loaixe/index.css" rel="stylesheet" />
+    <link href="~/css/loaixe/index.css" rel="stylesheet" asp-append-version="true" />
 }
 
 @section Scripts {
     <script src="~/js/loaixe/index.js"></script>
 }
 
-<div class="container-fluid">
-    @Html.AntiForgeryToken()
-    <div class="page-header">
-        <div class="d-flex justify-content-between align-items-center">
-            <div>
-                <h1>Quản Lý Loại Xe</h1>
-                <p class="mb-0">Theo dõi và quản lý các loại xe</p>
-            </div>
-            <div class="d-flex gap-2">
-                <button class="btn-add" onclick="openCreateModal()">Thêm mới</button>
-            </div>
-            <a asp-action="Create" class="btn btn-add">
-                <i class="bi bi-plus-circle"></i> Thêm Mới
-            </a>
-        </div>
+<!-- Top Header -->
+<div class="top-header">
+    <h1 class="mb-0"><i class="bi bi-tags"></i> Quản Lý Loại Xe</h1>
+    <div>
+        <a class="btn btn-primary"><i class="bi bi-plus-circle"></i> Thêm mới</a>
     </div>
-    
+</div>
 
-    <div id="alert-container"></div>
+<div class="wrapper">
+        @Html.AntiForgeryToken()
 
-    <div class="table-container">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Mã loại xe</th>
-                    <th>Tên loại xe</th>
-                    <th>Ngày tạo</th>
-                    <th>Ngày cập nhật</th>
-                    <th>Thao tác</th>
-                </tr>
-            </thead>
-            <tbody>
-                @* @foreach (var item in Model)
-                {
+        <div id="alert-container"></div>
+
+    <div class="container-fluid">
+        <div class="table-container">
+            <table class="table table-hover mb-0">
+                <thead class="table-primary">
                     <tr>
-                        <td>@item.MaLoaiXe</td>
-                        <td>@item.TenLoaiXe</td>
-                        <td>@item.NgayTao.ToString("dd/MM/yyyy")</td>
-                        <td>@(item.NgayCapNhat?.ToString("dd/MM/yyyy") ?? "-")</td>
-                        <td>
-                            <div class="actions">
-                                <button class="btn-edit" onclick="openEditModal(@item.MaLoaiXe, '@item.TenLoaiXe')">Sửa</button>
-                                <button class="btn-delete" onclick="openDeleteModal(@item.MaLoaiXe, '@item.TenLoaiXe')">Xóa</button>
-                            </div>
+                        <th>Mã loại xe</th>
+                        <th>Tên loại xe</th>
+                        <th>Ngày tạo</th>
+                        <th>Ngày cập nhật</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @* @foreach (var item in Model)
+                    { *@
+                        <tr>
+                            <td>1</td>
+                            <td>tên loại xe</td>
+                            <td>12/12/1212</td>
+                            <td>12/12/1212 / -</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning">Sửa</button>
+                                <button class="btn btn-sm btn-danger">Xóa</button>
+                            </td>
+                        </tr>
+                    @* } *@
+                    <tr>
+                        <td colspan="9" class="text-center text-muted py-4">
+                            <i class="bi bi-search" style="font-size:2rem;"></i>
+                            <br>
+                            Chưa có loại xe mới
                         </td>
                     </tr>
-                } *@
-                <tr>
-                    <td colspan="9" class="text-center text-muted py-4">
-                        <i class="bi bi-search" style="font-size:2rem;"></i>
-                        <br>
-                        Chưa có loại xe mới
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
+
     </div>
 </div>
 

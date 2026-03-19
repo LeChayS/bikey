@@ -36,7 +36,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Xe}/{action=Edit}/{id?}")
+    pattern: "{controller=LoaiXe}/{action=Index}/{id?}")
     .WithStaticAssets();
 
 app.Run();
