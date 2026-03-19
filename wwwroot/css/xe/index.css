@@ -87,7 +87,10 @@
     box-shadow: none;
 }
 
-
+.table td,
+.table th {
+    vertical-align: middle;
+}
 
 
 

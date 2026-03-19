@@ -155,11 +155,7 @@ a .stat-card:hover {
 }
 
 /* No results styling */
-#noResults {
-    background: #f8f9fa;
-    border-radius: 10px;
-    border: 2px dashed #dee2e6;
-}
+
 
     #noResults i {
         opacity: 0.5;
