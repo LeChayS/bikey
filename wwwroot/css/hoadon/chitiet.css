@@ -177,6 +177,7 @@
     border-radius: 6px;
     font-weight: 500;
     transition: all 0.25s;
+    margin-bottom: 10px;
 
     display: flex;
     align-items: center;
@@ -205,44 +206,16 @@
         background: #3c4047;
         color: white;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* Status badges */
-.status-badge {
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-}
-
-.status-paid {
-    background: #28a745;
+.pay{
+    background: var(--danger);
     color: white;
+    width: 100%;
+    height: 50px;
 }
-
-.status-pending {
-    background: #ffc107;
-    color: #000;
-}
-
-
-
+    .pay:hover {
+        background: #ac1e1e;
+        color: white;
+    }
 
 /* Responsive design */
 @@media (max-width: 768px) {

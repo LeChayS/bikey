@@ -20,13 +20,6 @@
     z-index: 10;
 }
 
-/* Badge thông báo cho thiệt hại (màu cam) */
-.sidebar-notification-badge-warning {
-    background: linear-gradient(135deg, #ffa726 0%, #ff9800 100%);
-    box-shadow: 0 2px 6px rgba(255, 167, 38, 0.4);
-    animation: pulse-sidebar-warning 2s infinite;
-}
-
 /* Thêm thuộc tính để sidebar có thể cuộn dọc */
 .sidebar {
     height: 100vh;
@@ -104,7 +97,7 @@
     left: 0;
     top: 0;
     width: 250px;
-    z-index: 1000;
+    z-index: 1100;
     transition: all 0.3s;
 }
 
