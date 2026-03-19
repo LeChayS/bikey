@@ -155,8 +155,6 @@ a .stat-card:hover {
 }
 
 /* No results styling */
-
-
     #noResults i {
         opacity: 0.5;
     }
