@@ -1,3 +1,15 @@
+:root {
+    --primary: #2563eb;
+    --secondary: #6b7280;
+    --white: #ffffff;
+    --light-gray: #f9fafb;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --success: #059669;
+    --warning: #d97706;
+    --danger: #dc2626;
+}
+
 .top-header {
     color: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     padding: 20px 50px;
@@ -41,4 +53,8 @@
     gap: 10px;
     padding-bottom: 0.75rem;
     border-bottom: 2px solid var(--primary);
+}
+
+.required{
+    color: #e74c3c;
 }
