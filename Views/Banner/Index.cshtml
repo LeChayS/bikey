@@ -187,7 +187,8 @@
                                 <a asp-action="Edit" class="btn btn-sm btn-warning" title="Chỉnh sửa">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
-                                <a class="btn btn-sm btn-danger" title="Xóa">
+                                <a class="btn btn-sm btn-danger" title="Xóa" data-bs-toggle="modal"
+                                    data-bs-target="#deleteBanner">
                                     <i class="bi bi-trash3"></i>
                                 </a>
                             </div>
@@ -207,7 +208,17 @@
                             </span>
                         </td>
                         <td>12/12/1212</td>
-                        <td width="180">Thao tác</td>
+                        <td width="180">
+                            <div class="btn-group">
+                                <a asp-action="Edit" class="btn btn-sm btn-warning" title="Chỉnh sửa">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <a class="btn btn-sm btn-danger" title="Xóa" data-bs-toggle="modal"
+                                    data-bs-target="#deleteBanner">
+                                    <i class="bi bi-trash3"></i>
+                                </a>
+                            </div>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -231,6 +242,29 @@
                 <li>Định dạng hỗ trợ: JPG, JPEG, PNG, GIF, WEBP</li>
                 <li>Chỉ banner có trạng thái <strong>"Hiển thị"</strong> mới xuất hiện trên trang chủ</li>
             </ul>
+        </div>
+    </div>
+</div>
+
+@* modal xóa banner *@
+<div class="modal fade" id="deleteBanner" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-exclamation-circle"></i> Xóa banner</h5>
+                <button type="button" class="btn-close  btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <h5>Bạn có chắc chắn muốn xóa banner này?</h5>
+                <small class="text-muted">Banner bị xóa sẽ không thể khôi phục lại được</small>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button class="btn btn-danger" asp-action="submit"><i class="bi bi-check-circle"></i> Xóa banner</button>
+            </div>
         </div>
     </div>
 </div>

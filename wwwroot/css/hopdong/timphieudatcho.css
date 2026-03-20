@@ -206,13 +206,8 @@
     color: #6c757d;
 }
 
-#bannerModal .modal-dialog {
-    z-index: 1050;
-    /* > main-content nhưng < sidebar nếu sidebar z-index 1100 */
-}
-
-#bannerModal .modal-backdrop {
-    display: none;
-    /* không hiển thị backdrop */
+.modal-header{
+    background: #2563EB;
+    color: white;
 }
 

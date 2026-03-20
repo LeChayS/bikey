@@ -15,14 +15,16 @@
 <div class="top-header">
     <h1 class="mb-0"><i class="bi bi-tags"></i> Quản Lý Loại Xe</h1>
     <div>
-        <a class="btn btn-primary"><i class="bi bi-plus-circle"></i> Thêm mới</a>
+        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createLoai">
+            <i class="bi bi-plus-circle"></i> Thêm mới
+        </a>
     </div>
 </div>
 
 <div class="wrapper">
-        @Html.AntiForgeryToken()
+    @Html.AntiForgeryToken()
 
-        <div id="alert-container"></div>
+    <div id="alert-container"></div>
 
     <div class="container-fluid">
         <div class="table-container">
@@ -39,16 +41,18 @@
                 <tbody>
                     @* @foreach (var item in Model)
                     { *@
-                        <tr>
-                            <td>1</td>
-                            <td>tên loại xe</td>
-                            <td>12/12/1212</td>
-                            <td>12/12/1212 / -</td>
-                            <td>
-                                <button class="btn btn-sm btn-warning">Sửa</button>
-                                <button class="btn btn-sm btn-danger">Xóa</button>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>tên loại xe</td>
+                        <td>12/12/1212</td>
+                        <td>12/12/1212 / -</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning" data-bs-toggle="modal"
+                                data-bs-target="#editLoai">Sửa</button>
+                            <button class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#deleteLoai">Xóa</button>
+                        </td>
+                    </tr>
                     @* } *@
                     <tr>
                         <td colspan="9" class="text-center text-muted py-4">
@@ -64,66 +68,84 @@
     </div>
 </div>
 
-@* <!-- Create Modal -->
-<div id="createModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3 class="modal-title">Thêm loại xe mới</h3>
-            <button class="modal-close" onclick="closeModal('createModal')">&times;</button>
-        </div>
-        <form id="createForm">
+@* modal thêm mới loại xe *@
+<div class="modal fade" id="createLoai" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-person-plus"></i> Thêm loại xe mới</h5>
+                <button type="button" class="btn-close  btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
             <div class="modal-body">
-                <div class="form-group">
-                    <label class="form-label" for="createTenLoaiXe">Tên loại xe</label>
-                    <input type="text" id="createTenLoaiXe" name="TenLoaiXe" class="form-input" required />
-                    <span id="createTenLoaiXeError" class="validation-error"></span>
-                </div>
+                <form asp-action="Create" method="post">
+                    <div class="form-group">
+                        <label class="form-label" for="createTenLoaiXe">Tên loại xe</label>
+                        <input type="text" id="createTenLoaiXe" name="TenLoaiXe" class="form-input" required />
+                        <span id="createTenLoaiXeError" class="validation-error"></span>
+                    </div>
+                </form>
             </div>
+
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeModal('createModal')">Hủy</button>
-                <button type="submit" class="btn btn-success">Lưu</button>
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button class="btn btn-primary" asp-action="submit"><i class="bi bi-check-circle"></i> Thêm mới</button>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<!-- Edit Modal -->
-<div id="editModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3 class="modal-title">Sửa loại xe</h3>
-            <button class="modal-close" onclick="closeModal('editModal')">&times;</button>
-        </div>
-        <form id="editForm">
+@* modal chỉnh sửa thông tin loại xe *@
+<div class="modal fade" id="editLoai" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-pencil-square"></i> Sửa loại xe</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
             <div class="modal-body">
-                <input type="hidden" id="editMaLoaiXe" name="MaLoaiXe" />
-                <div class="form-group">
-                    <label class="form-label" for="editTenLoaiXe">Tên loại xe</label>
-                    <input type="text" id="editTenLoaiXe" name="TenLoaiXe" class="form-input" required />
-                    <span id="editTenLoaiXeError" class="validation-error"></span>
-                </div>
+                <form asp-action="Edit" method="post">
+                    <input type="hidden" />
+                    <div class="form-group">
+                        <label class="form-label" for="editTenLoaiXe">Tên loại xe</label>
+                        <input type="text" id="editTenLoaiXe" name="TenLoaiXe" class="form-input" required />
+                        <span id="editTenLoaiXeError" class="validation-error"></span>
+                    </div>
+                </form>
             </div>
+
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeModal('editModal')">Hủy</button>
-                <button type="submit" class="btn btn-primary">Cập nhật</button>
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button class="btn btn-primary" asp-action="submit"><i class="bi bi-check-circle"></i> Lưu thay
+                    đổi</button>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<!-- Delete Modal -->
-<div id="deleteModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3 class="modal-title">Xóa loại xe</h3>
-            <button class="modal-close" onclick="closeModal('deleteModal')">&times;</button>
-        </div>
-        <div class="modal-body">
-            <p id="deleteConfirmText"></p>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" onclick="closeModal('deleteModal')">Hủy</button>
-            <button type="button" class="btn btn-danger" onclick="confirmDelete()">Xóa</button>
+@* modal xóa loại xe *@
+<div class="modal fade" id="deleteLoai" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-exclamation-circle"></i> Xóa loại xe</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <h5>Bạn có chắc chắn muốn xóa loại xe này?</h5>
+                <small class="text-muted">Loại xe bị xóa sẽ không thể khôi phục lại được</small>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button class="btn btn-danger" asp-action="submit"><i class="bi bi-check-circle"></i> Xóa loại
+                    xe</button>
+            </div>
         </div>
     </div>
-</div> *@
+</div>

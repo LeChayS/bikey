@@ -32,3 +32,8 @@
     display: inline-flex;
     gap: 5px;
 }
+
+.modal-header {
+    background: #2563EB;
+    color: white;
+}

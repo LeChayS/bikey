@@ -143,3 +143,8 @@
 .table-per thead th:first-child {
     text-align: left !important;
 }
+
+.modal-header {
+    background: #2563EB;
+    color: white;
+}
