@@ -19,9 +19,6 @@
         <a asp-action="Create" class="btn btn-add">
             <i class="bi bi-plus-circle"></i> Thêm Xe Mới
         </a>
-        <a asp-action="Index" asp-route-showDeleted="true" class="btn btn-warning">
-            <i class="bi bi-trash"></i> Xem xe đã xóa
-        </a>
     </div>
 </div>
 
@@ -161,78 +158,89 @@
 
 </div>
 
-@* modal thêm mới loại xe *@
-<div class="modal fade" id="createLoai" tabindex="-1">
+
+@* modal xóa xe *@
+<div class="modal fade" id="deleteXe" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
 
             <div class="modal-header">
-                <h5 class="modal-title"><i class="bi bi-person-plus"></i> Thêm loại xe mới</h5>
-                <button type="button" class="btn-close  btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-
-            <div class="modal-body">
-                <form asp-action="Create" method="post">
-                    <label class="form-label" for="createTenLoaiXe">Tên loại xe *</label>
-                    <input type="text" id="createTenLoaiXe" name="TenLoaiXe" class="form-input" required />
-                    <span id="createTenLoaiXeError" class="validation-error"></span>
-                </form>
-            </div>
-
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                <button class="btn btn-primary" asp-action="submit"><i class="bi bi-check-circle"></i> Thêm mới</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-@* modal chỉnh sửa thông tin loại xe *@
-<div class="modal fade" id="editLoai" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <h5 class="modal-title"><i class="bi bi-pencil-square"></i> Sửa loại xe</h5>
+                <h5 class="modal-title"><i class="bi bi-exclamation-circle"></i> Xóa xe</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
 
             <div class="modal-body">
-                <form asp-action="Edit" method="post">
-                    <input type="hidden" />
-                    <label class="form-label" for="editTenLoaiXe">Tên loại xe</label>
-                    <input type="text" id="editTenLoaiXe" name="TenLoaiXe" class="form-input" required />
-                    <span id="editTenLoaiXeError" class="validation-error"></span>
-                </form>
+                <h5>Bạn có chắc chắn muốn xóa xe này?</h5>
+                <small class="text-muted">Xe bị xóa sẽ không thể khôi phục lại được</small>
+                <div class="vehicle-info">
+                    <h5 class="mb-3">
+                        Thông Tin Xe
+                        @* @if (ViewBag.HasContracts == true)
+                        { *@
+                            <span class="history-indicator float-end">
+                                <i class="bi bi-clock-history"></i> Có lịch sử thuê
+                            </span>
+                        @* } *@
+                    </h5>
+
+                    <div class="info-item">
+                        <span class="info-label">Mã xe:</span>
+                        <span class="info-value">#XE001</span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">Tên xe:</span>
+                        <span class="info-value">tên xe</strong></span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">Biển số:</span>
+                        <span class="info-value">BienSoXe</span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">Hãng xe:</span>
+                        <span class="info-value">HangXe</span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">Dòng xe:</span>
+                        <span class="info-value">DongXe</span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">Loại xe:</span>
+                        <span class="info-value">TenLoaiXe</span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">Giá thuê:</span>
+                        <span class="info-value text-danger"><strong>GiaThue.ToString("N0")đ/ngày</strong></span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">Trạng thái:</span>
+                        <span class="info-value">
+                            @* @{
+                                string statusClass = Model.TrangThai switch
+                                {
+                                    "Sẵn sàng" => "status-available",
+                                    "Đang thuê" => "status-rented",
+                                    "Bảo trì" => "status-maintenance",
+                                    _ => ""
+                                };
+                            } *@
+                            <span class="status-badge status-available">Sẵn sàng</span>
+                            <span class="status-badge status-rented">Đang thuê</span>
+                            <span class="status-badge status-maintenance">Bảo trì</span>
+                        </span>
+                    </div>
+                </div>
             </div>
 
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                <button class="btn btn-primary" asp-action="submit"><i class="bi bi-check-circle"></i> Lưu thay
-                    đổi</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-@* modal xóa tài khoản *@
-<div class="modal fade" id="deleteLoai" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <h5 class="modal-title"><i class="bi bi-exclamation-circle"></i> Xóa loại xe</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-
-            <div class="modal-body">
-                <h5>Bạn có chắc chắn muốn xóa loại xe này?</h5>
-                <small class="text-muted">Loại xe bị xóa sẽ không thể khôi phục lại được</small>
-            </div>
-
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                <button class="btn btn-danger" asp-action="submit"><i class="bi bi-check-circle"></i> Xóa loại xe</button>
+                <button class="btn btn-danger" asp-action="submit"><i class="bi bi-check-circle"></i> Xóa xe</button>
             </div>
         </div>
     </div>
