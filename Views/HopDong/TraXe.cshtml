@@ -1,0 +1,256 @@
+@model bikey.Models.HopDong
+@{
+    @* ViewData["Title"] = "Xử Lý Trả Xe"; *@
+    ViewBag.Title = "Xử Lý Trả Xe";
+    Layout = "_AdminLayout";
+    @* var hasChiTiet = Model.ChiTietHopDong?.Any() == true; *@
+}
+
+@section Styles {
+    <link href="/css/hopdong/traxe.css" rel="stylesheet" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script src="/js/quanlyhopdong/traxe.js"></script>
+}
+
+<div class="container-header">
+    <div class="return-header">
+        <div class="return-number">
+            <i class="bi bi-arrow-return-left"></i> Xử Lý Trả Xe
+        </div>
+        <p class="mb-0">Hợp đồng: HD000011</p>
+    </div>
+</div>
+
+<div class="wrapper">
+
+    <div class="return-grid">
+
+        @* left *@
+        <div>
+            <!-- Form trả xe -->
+            <div class="info-section">
+                <form asp-action="TraXe" method="post">
+                @* <input type="hidden" name="id" value="@Model.MaHopDong" /> *@
+
+                <div class="section-title">
+                    <i class="bi bi-calendar-check"></i> Thông tin trả xe
+                </div>
+
+                @* thông tin ngày nhận/trả/thực tế *@
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label class="form-label">Ngày nhận xe</label>
+                            <input type="date" class="form-control" value="" readonly />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label class="form-label">Ngày trả xe dự kiến</label>
+                            <input type="date" class="form-control" value="" readonly />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label class="form-label">Ngày trả xe thực tế <span class="text-danger">*</span></label>
+                            <input type="date" name="ngayTraThucTe" class="form-control"
+                                value="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tính toán -->
+                <div class="calculation-section">
+                    <h5 class="mb-3">Tính toán chi phí</h5>
+                    <div class="calc-row">
+                        <span>Số ngày thuê:</span>
+                        <span id="soNgayThue">0 ngày</span>
+                    </div>
+                    <div class="calc-row">
+                        <span>Tiền thuê xe (20,000đ/ngày):</span>
+                        <span id="tienThueXe">0đ</span>
+                    </div>
+                    <div class="calc-row">
+                        <span>Tiền cọc đã thu:</span>
+                        <span>10,000đ</span>
+                    </div>
+                </div>
+
+                <!-- Phụ phí -->
+                <div class="mb-3">
+                    <label class="form-label">Phụ phí khác (nếu có)</label>
+                    <input type="number" name="phuPhi" class="form-control cost-input" value="0"
+                        placeholder="Phụ phí khác: xăng, vệ sinh, phạt trả trễ..." onchange="calculateFinal()"
+                        oninput="formatOtherFeeDisplay()" id="otherFeeInput" />
+                    <small class="text-muted">Ví dụ: nhập 50000 cho phí xăng</small>
+                </div>
+
+                <!-- Tình trạng xe -->
+                <div class="mb-3">
+                    <label class="form-label">Tình trạng xe <span class="text-danger">*</span></label>
+                    <select name="tinhTrangXe" class="form-control" required onchange="handleTinhTrangXeChange()"
+                        id="tinhTrangXeSelect">
+                        <option value="">-- Chọn tình trạng xe --</option>
+                        <option value="Bình thường">Bình thường</option>
+                        <option value="Có sự cố">Có sự cố</option>
+                    </select>
+                    <small class="text-muted">Chọn "Có sự cố" nếu xe bị hư hỏng hoặc có vấn đề</small>
+                </div>
+
+                <!-- Form thiệt hại (ẩn mặc định) -->
+                <div id="thietHaiForm" style="display: none;" class="mb-3">
+                    <div class="card border-warning">
+                        <div class="card-header bg-warning text-dark">
+                            <h6 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Báo cáo thiệt hại</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Loại thiệt hại <span
+                                                class="text-danger">*</span></label>
+                                        <select name="loaiThietHai" class="form-control" id="loaiThietHaiSelect">
+                                            <option value="">-- Chọn loại thiệt hại --</option>
+                                            <option value="Hư hỏng phụ kiện">Hư hỏng phụ kiện</option>
+                                            <option value="Hư hỏng thân xe">Hư hỏng thân xe</option>
+                                            <option value="Mất xe">Mất xe</option>
+                                            <option value="Khác">Khác</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Ngày xảy ra <span class="text-danger">*</span></label>
+                                        <input type="date" name="ngayXayRaThietHai" class="form-control"
+                                            value="@DateTime.Now.ToString("yyyy-MM-dd")" id="ngayXayRaThietHai" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Mô tả thiệt hại <span class="text-danger">*</span></label>
+                                <textarea name="moTaThietHai" class="form-control" rows="3"
+                                    placeholder="Mô tả chi tiết thiệt hại..." id="moTaThietHaiText"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Số tiền đền bù ước tính</label>
+                                <input type="number" name="chiPhiThietHai" class="form-control" value="0"
+                                    placeholder="Số tiền đền bù ước tính..." id="chiPhiThietHai" />
+                                <small class="text-muted">Nhập 0 nếu chưa biết số tiền đền bù</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ghi chú -->
+                <div class="mb-3">
+                    <label class="form-label">Ghi chú khi trả xe</label>
+                    <textarea name="ghiChu" class="form-control" rows="3"
+                        placeholder="Ghi chú chung về quá trình trả xe..."></textarea>
+                </div>
+
+                <!-- Tổng tiền -->
+                <div class="total-section">
+                    <h4>Tổng tiền thanh toán</h4>
+                    <div class="total-amount" id="tongTienFinal">0đ</div>
+                    <p class="mb-0">Đã bao gồm tiền thuê và phụ phí</p>
+                </div>
+
+                <!-- Buttons -->
+                <div class="actions">
+                    <button type="submit" class="btn complete">
+                        <i class="bi bi-check-circle"></i> Hoàn Tất Trả Xe
+                    </button>
+                        <button class="btn back" type="button" onclick="location.href='@Url.Action("Index", "HopDong")'">
+                        <i class="bi bi-arrow-left"></i> Quay lại
+                    </button>
+                </div>
+            </form>
+            </div>
+        </div>
+
+
+        @* right *@
+        <div>
+
+            <!-- Cảnh báo trả trễ/sớm -->
+            @* @{
+                    var ngayTraDuKien = Model.NgayTraXeDuKien.Date;
+                    var ngayHienTai = DateTime.Now.Date;
+                    var soNgayTre = (ngayHienTai - ngayTraDuKien).Days;
+                    var soNgaySom = (ngayTraDuKien - ngayHienTai).Days;
+                }
+                @if (soNgayTre > 0)
+                { *@
+            <div class="overdue-warning">
+                <i class="bi bi-exclamation-triangle"></i>
+                <strong>Lưu ý:</strong> Khách trả xe trễ 5 ngày so với hợp đồng!
+            </div>
+            @* }
+                else if (soNgaySom > 0)
+                { *@
+            <div class="early-return-notice">
+                <i class="bi bi-info-circle"></i>
+                <strong>Thông báo:</strong> Khách trả xe sớm 4 ngày so với hợp đồng.
+            </div>
+            @* }
+
+                @if (!hasChiTiet)
+                { *@
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <strong>Lỗi:</strong> Hợp đồng này không có thông tin xe thuê! Vui lòng kiểm tra lại dữ liệu.
+                <br><small>Form trả xe đã bị vô hiệu hóa cho đến khi có đầy đủ thông tin xe.</small>
+            </div>
+            @* } *@
+
+
+            <!-- Thông tin hợp đồng -->
+            <div class="info-section">
+
+                <div class="section-title">
+                    <i class="bi bi-info-circle"></i> Thông tin hợp đồng
+                </div>
+
+                <div class="contract-info">
+                            <div class="info-row">
+                                <span class="info-label">Khách hàng:</span>
+                                <span class="info-value">tên khách</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Số điện thoại:</span>
+                                <span class="info-value">0987654321</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">CCCD:</span>
+                                <span class="info-value">1234567890</span>
+                            </div>
+                            @* @if (hasChiTiet)
+                        { *@
+                            @* var chiTietDau = Model.ChiTietHopDong.First(); *@
+                            <div class="info-row">
+                                <span class="info-label">Xe:</span>
+                                <span class="info-value">tên xe</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Biển số:</span>
+                                <span class="info-value">biển số</span>
+                            </div>
+                            @* }
+                        else
+                        { *@
+                            @* <div class="info-row">
+                                <span class="info-label">Xe:</span>
+                                <span class="info-value text-danger">Chưa có thông tin xe</span>
+                            </div> *@
+                            @* } *@
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Bikey</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> @* import for modal popup *@
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" /> @* import boostrap for css *@
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" /> @* import for icon *@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <link rel="stylesheet" href="~/css/shared/adminsidebar.css" asp-append-version="true" />
+    <link href="~/css/shared/adminlayout.css" rel="stylesheet" asp-append-version="true">
+    @RenderSection("Styles", required: false)
+    <script src="~/js/shared/adminlayout.js"></script>
+    @RenderSection("Scripts", required: false)
+</head>
+<body>
+    <!-- SIDEBAR FOR ADMIN -->
+    <partial name="_AdminSidebar" />
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content" id="mainContent">
+
+        <!-- TOP BAR -->
+        <div class="top-bar">
+            <button class="toggle-sidebar" onclick="toggleSidebar()">
+                <i class="bi bi-list"></i>
+            </button>
+            <div class="admin-info">
+                <span>Xin chào, <strong>tên người dùng</strong></span>
+                <div class="dropdown d-inline">
+                    <div class="admin-avatar dropdown-toggle" data-bs-toggle="dropdown" style="cursor: pointer;">
+                        tram
+                    </div>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <span class="dropdown-item-text">
+                                    @* @User.Identity.Name *@
+                                    tram <br>
+                                <small class="text-muted">
+                                    @* @User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value *@
+                                    email@gmail.com
+                                </small><br>
+                                <small class="text-muted">Role: Admin
+                                    @* @User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value *@
+                                </small>
+                            </span>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" href="/Account/Profile">
+                                <i class="bi bi-gear"></i> Cài đặt
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="/Account/Logout"
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                            </a>
+                            <form id="logout-form" action="/Account/Logout" method="post" style="display: none;">
+                                @Html.AntiForgeryToken()
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        @RenderBody()
+    </div>
+    @RenderSection("Modals", required: false)
+</body>
+</html>

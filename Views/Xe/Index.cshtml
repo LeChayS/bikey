@@ -1,0 +1,329 @@
+﻿@model IEnumerable<bikey.Models.Xe>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản lý xe";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/xe/index.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/shared/responsive.css" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script src="/js/xe/index.js"></script>
+}
+
+<div class="top-header">
+    <h1><i class="bi bi-scooter"></i> Quản Lý Xe</h1>
+    <div>
+        <a asp-action="Create" class="btn btn-add">
+            <i class="bi bi-plus-circle"></i> Thêm Xe Mới
+        </a>
+    </div>
+</div>
+
+<div class="wrapper">
+
+    <!-- Statistics -->
+    <div class="container-fluid">
+        <div class="row">
+            @* card 1 *@
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card blue">
+                    <div class="stat-label">Tổng số xe</div>
+                    <div class="stat-value">
+                        @* @ViewBag.TongSoXe *@
+                        2
+                    </div>
+                </div>
+            </div>
+            @* card 2 *@
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card red">
+                    <div class="stat-label">Xe sẵn sàng</div>
+                    <div class="stat-value">
+                        @* @ViewBag.XeSanSang *@
+                        10
+                    </div>
+                </div>
+            </div>
+            @* card 3 *@
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card purple">
+                    <div class="stat-label">Đang cho thuê</div>
+                    <div class="stat-value">
+                        @* @ViewBag.DangChoThue *@
+                        10
+                    </div>
+                </div>
+            </div>
+            @* card 4 *@
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card green">
+                    <div class="stat-label">Bảo trì</div>
+                    <div class="stat-value">
+                        @* @ViewBag.BaoTri *@
+                        16
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- table & filter -->
+    <div class="container-fluid">
+
+        @* filter *@
+        <div class="filter-section">
+            <div class="row g-3 align-items-center">
+                <div class="col">
+                    <label class="form-label">Loại xe</label>
+                    <select id="loaiXe" class="form-select">
+                        <option value="">--- Loại xe ---</option>
+                        @* @foreach (var item in ViewBag.LoaiXeList as SelectList)
+                        {
+                            if (item.Value == ViewBag.CurrentLoaiXe?.ToString())
+                            {
+                                <option value="@item.Value" selected>@item.Text</option>
+                            }
+                            else
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        } *@
+                        <option>xe đạp</option>
+                        <option>xe máy</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label class="form-label">Hãng xe</label>
+                    <select id="hangXe" class="form-select">
+                        <option value="">--- Hãng xe ---</option>
+                        @* @foreach (var item in ViewBag.HangXeList as SelectList)
+                        {
+                            if (item.Value == ViewBag.CurrentHangXe?.ToString())
+                            {
+                                <option value="@item.Value" selected>@item.Text</option>
+                            }
+                            else
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        } *@
+                        <option>honda</option>
+                        <option>vision</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label class="form-label">Trạng thái</label>
+                    <select id="trangThai" class="form-select">
+                        <option value="">--- Trạng thái xe ---</option>
+                        @* @foreach (var item in ViewBag.TrangThaiList as SelectList)
+                        {
+                            if (item.Value == ViewBag.CurrentTrangThai?.ToString())
+                            {
+                                <option value="@item.Value" selected>@item.Text</option>
+                            }
+                            else
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        } *@
+                        <option>Sẵn sàng</option>
+                        <option>Đang thuê</option>
+                        <option>Bảo trì</option>
+                        <option>Hư hỏng</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label class="form-label">&nbsp;</label>
+                    <button type="button" id="filterBtn" class="btn btn-primary w-100">
+                        <i class="bi bi-funnel"></i> Lọc
+                    </button>
+                </div>
+                <div class="col">
+                    <label class="form-label">&nbsp;</label>
+                    <button type="button" id="clearFilterBtn" class="btn btn-secondary w-100">
+                        <i class="bi bi-arrow-clockwise"></i> Làm mới
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- table -->
+        <div class="card-body" id="xeTableContainer">
+            @Html.Partial("_XeTablePartial", Model)
+        </div>
+    </div>
+
+</div>
+
+
+@* modal xóa xe *@
+<div class="modal fade" id="deleteXe" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-exclamation-circle"></i> Xóa xe</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <h5>Bạn có chắc chắn muốn xóa xe này?</h5>
+                <small class="text-muted">Xe bị xóa sẽ không thể khôi phục lại được</small>
+                <div class="vehicle-info">
+                    <h5 class="mb-3">
+                        Thông Tin Xe
+                        @* @if (ViewBag.HasContracts == true)
+                        { *@
+                        <span class="history-indicator float-end">
+                            <i class="bi bi-clock-history"></i> Có lịch sử thuê
+                        </span>
+                        @* } *@
+                    </h5>
+
+                    <div class="info-item">
+                        <span class="info-label">Mã xe:</span>
+                        <span class="info-value">#XE001</span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">Tên xe:</span>
+                        <span class="info-value">tên xe</strong></span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">Biển số:</span>
+                        <span class="info-value">BienSoXe</span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">Hãng xe:</span>
+                        <span class="info-value">HangXe</span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">Dòng xe:</span>
+                        <span class="info-value">DongXe</span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">Loại xe:</span>
+                        <span class="info-value">TenLoaiXe</span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">Giá thuê:</span>
+                        <span class="info-value text-danger"><strong>GiaThue.ToString("N0")đ/ngày</strong></span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">Trạng thái:</span>
+                        <span class="info-value">
+                            @* @{
+                                string statusClass = Model.TrangThai switch
+                                {
+                                    "Sẵn sàng" => "status-available",
+                                    "Đang thuê" => "status-rented",
+                                    "Bảo trì" => "status-maintenance",
+                                    _ => ""
+                                };
+                            } *@
+                            <span class="status-badge status-available">Sẵn sàng</span>
+                            <span class="status-badge status-rented">Đang thuê</span>
+                            <span class="status-badge status-maintenance">Bảo trì</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button class="btn btn-danger" asp-action="submit"><i class="bi bi-check-circle"></i> Xóa xe</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* modal xem chi tiết thông tin xe *@
+<div class="modal fade" id="detailXe" tabindex="-1">
+
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-info-circle"></i> Thông tin xe</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="xe-details-info-card mb-3">
+                    <h4><i class="bi bi-info-circle"></i> Thông tin cơ bản</h4>
+                    <div class="xe-details-info-grid">
+                        <div class="xe-details-info-item">
+                            <span class="xe-details-info-label">Mã xe</span>
+                            <span class="xe-details-info-value" id="xeMaXe">-</span>
+                        </div>
+                        <div class="xe-details-info-item">
+                            <span class="xe-details-info-label">Tên xe</span>
+                            <span class="xe-details-info-value" id="xeTenXe">-</span>
+                        </div>
+                        <div class="xe-details-info-item">
+                            <span class="xe-details-info-label">Biển số</span>
+                            <span class="xe-details-info-value" id="xeBienSo">-</span>
+                        </div>
+                        <div class="xe-details-info-item">
+                            <span class="xe-details-info-label">Hãng xe</span>
+                            <span class="xe-details-info-value" id="xeHangXe">-</span>
+                        </div>
+                        <div class="xe-details-info-item">
+                            <span class="xe-details-info-label">Dòng xe</span>
+                            <span class="xe-details-info-value" id="xeDongXe">-</span>
+                        </div>
+                        <div class="xe-details-info-item">
+                            <span class="xe-details-info-label">Loại xe</span>
+                            <span class="xe-details-info-value" id="xeLoaiXe">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status -->
+                <div class="xe-details-info-card mb-3">
+                    <h4><i class="bi bi-flag"></i> Trạng thái</h4>
+                    <div id="xeTrangThaiContainer">
+                        <!-- Status badge will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Financial Info -->
+                <div class="xe-details-info-card mb-3">
+                    <h4><i class="bi bi-currency-dollar"></i> Thông tin tài chính</h4>
+                    <div class="xe-details-info-grid">
+                        <div class="xe-details-info-item">
+                            <span class="xe-details-info-label">Giá thuê/ngày</span>
+                            <span class="xe-details-info-value" id="xeGiaThue">-</span>
+                        </div>
+                        <div class="xe-details-info-item">
+                            <span class="xe-details-info-label">Giá trị xe</span>
+                            <span class="xe-details-info-value" id="xeGiaTriXe">-</span>
+                        </div>
+                        <div class="xe-details-info-item">
+                            <span class="xe-details-info-label">Tổng chi phí</span>
+                            <span class="xe-details-info-value" id="xeTongChiPhi">-</span>
+                        </div>
+                        <div class="xe-details-info-item">
+                            <span class="xe-details-info-label">Chi phí sửa chữa</span>
+                            <span class="xe-details-info-value" id="xeChiPhiSuaChua">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,85 @@
+﻿
+@model IEnumerable<bikey.Models.DatCho>
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Đơn Chờ Xử Lý";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/hopdong/donchoxuly.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="/css/shared/Components/ordercard.css" asp-append-version="true"/>
+}
+
+@section Scripts {
+    <script src="/js/hopdong/donchoxuly.js"></script>
+}
+
+<!-- Header -->
+<div class="top-header">
+    <div>
+        <h1 class="mb-0">Đơn Chờ Xử Lý</h1>
+        <p class="mb-0">Có @ViewBag.TongDonCho 10 đơn cần xử lý</p>
+    </div>
+    <a asp-action="Index" class="btn btn-primary">
+        <i class="bi bi-arrow-left"></i> Quay lại
+    </a>
+</div>
+
+<div class="wrapper">
+
+    <div class="container-fluid">
+
+        <!-- Filter -->
+        <div class="filter-section">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" name="searchString" class="form-control"
+                            placeholder="Tìm theo tên, SĐT, email..."
+                            value="@ViewBag.SearchString" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <input type="date" name="tuNgay" class="form-control"
+                        value="@ViewBag.TuNgay?.ToString("yyyy-MM-dd")"
+                        placeholder="Từ ngày" />
+                </div>
+                <div class="col-md-3">
+                    <input type="date" name="denNgay" class="form-control"
+                        value="@ViewBag.DenNgay?.ToString("yyyy-MM-dd")"
+                        placeholder="Đến ngày" />
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-funnel"></i> Lọc
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Danh sách đơn -->
+        @* @if(Model.Any()){
+            @foreach (var don in Model)
+            { *@
+                @await Component.InvokeAsync("OrderCard");
+            @* }
+        }
+        else
+        { *@
+            <div class="empty-state">
+                <i class="bi bi-inbox empty-icon"></i>
+                <h3>Không có đơn chờ xử lý</h3>
+                <p class="text-muted">Tất cả các đơn đã được xử lý hoặc không có đơn nào phù hợp với bộ lọc.</p>
+                <a asp-action="Index" class="btn btn-primary mt-3">
+                    <i class="bi bi-arrow-left"></i> Quay lại trang chính
+                </a>
+            </div>
+        @* } *@
+    </div>
+
+</div>
+
+@await Html.PartialAsync("_OrderCardCreateModal")
+@await Html.PartialAsync("_OrderCardDenyModal")

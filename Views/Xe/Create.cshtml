@@ -1,0 +1,169 @@
+@model bikey.Models.Xe
+@{
+    ViewData["Title"] = "Thêm xe mới";
+    Layout = "_AdminLayout";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/xe/create.css" asp-append-version="true"/>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="/js/xe/create.js"></script>
+}
+
+<!-- Top Header -->
+<div class="top-header">
+    <h1>Thêm xe mới</h1>
+    <a asp-action="Index" class="btn btn-primary">
+        <i class="bi bi-arrow-left"></i> Quay lại
+    </a>
+</div>
+
+<div class="wrapper">
+    <div class="container-fluid">
+
+        <!-- Form Body -->
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+            <div class="vehicle-grid">
+
+                <!-- Cột trái -->
+                <div>
+                    <!-- Tên xe -->
+                    <div class="mb-4">
+                        <label asp-for="TenXe" class="form-label">
+                            Tên xe
+                            <span class="required">*</span>
+                        </label>
+                        <input asp-for="TenXe" class="form-control"
+                            placeholder="Ví dụ: Wave Alpha 110cc" />
+                        <span asp-validation-for="TenXe" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Biển số -->
+                    <div class="mb-4">
+                        <label asp-for="BienSoXe" class="form-label">
+                            Biển số
+                            <span class="required">*</span>
+                        </label>
+                        <input asp-for="BienSoXe" class="form-control" />
+                        <span asp-validation-for="BienSoXe" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Hãng xe -->
+                    <div class="mb-4">
+                        <label asp-for="HangXe" class="form-label">
+                            Hãng xe
+                            <span class="required">*</span>
+                        </label>
+                        <input asp-for="HangXe" class="form-control" placeholder="Ví dụ: Honda, Yamaha, Suzuki" />
+                        <span asp-validation-for="HangXe" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Dòng xe -->
+                    <div class="mb-4">
+                        <label asp-for="DongXe" class="form-label">
+                            Dòng xe
+                            <span class="required">*</span>
+                        </label>
+                        <input asp-for="DongXe" class="form-control"
+                            placeholder="Ví dụ: Wave Alpha, Vision, Air Blade" />
+                        <span asp-validation-for="DongXe" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Loại xe -->
+                    <div class="mb-4">
+                        <label asp-for="MaLoaiXe" class="form-label">
+                            Loại xe
+                            <span class="required">*</span>
+                        </label>
+                        <select asp-for="MaLoaiXe" class="form-select" asp-items="ViewBag.MaLoaiXe">
+                            <option value="">-- Chọn loại xe --</option>
+                        </select>
+                        <span asp-validation-for="MaLoaiXe" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Giá thuê -->
+                    <div class="mb-4">
+                        <label asp-for="GiaThue" class="form-label">
+                            Giá thuê/ngày
+                            <span class="required">*</span>
+                        </label>
+                        <div class="input-group">
+                            <input asp-for="GiaThue" class="form-control" placeholder="Ví dụ: 150000" />
+                            <span class="input-group-text">VNĐ/ngày</span>
+                        </div>
+                        <span asp-validation-for="GiaThue" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Trạng thái -->
+                    <div class="mb-4">
+                        <label asp-for="TrangThai" class="form-label">
+                            Trạng thái
+                            <span class="required">*</span>
+                        </label>
+                        <select asp-for="TrangThai" class="form-select" asp-items="ViewBag.TrangThaiList">
+                        </select>
+                        <span asp-validation-for="TrangThai" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <!-- Cột phải -->
+                <div>
+                    <!-- Hình ảnh chính -->
+                    <div class="mb-4">
+                        <label class="form-label">
+                            Hình ảnh chính
+                            <span class="required">*</span>
+                        </label>
+                        <small class="text-muted">Đây sẽ là hình ảnh hiển thị chính của xe</small>
+                        <div class="image-preview-container" onclick="document.getElementById('hinhAnh').click()">
+                            <input type="file" name="hinhAnh" id="hinhAnh" accept="image/*" style="display:none"
+                                onchange="previewMainImage(event)" />
+                            <div id="preview-content">
+                                <i class="bi bi-cloud-upload upload-icon"></i>
+                                <p class="mb-0">Click để chọn ảnh chính</p>
+                                <small class="text-muted">JPG, PNG (Max: 5MB)</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Multi-image upload section -->
+                    <div class="multi-image-section">
+                        <label class="form-label">
+                            Thêm nhiều hình ảnh khác
+                            <small class="text-muted">(Tùy chọn)</small>
+                        </label>
+
+                        <div class="multi-image-upload" id="multiImageUpload">
+                            <input type="file" name="hinhAnhKhac" id="hinhAnhKhac" accept="image/*" multiple
+                                style="display:none" onchange="previewMultipleImages(event)" />
+                            <i class="bi bi-cloud-upload upload-icon"></i>
+                            <p class="mb-2 mt-2">Kéo thả hoặc click để chọn nhiều hình ảnh</p>
+                            <p class="text-muted mb-0">Hỗ trợ JPG, PNG - Tối đa 5MB mỗi ảnh</p>
+                        </div>
+
+                        <div class="image-preview-grid" id="imagePreviewGrid"></div>
+
+                        <div class="upload-stats" id="uploadStats" style="display: none;">
+                            <i class="bi bi-info-circle"></i>
+                            <span id="statsText">Chưa có hình ảnh nào được chọn</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="d-flex justify-content-end mt-4">
+                <button type="submit" class="btn btn-primary btn-lg btn-save">
+                    <i class="bi bi-save"></i> Lưu xe mới
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
