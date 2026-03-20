@@ -458,12 +458,6 @@ namespace bikey.Migrations
                     b.Property<bool>("CanCreateLoaiXe")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("CanCreateNhanVien")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanCreateThietHai")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("CanCreateUser")
                         .HasColumnType("bit");
 
@@ -488,12 +482,6 @@ namespace bikey.Migrations
                     b.Property<bool>("CanDeleteLoaiXe")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("CanDeleteNhanVien")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanDeleteThietHai")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("CanDeleteUser")
                         .HasColumnType("bit");
 
@@ -513,12 +501,6 @@ namespace bikey.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("CanEditLoaiXe")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanEditNhanVien")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanEditThietHai")
                         .HasColumnType("bit");
 
                     b.Property<bool>("CanEditUser")
@@ -548,12 +530,6 @@ namespace bikey.Migrations
                     b.Property<bool>("CanManageLoaiXe")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("CanManageNhanVien")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanManageThietHai")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("CanManageUser")
                         .HasColumnType("bit");
 
@@ -564,9 +540,6 @@ namespace bikey.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("CanPrintHopDong")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanThanhToanThietHai")
                         .HasColumnType("bit");
 
                     b.Property<bool>("CanUploadHinhAnhXe")
@@ -594,12 +567,6 @@ namespace bikey.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("CanViewLoaiXe")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanViewNhanVien")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanViewThietHai")
                         .HasColumnType("bit");
 
                     b.Property<bool>("CanViewThongKe")
