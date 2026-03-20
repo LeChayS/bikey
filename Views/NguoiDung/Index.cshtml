@@ -368,7 +368,7 @@
                             </td>
                             <td>12/12/1212</td>
                             <td>
-                                <a asp-action="Edit" class="btn btn-warning btn-sm btn-action" title="Sửa"
+                                <a class="btn btn-warning btn-sm btn-action" title="Sửa"
                                     data-bs-toggle="modal" data-bs-target="#editUser">
                                     <i class="bi bi-pencil"></i>
                                 </a>
@@ -378,8 +378,10 @@
                                     { *@
                                 @* <form asp-action="Delete" method="post" style="display:inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa người dùng này?');">
                                             @Html.AntiForgeryToken() *@
-                                <button type="submit" class="btn btn-danger btn-sm btn-action" title="Xóa"><i
-                                        class="bi bi-trash"></i></button>
+                                <button class="btn btn-danger btn-sm btn-action" title="Xóa" data-bs-toggle="modal"
+                                    data-bs-target="#deleteUser">
+                                    <i class="bi bi-trash"></i>
+                                </button>
                                 @* </form> *@
                                 @* } *@
                             </td>
@@ -401,7 +403,7 @@
                             </td>
                             <td>12/12/1212</td>
                             <td>
-                                <a asp-action="Edit" class="btn btn-warning btn-sm btn-action" title="Sửa"
+                                <a class="btn btn-warning btn-sm btn-action" title="Sửa"
                                     data-bs-toggle="modal" data-bs-target="#editUser">
                                     <i class="bi bi-pencil"></i>
                                 </a>
@@ -411,8 +413,10 @@
                                     { *@
                                 @* <form asp-action="Delete" method="post" style="display:inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa người dùng này?');">
                                             @Html.AntiForgeryToken() *@
-                                <button type="submit" class="btn btn-danger btn-sm btn-action" title="Xóa"><i
-                                        class="bi bi-trash"></i></button>
+                                <button class="btn btn-danger btn-sm btn-action" title="Xóa" data-bs-toggle="modal"
+                                    data-bs-target="#deleteUser">
+                                    <i class="bi bi-trash"></i>
+                                </button>
                                 @* </form> *@
                                 @* } *@
                             </td>
@@ -494,7 +498,7 @@
 
             <div class="modal-body">
                 <form asp-action="Edit" method="post">
-                    <input type="hidden"  />
+                    <input type="hidden" />
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">Họ và tên *</label>
@@ -518,14 +522,12 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Mật khẩu mới</label>
-                            <input class="form-control" type="password"
-                                placeholder="Để trống nếu không đổi" />
+                            <input class="form-control" type="password" placeholder="Để trống nếu không đổi" />
                             <spanclass="text-danger"></spanclass=>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Xác nhận mật khẩu</label>
-                            <input class="form-control" type="password"
-                                placeholder="Để trống nếu không đổi" />
+                            <input class="form-control" type="password" placeholder="Để trống nếu không đổi" />
                             <span class="text-danger"></span>
                         </div>
                         <div class="col-md-6">
@@ -548,7 +550,31 @@
 
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                <button class="btn btn-primary" asp-action="submit"><i class="bi bi-check-circle"></i> Lưu thay đổi</button>
+                <button class="btn btn-primary" asp-action="submit"><i class="bi bi-check-circle"></i> Lưu thay
+                    đổi</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* modal xóa tài khoản *@
+<div class="modal fade" id="deleteUser" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-exclamation-circle"></i> Xóa người dùng</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <h5>Bạn có chắc chắn muốn xóa người dùng này?</h5>
+                <small class="text-muted">Tài khoản bị xóa sẽ không thể khôi phục lại được</small>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button class="btn btn-danger" asp-action="submit"><i class="bi bi-check-circle"></i> Xóa người dùng</button>
             </div>
         </div>
     </div>
