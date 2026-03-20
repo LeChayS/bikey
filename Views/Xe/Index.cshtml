@@ -245,3 +245,54 @@
         </div>
     </div>
 </div>
+
+@* modal xem chi tiết thông tin xe *@
+<div class="modal fade" id="detailXe" tabindex="-1">
+
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-info-circle"></i> Thông tin xe</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="xe-details-info-card">
+                    <h4><i class="bi bi-info-circle"></i> Thông tin cơ bản</h4>
+                    <div class="xe-details-info-grid">
+                        <div class="xe-details-info-item">
+                            <span class="xe-details-info-label">Mã xe</span>
+                            <span class="xe-details-info-value" id="xeMaXe">-</span>
+                        </div>
+                        <div class="xe-details-info-item">
+                            <span class="xe-details-info-label">Tên xe</span>
+                            <span class="xe-details-info-value" id="xeTenXe">-</span>
+                        </div>
+                        <div class="xe-details-info-item">
+                            <span class="xe-details-info-label">Biển số</span>
+                            <span class="xe-details-info-value" id="xeBienSo">-</span>
+                        </div>
+                        <div class="xe-details-info-item">
+                            <span class="xe-details-info-label">Hãng xe</span>
+                            <span class="xe-details-info-value" id="xeHangXe">-</span>
+                        </div>
+                        <div class="xe-details-info-item">
+                            <span class="xe-details-info-label">Dòng xe</span>
+                            <span class="xe-details-info-value" id="xeDongXe">-</span>
+                        </div>
+                        <div class="xe-details-info-item">
+                            <span class="xe-details-info-label">Loại xe</span>
+                            <span class="xe-details-info-value" id="xeLoaiXe">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+</div>
