@@ -28,7 +28,8 @@ builder.Services.AddDbContext<BikeyDbContext>(options =>
             sqlOptions.CommandTimeout(120); // 2 phút timeout
         })
     .EnableSensitiveDataLogging(false)
-    .EnableDetailedErrors(false));
+    .EnableDetailedErrors(false)
+);
 
 var app = builder.Build();
 
@@ -44,7 +45,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=TrangChu}/{action=Index}/{id?}")
+    pattern: "{controller=Admin}/{action=Index}/{id?}")
     .WithStaticAssets();
 
 app.MapRazorPages();
@@ -99,7 +100,7 @@ app.Run();
 //    .EnableSensitiveDataLogging(false)
 //    .EnableDetailedErrors(false));
 
-//// THÊM AUTHENTICATION 
+//// THÊM AUTHENTICATION
 //builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 //    .AddCookie(options =>
 //    {

@@ -22,7 +22,6 @@ namespace bikey.Repository
         public DbSet<DatCho> DatCho { get; set; }
         public DbSet<HopDong> HopDong { get; set; }
         public DbSet<HoaDon> HoaDon { get; set; }
-        public DbSet<Banner> Banner { get; set; }
         public DbSet<ChiTietHopDong> ChiTietHopDong { get; set; }
         public DbSet<HinhAnhXe> HinhAnhXe { get; set; }
 

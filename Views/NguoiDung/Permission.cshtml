@@ -1,0 +1,273 @@
+@* @model bikey.ViewModels.UserPermissionViewModel *@
+@{
+    ViewData["Title"] = "Quản lý quyền người dùng";
+    Layout = "_AdminLayout";
+
+    // Helper function để lấy permission options
+    @* var permissionOptions = bikey.ViewModels.UserPermissionViewModel.PermissionOptions; *@
+}
+@section Styles {
+    <link rel="stylesheet" href="/css/nguoidung/permission.css" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script>
+        // ===== CLICK ITEM → TOGGLE =====
+        document.addEventListener("click", function (e) {
+            const item = e.target.closest(".checkbox-item");
+            if (!item) return;
+            const checkbox = item.querySelector("input[type='checkbox']");
+            if (!checkbox) return;
+            // nếu click trực tiếp checkbox hoặc label → để browser xử lý
+            if (e.target === checkbox || e.target.tagName.toLowerCase() === "label") {
+                return;
+            }
+            checkbox.checked = !checkbox.checked;
+            // trigger change để update nút select all
+            checkbox.dispatchEvent(new Event("change", { bubbles: true }));
+        });
+
+        // ===== UPDATE NÚT CHỌN TẤT CẢ =====
+        document.addEventListener("change", function (e) {
+            if (e.target.type !== "checkbox") return;
+            const section = e.target.closest(".permission-section");
+            if (!section) return;
+            const btn = section.querySelector(".btn-toggle-all");
+            if (!btn) return;
+            const checkboxes = section.querySelectorAll("input[type='checkbox']");
+            const allChecked = [...checkboxes].every(cb => cb.checked);
+            btn.textContent = allChecked ? "Bỏ chọn tất cả" : "Chọn tất cả";
+        });
+
+        // ===== CLICK NÚT CHỌN TẤT CẢ =====
+        document.addEventListener("click", function (e) {
+            const btn = e.target.closest(".btn-toggle-all");
+            if (!btn) return;
+            const section = btn.closest(".permission-section");
+            const checkboxes = section.querySelectorAll("input[type='checkbox']");
+            const allChecked = [...checkboxes].every(cb => cb.checked);
+            checkboxes.forEach(cb => {
+                cb.checked = !allChecked;
+                cb.dispatchEvent(new Event("change", { bubbles: true }));
+            });
+
+        });
+    </script>
+}
+
+<!-- Header -->
+<div class="top-header">
+    <div>
+        <h1 class="mb-0">Quản lý quyền người dùng</h1>
+        <p class="mb-0">Thiết lập quyền hạn cho tài khoản người dùng</p>
+    </div>
+    <a asp-action="Index" class="btn btn-primary">
+        <i class="bi bi-arrow-left"></i> Quay lại
+    </a>
+</div>
+
+<div class="wrapper">
+
+    <div class="user-info">
+        <h4>tên người dùng</h4>
+        <p>mail người dùng</p>
+    </div>
+
+    <div class="container-fluid">
+        <form asp-action="Permission" method="post">
+            @* <input type="hidden" asp-for="UserId" />
+            <input type="hidden" asp-for="UserName" />
+            <input type="hidden" asp-for="UserEmail" /> *@
+
+            <!-- Quản lý xe -->
+            <div class="permission-section">
+                <div class="section-header">
+                    <h5><i class="bi bi-bicycle"></i> Quản lý xe</h5>
+                    <button type="button" class="btn-toggle-all">Chọn tất cả</button>
+                </div>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="qlxe_xem" value="Xem" />
+                        <label for="qlxe_xem">Xem</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="qlxe_tao" value="Tạo mới" />
+                        <label for="qlxe_tao">Tạo</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="qlxe_sua" value="Chỉnh sửa" />
+                        <label for="qlxe_sua">Sửa</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="qlxe_xoa" value="Xóa" />
+                        <label for="qlxe_xoa">Xóa</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quản lý loại xe -->
+            <div class="permission-section">
+                <div class="section-header">
+                    <h5><i class="bi bi-tags"></i> Quản lý loại xe</h5>
+                    <button type="button" class="btn-toggle-all">Chọn tất cả</button>
+                </div>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="qlxe_xem" value="Xem" />
+                        <label for="qlxe_xem">Xem</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="qlxe_tao" value="Tạo mới" />
+                        <label for="qlxe_tao">Tạo</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="qlxe_sua" value="Chỉnh sửa" />
+                        <label for="qlxe_sua">Sửa</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="qlxe_xoa" value="Xóa" />
+                        <label for="qlxe_xoa">Xóa</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quản lý hợp đồng -->
+            <div class="permission-section">
+                <div class="section-header">
+                    <h5><i class="bi bi-file-earmark-text"></i> Quản lý hợp đồng</h5>
+                    <button type="button" class="btn-toggle-all">Chọn tất cả</button>
+                </div>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="qlxe_xem" value="Xem" />
+                        <label for="qlxe_xem">Xem</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="qlxe_tao" value="Tạo mới" />
+                        <label for="qlxe_tao">Tạo</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="qlxe_sua" value="Chỉnh sửa" />
+                        <label for="qlxe_sua">Sửa</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="qlxe_xoa" value="Xóa" />
+                        <label for="qlxe_xoa">Xóa</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="qlxe_xoa" value="Xóa" />
+                        <label for="qlxe_xoa">In</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quản lý hóa đơn -->
+            <div class="permission-section">
+                <div class="section-header">
+                    <h5><i class="bi bi-receipt"></i> Quản lý hóa đơn</h5>
+                    <button type="button" class="btn-toggle-all">Chọn tất cả</button>
+                </div>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="qlxe_xem" value="Xem" />
+                        <label for="qlxe_xem">Xem</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="qlxe_tao" value="Tạo mới" />
+                        <label for="qlxe_tao">Tạo</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="qlxe_sua" value="Chỉnh sửa" />
+                        <label for="qlxe_sua">Sửa</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="qlxe_xoa" value="Xóa" />
+                        <label for="qlxe_xoa">Xóa</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="qlxe_xoa" value="Xóa" />
+                        <label for="qlxe_xoa">In</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quản lý người dùng -->
+            <div class="permission-section">
+                <div class="section-header">
+                    <h5><i class="bi bi-people"></i> Quản lý người dùng</h5>
+                    <button type="button" class="btn-toggle-all">Chọn tất cả</button>
+                </div>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="qlxe_xem" value="Xem" />
+                        <label for="qlxe_xem">Xem</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="qlxe_tao" value="Tạo mới" />
+                        <label for="qlxe_tao">Tạo</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="qlxe_sua" value="Chỉnh sửa" />
+                        <label for="qlxe_sua">Sửa</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="qlxe_xoa" value="Xóa" />
+                        <label for="qlxe_xoa">Xóa</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Báo cáo thống kê -->
+            <div class="permission-section">
+                <div class="section-header">
+                    <h5><i class="bi bi-graph-up"></i> Báo cáo thống kê</h5>
+                    <button type="button" class="btn-toggle-all">Chọn tất cả</button>
+                </div>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="qlxe_xem" value="Xem" />
+                        <label for="qlxe_xem">Xem báo cáo</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="qlxe_tao" value="Tạo mới" />
+                        <label for="qlxe_tao">Xem thống kê</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="qlxe_sua" value="Chỉnh sửa" />
+                        <label for="qlxe_sua">In</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quản lý hình ảnh xe -->
+            <div class="permission-section">
+                <div class="section-header">
+                    <h5><i class="bi bi-images"></i> Quản lý hình ảnh xe</h5>
+                    <button type="button" class="btn-toggle-all">Chọn tất cả</button>
+                </div>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="qlxe_xem" value="Xem" />
+                        <label for="qlxe_xem">Xem</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="qlxe_tao" value="Tạo mới" />
+                        <label for="qlxe_tao">Tạo</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="qlxe_sua" value="Chỉnh sửa" />
+                        <label for="qlxe_sua">Sửa</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="qlxe_xoa" value="Xóa" />
+                        <label for="qlxe_xoa">Xóa</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end mt-4">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-circle"></i> Lưu quyền</button>
+            </div>
+        </form>
+    </div>
+</div>

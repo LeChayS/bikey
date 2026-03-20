@@ -1,0 +1,262 @@
+﻿.top-header {
+    padding: 20px 50px;
+}
+
+.wrapper{
+    padding: 0px 50px;
+    margin-bottom: 30px;
+}
+
+.container-fluid{
+    background-color: white;
+    padding: 30px;
+    border-radius: 30px;
+    margin-bottom: 30px;
+}
+
+/* title each section */
+.title {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.title p {
+    font-weight: bold;
+    font-size: 25px;
+    margin-bottom: 0px;
+}
+
+/* Stat cards */
+.stat-card {
+    background: white;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    transition: transform 0.3s;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: top;
+}
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+    }
+
+ .stat-card.blue {
+     background: rgb(158, 198, 243, 0.3);
+ }
+ .stat-card.orange {
+     background: rgb(250, 206, 104, 0.3);
+ }
+ .stat-card.green {
+     background: rgb(199, 234, 187, 0.3);
+ }
+ .stat-card.purple {
+     background: rgb(203, 157, 240, 0.3);
+ }
+ .stat-card.red{
+    background: rgb(250, 104, 104, 0.3);
+ }
+ .stat-card.pink{
+    background: rgb(253, 121, 121, 0.3);
+ }
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.stat-icon i{
+    font-size: 25px;
+    color: black;
+}
+
+.stat-icon.blue {
+    background: rgb(158, 198, 243, 0.3);
+}
+.stat-icon.orange {
+    background: rgb(250, 206, 104, 0.3);
+}
+.stat-icon.green {
+    background: rgb(199, 234, 187, 0.3);
+}
+.stat-icon.purple {
+    background: rgb(203, 157, 240, 0.3);
+}
+.stat-icon.red {
+    background: rgb(250, 104, 104, 0.3);
+}
+.stat-icon.pink {
+    background: rgb(253, 121, 121, 0.3);
+}
+
+.stat-value {
+    font-size: 32px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    color: #666;
+    font-size: 14px;
+}
+
+.stat-change {
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+    .stat-change.positive {
+        color: #28a745;
+    }
+
+    .stat-change.negative {
+        color: #dc3545;
+    }
+
+/* Quick action - Charts */
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.chart-cart a{
+    border-radius: 10px;
+    color: white;
+}
+
+.btn.blue{
+    background: #1E93AB;
+}
+.btn.green{
+    background: #06923E;
+}
+.btn.orange {
+    background: #E67514;
+}
+.btn.red {
+    background: #ED3500;
+}
+
+/* Tables */
+.table {
+    table-layout: fixed;
+}
+
+.table th:nth-child(n+3),
+.table td:nth-child(n+3){
+    text-align: center;
+}
+
+.table td,
+.table th {
+    vertical-align: middle;
+}
+
+/* top xe */
+.status-xe {
+    padding: 5px 12px;
+    border-radius: 15px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.status-xe::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+        .status-ready {
+            color: #16A34A;
+        }
+
+        .status-ready::before {
+            background: #22C55E;
+        }
+
+        .status-renting {
+            color: #2563EB;
+        }
+
+        .status-renting::before {
+            background: #3B82F6;
+        }
+
+        .status-broken {
+            color: #DC2626;
+        }
+
+        .status-broken::before {
+            background: #EF4444;
+        }
+
+        .status-maintenance {
+            color: #D97706;
+        }
+        .status-maintenance::before {
+            background: #F59E0B;
+        }
+        .status-deleted{
+            color: #333;
+        }
+        .status-deleted::before{
+            background: #666;
+        }
+/* hợp đồng gần đây */
+.status-hopdong {
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+    .status-waiting {
+        background: #FFF3CD;
+        color: #856404;
+    }
+    .status-confirmed {
+    background: #EDE9FE;
+        color: #5B21B6;
+    }
+    .status-completed {
+        background: #D4EDDA;
+        color: #155724;
+    }
+    .status-finished {
+        background: #CCE5FF;
+        color: #004085;
+    }
+
+/* Top Vehicles Chart Styling */
+.chart-card .chart-header .bi-trophy {
+    font-size: 1.1em;
+    margin-right: 8px;
+}
+
+#topVehiclesChart {
+    max-height: 300px !important;
+    height: auto !important;
+}
+
+    /* Đảm bảo chart container có chiều cao phù hợp */
+    #topVehiclesChart.chart-container {
+        height: 250px;
+    }
+

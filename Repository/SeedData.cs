@@ -186,12 +186,6 @@ namespace bikey.Repository
                             CanDeleteHoaDon = true,
                             CanPrintHoaDon = true,
 
-                            CanManageNhanVien = true,
-                            CanViewNhanVien = true,
-                            CanCreateNhanVien = true,
-                            CanEditNhanVien = true,
-                            CanDeleteNhanVien = true,
-
                             CanManageUser = true,
                             CanViewUser = true,
                             CanCreateUser = true,
@@ -203,13 +197,6 @@ namespace bikey.Repository
                             CanCreateBanner = true,
                             CanEditBanner = true,
                             CanDeleteBanner = true,
-
-                            CanManageThietHai = true,
-                            CanViewThietHai = true,
-                            CanCreateThietHai = true,
-                            CanEditThietHai = true,
-                            CanDeleteThietHai = true,
-                            CanThanhToanThietHai = true,
 
                             CanViewBaoCao = true,
                             CanViewThongKe = true,
@@ -258,12 +245,6 @@ namespace bikey.Repository
                             CanDeleteHoaDon = false,
                             CanPrintHoaDon = true,
 
-                            CanManageNhanVien = false,
-                            CanViewNhanVien = false,
-                            CanCreateNhanVien = false,
-                            CanEditNhanVien = false,
-                            CanDeleteNhanVien = false,
-
                             CanManageUser = true,
                             CanViewUser = true,
                             CanCreateUser = true,
@@ -275,13 +256,6 @@ namespace bikey.Repository
                             CanCreateBanner = true,
                             CanEditBanner = true,
                             CanDeleteBanner = true,
-
-                            CanManageThietHai = true,
-                            CanViewThietHai = true,
-                            CanCreateThietHai = true,
-                            CanEditThietHai = true,
-                            CanDeleteThietHai = true,
-                            CanThanhToanThietHai = true,
 
                             CanViewBaoCao = true,
                             CanViewThongKe = true,

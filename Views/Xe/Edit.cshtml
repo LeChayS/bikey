@@ -1,0 +1,278 @@
+@model bikey.Models.Xe
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/xe/edit.css" asp-append-version="true"/>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="/js/xe/edit.js"></script>
+}
+
+<!-- Header -->
+<div class="form-header">
+</div>
+
+<!-- Top Header -->
+<div class="top-header">
+    <div>
+        <h1>Chỉnh Sửa Thông Tin Xe</h1>
+        <p>Cập nhật thông tin xe trong hệ thống</p>
+    </div>
+    <a asp-action="Index" class="btn btn-primary">
+        <i class="bi bi-arrow-left"></i> Quay lại
+    </a>
+</div>
+
+<div class="wrapper">
+    <div class="container-fluid">
+
+        @* <div class="info-badge">
+            <i class="bi bi-info-circle"></i> Mã xe: #XE012
+        </div> *@
+
+        <!-- Form Body -->
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+            <input type="hidden" asp-for="MaXe" />
+            <!-- Removed hidden field for HinhAnhXe as it's no longer needed -->
+
+            <div class="vehicle-grid">
+                <!-- Cột trái -->
+                <div>
+                    <!-- mã xe -->
+                    <div class="mb-4">
+                        <label asp-for="MaXe" class="form-label">
+                            Mã xe
+                        </label>
+                        <input class="form-control" value="#XE012" readonly/>
+                    </div>
+
+                    <!-- Tên xe -->
+                    <div class="mb-4">
+                        <label asp-for="TenXe" class="form-label">
+                            Tên xe
+                            <span class="required">*</span>
+                        </label>
+                        <input asp-for="TenXe" class="form-control" placeholder="Ví dụ: Wave Alpha 110cc" />
+                        <span asp-validation-for="TenXe" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Biển số -->
+                    <div class="mb-4">
+                        <label asp-for="BienSoXe" class="form-label">
+                            Biển số
+                            <span class="required">*</span>
+                        </label>
+                        <input asp-for="BienSoXe" class="form-control" />
+                        <span asp-validation-for="BienSoXe" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Hãng xe -->
+                    <div class="mb-4">
+                        <label asp-for="HangXe" class="form-label">
+                            Hãng xe
+                            <span class="required">*</span>
+                        </label>
+                        <input asp-for="HangXe" class="form-control" placeholder="Ví dụ: Honda, Yamaha, Suzuki" />
+                        <span asp-validation-for="HangXe" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Dòng xe -->
+                    <div class="mb-4">
+                        <label asp-for="DongXe" class="form-label">
+                            Dòng xe
+                            <span class="required">*</span>
+                        </label>
+                        <input asp-for="DongXe" class="form-control" placeholder="Ví dụ: Wave Alpha, Vision, Air Blade" />
+                        <span asp-validation-for="DongXe" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Loại xe -->
+                    <div class="mb-4">
+                        <label asp-for="MaLoaiXe" class="form-label">
+                            Loại xe
+                            <span class="required">*</span>
+                        </label>
+                        <select asp-for="MaLoaiXe" class="form-select" asp-items="ViewBag.MaLoaiXe">
+                            <option value="">-- Chọn loại xe --</option>
+                        </select>
+                        <span asp-validation-for="MaLoaiXe" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Giá thuê -->
+                    <div class="mb-4">
+                        <label asp-for="GiaThue" class="form-label">
+                            Giá thuê/ngày
+                            <span class="required">*</span>
+                        </label>
+                        <div class="input-group">
+                            <input asp-for="GiaThue" class="form-control" placeholder="Ví dụ: 150000" />
+                            <span class="input-group-text">VNĐ/ngày</span>
+                        </div>
+                        <span asp-validation-for="GiaThue" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Trạng thái -->
+                    <div class="mb-4">
+                        <label asp-for="TrangThai" class="form-label">
+                            trạng thái
+                            <span class="required">*</span>
+                        </label>
+                        <select asp-for="TrangThai" class="form-select" asp-items="ViewBag.TrangThaiList">
+                            <option value="">-- Chọn trạng thái --</option>
+                        </select>
+                        <span asp-validation-for="TrangThai" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <!-- Cột phải -->
+                <div>
+                    <!-- Hình ảnh chính -->
+                    <div class="mb-4">
+                        <label class="form-label">
+                            Hình ảnh chính
+                        </label>
+                        <div class="image-preview-container" onclick="document.getElementById('hinhAnh').click()">
+                            <input type="file" name="hinhAnh" id="hinhAnh" accept="image/*" style="display:none" onchange="previewMainImage(event)" />
+                            <div id="preview-content">
+                                @* @if (!string.IsNullOrEmpty(Model.HinhAnhHienThi))
+                                {
+                                    <img src="~/images/xe/@Model.HinhAnhHienThi" alt="@Model.TenXe" /> *@
+                                    <span class="current-image-badge">Ảnh hiện tại</span>
+                                @* }
+                                else
+                                { *@
+                                    <div>
+                                        <i class="bi bi-cloud-upload" style="font-size:60px;color:#ddd;"></i>
+                                        <p class="mb-0">Click để chọn ảnh</p>
+                                    </div>
+                                @* } *@
+                            </div>
+                        </div>
+                        <small class="text-muted">Click vào ảnh để thay đổi</small>
+                    </div>
+
+                    <!-- Image Management Section -->
+                    <div class="image-management-section">
+                        <label class="form-label">
+                            Quản lý hình ảnh xe
+                            <span class="badge bg-info">10 ảnh</span>
+                        </label>
+
+                        <!-- Existing Images -->
+                        @* @if (Model.HinhAnhXes != null && Model.HinhAnhXes.Any())
+                        { *@
+                            <div class="existing-images-grid">
+                                @* @foreach (var hinh in Model.HinhAnhXes)
+                                { *@
+                                    <div class="image-item main-image">
+                                        @* @if (hinh.LaAnhChinh)
+                                        { *@
+                                            <div class="main-badge">
+                                                <i class="bi bi-star-fill"></i> Chính
+                                            </div>
+                                        @* } *@
+                                        <div class="image-order">#3</div>
+
+                                        @* <img src="~/images/xe/@hinh.TenFile" alt="@hinh.MoTa" /> *@
+                                        <div style="background:black; height:100px;"></div>
+                                        <div class="image-info">
+                                            <input type="text" class="description-input"
+                                                placeholder="Mô tả hình ảnh..."/>
+
+                                            <div class="image-actions">
+                                            </div>
+
+                                            <div class="mt-1">
+                                                <small class="text-muted">
+                                                    <i class="bi bi-calendar3"></i> 12/12/1212
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="image-item">
+                                        <div class="image-order">#1</div>
+
+                                        @* <img src="~/images/xe/@hinh.TenFile" alt="@hinh.MoTa" /> *@
+
+                                        <div class="image-info">
+                                            <input type="text" class="description-input"
+                                                placeholder="Mô tả hình ảnh..."/>
+
+                                            <div class="image-actions">
+                                                @* @if (!hinh.LaAnhChinh)
+                                                { *@
+                                                    <button type="button" class="btn btn-success btn-sm"
+                                                        title="Đặt làm ảnh chính">
+                                                        <i class="bi bi-star"></i>
+                                                    </button>
+                                                @* }
+
+                                                @if (!hinh.LaAnhChinh)
+                                                { *@
+                                                    <button type="button" class="btn btn-danger btn-sm"
+                                                        title="Xóa ảnh">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                @* } *@
+                                            </div>
+
+                                            <div class="mt-1">
+                                                <small class="text-muted">
+                                                    <i class="bi bi-calendar3"></i> 12/12/1212
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @* } *@
+                            </div>
+                        @* }
+                        else
+                        { *@
+                            <div class="no-images-message">
+                                <i class="bi bi-images" style="font-size: 48px; color: #ddd;"></i>
+                                <p>Chưa có hình ảnh nào được thêm vào xe này</p>
+                            </div>
+                        @* } *@
+
+                        <!-- Add New Images -->
+                        <div class="multi-image-upload" id="multiImageUpload">
+                            <input type="file" name="hinhAnhKhac" id="hinhAnhKhac" accept="image/*" multiple
+                                style="display:none" onchange="previewMultipleImages(event)" />
+                            <i class="bi bi-plus-circle" style="font-size: 48px; color: #ddd;"></i>
+                            <p class="mb-2 mt-2"><strong>Thêm hình ảnh mới</strong></p>
+                            <p class="text-muted mb-0">Kéo thả hoặc click để chọn nhiều hình ảnh</p>
+                        </div>
+
+                        <div class="new-image-preview-grid" id="newImagePreviewGrid"></div>
+
+                        <div class="upload-stats" id="uploadStats" >
+                            <i class="bi bi-info-circle"></i>
+                            <span id="statsText">Chưa có hình ảnh nào được chọn</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="d-flex justify-content-end mt-4 gap-2">
+                <a asp-action="Delete" class="btn btn-danger btn-lg align-content-center">
+                    <i class="bi bi-trash"></i> Xóa xe
+                </a>
+
+                <button type="submit" class="btn btn-primary btn-lg btn-update">
+                    <i class="bi bi-save"></i> Cập nhật
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>

@@ -1,0 +1,29 @@
+
+<style>
+    .modal-header{
+    background: #dc3545 !important;
+    color: white;
+    }
+</style>
+
+<div class="modal fade" id="denyHopdong" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Xác nhận Hủy</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <h5>Bạn có chắc chắn muốn từ chối Phiếu đặt chỗ này?</h5>
+                <small class="text-muted">Phiếu đặt chỗ sẽ bị xóa và không thể hoàn tác</small>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button class="btn btn-danger" asp-action="Create"><i class="bi bi-check-circle"></i> Hủy đơn</button>
+            </div>
+        </div>
+    </div>
+</div>

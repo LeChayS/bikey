@@ -40,13 +40,6 @@ namespace bikey.Models
         public bool CanDeleteHoaDon { get; set; } = false;
         public bool CanPrintHoaDon { get; set; } = false;
 
-        // Quyền quản lý nhân viên
-        public bool CanManageNhanVien { get; set; } = false;
-        public bool CanViewNhanVien { get; set; } = false;
-        public bool CanCreateNhanVien { get; set; } = false;
-        public bool CanEditNhanVien { get; set; } = false;
-        public bool CanDeleteNhanVien { get; set; } = false;
-
         // Quyền quản lý người dùng
         public bool CanManageUser { get; set; } = false;
         public bool CanViewUser { get; set; } = false;
@@ -60,14 +53,6 @@ namespace bikey.Models
         public bool CanCreateBanner { get; set; } = false;
         public bool CanEditBanner { get; set; } = false;
         public bool CanDeleteBanner { get; set; } = false;
-
-        // Quyền quản lý thiệt hại
-        public bool CanManageThietHai { get; set; } = false;
-        public bool CanViewThietHai { get; set; } = true;
-        public bool CanCreateThietHai { get; set; } = false;
-        public bool CanEditThietHai { get; set; } = false;
-        public bool CanDeleteThietHai { get; set; } = false;
-        public bool CanThanhToanThietHai { get; set; } = false;
 
         // Quyền báo cáo thống kê
         public bool CanViewBaoCao { get; set; } = false;

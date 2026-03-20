@@ -1,0 +1,165 @@
+/* Badge thông báo cho sidebar menu */
+.sidebar-notification-badge {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    background: linear-gradient(135deg, #ff4757 0%, #ff3838 100%);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: bold;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-shadow: 0 2px 6px rgba(255, 71, 87, 0.4);
+    border: 2px solid white;
+    animation: pulse-sidebar 2s infinite;
+    z-index: 10;
+}
+
+/* Thêm thuộc tính để sidebar có thể cuộn dọc */
+.sidebar {
+    height: 100vh;
+    overflow-y: auto;
+}
+    /* Scrollbar cho Chrome, Edge, Safari */
+    .sidebar::-webkit-scrollbar {
+        width: 8px;
+        background: #f1f1f1;
+        border-radius: 8px;
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, #2563eb 0%, #1e3a5f 100%);
+        border-radius: 8px;
+    }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        }
+/* Scrollbar cho Firefox */
+.sidebar {
+    scrollbar-width: thin;
+    scrollbar-color: #2563eb #f1f1f1;
+}
+
+@@keyframes pulse-sidebar {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 2px 6px rgba(255, 71, 87, 0.4);
+    }
+
+    50% {
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(255, 71, 87, 0.6);
+    }
+}
+
+@@keyframes pulse-sidebar-warning {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 2px 6px rgba(255, 167, 38, 0.4);
+    }
+
+    50% {
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(255, 167, 38, 0.6);
+    }
+}
+
+/* Đảm bảo sidebar menu item có đủ không gian cho badge */
+.sidebar-menu li a {
+    position: relative;
+    padding-right: 45px !important; /* Tăng padding bên phải để có chỗ cho badge */
+}
+
+/* Responsive cho badge trên màn hình nhỏ */
+@@media (max-width: 768px) {
+    .sidebar-notification-badge {
+        width: 18px;
+        height: 18px;
+        font-size: 9px;
+        right: 8px;
+        top: 6px;
+    }
+}
+
+
+/* Sidebar Styles */
+.sidebar {
+    min-height: 100vh;
+    background-color: white;
+    color: white !important;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 250px;
+    z-index: 1100;
+    transition: all 0.3s;
+}
+
+.sidebar-header {
+    padding: 20px;
+    background-color: #5a88eb;
+    text-align: center;
+}
+
+.sidebar-header h3 {
+    margin: 0;
+    font-size: 24px;
+    transition: all 0.3s;
+}
+
+.sidebar-menu {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.sidebar-menu li {
+    position: relative;
+}
+
+.sidebar-menu a {
+    display: block;
+    color: rgb(4, 4, 78) !important;
+    text-decoration: none;
+    padding: 15px 20px;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.sidebar-menu a:hover,
+.sidebar-menu a.active {
+    background-color: #2563eb !important;
+    border-left: 4px solid #93c5fd !important;
+    color: white !important;
+}
+
+.sidebar-menu i {
+    font-size: 20px;
+    width: 20px;
+    text-align: center;
+}
+
+/* .collapsed sidebar */
+.sidebar.collapsed {
+    width: 70px;
+}
+
+.sidebar.collapsed .menu-text {
+    display: none;
+}
+
+.sidebar.collapsed .sidebar-header{
+    background-color: white;
+}
+
+.sidebar.collapsed .sidebar-header h3 {
+    font-size: 0;
+}

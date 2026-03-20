@@ -1,0 +1,133 @@
+﻿.top-header {
+    padding: 20px 50px;
+}
+
+.wrapper {
+    padding: 0px 50px;
+    margin-bottom: 30px;
+}
+
+.container-fluid {
+    background-color: white;
+    padding: 30px;
+    border-radius: 30px;
+    margin-bottom: 30px;
+}
+
+/* Stat cards */
+.stat-card {
+    background: white;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: top;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+}
+
+.stat-card.blue {
+    background: rgb(158, 198, 243, 0.3);
+}
+
+.stat-card.orange {
+    background: rgb(250, 206, 104, 0.3);
+}
+
+.stat-card.green {
+    background: rgb(199, 234, 187, 0.3);
+}
+
+.stat-card.purple {
+    background: rgb(203, 157, 240, 0.3);
+}
+
+.stat-card.red {
+    background: rgb(250, 104, 104, 0.3);
+}
+
+.stat-card.pink {
+    background: rgb(253, 121, 121, 0.3);
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.stat-icon i {
+    font-size: 25px;
+    color: black;
+}
+
+.stat-icon.blue {
+    background: rgb(158, 198, 243, 0.3);
+}
+
+.stat-icon.orange {
+    background: rgb(250, 206, 104, 0.3);
+}
+
+.stat-icon.green {
+    background: rgb(199, 234, 187, 0.3);
+}
+
+.stat-icon.purple {
+    background: rgb(203, 157, 240, 0.3);
+}
+
+.stat-icon.red {
+    background: rgb(250, 104, 104, 0.3);
+}
+
+.stat-icon.pink {
+    background: rgb(253, 121, 121, 0.3);
+}
+
+.stat-value {
+    font-size: 32px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    color: #666;
+    font-size: 14px;
+}
+
+/* filter */
+.filter-section {
+    margin-bottom: 30px;
+}
+
+/* table */
+.table {
+    table-layout: fixed;
+}
+
+.table td,
+.table th {
+    vertical-align: middle;
+}
+
+.status-badge {
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 15px;
+    font-weight: 500;
+}
+.completed{
+    color: #155724;
+    background
