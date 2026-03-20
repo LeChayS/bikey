@@ -12,26 +12,6 @@ namespace bikey.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Banner",
-                columns: table => new
-                {
-                    MaBanner = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TieuDe = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    MoTa = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    HinhAnh = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    LinkLienKet = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    ThuTu = table.Column<int>(type: "int", nullable: false),
-                    TrangThai = table.Column<bool>(type: "bit", nullable: false),
-                    NgayTao = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    NgayCapNhat = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Banner", x => x.MaBanner);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "LoaiXe",
                 columns: table => new
                 {
@@ -426,9 +406,6 @@ namespace bikey.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Banner");
-
             migrationBuilder.DropTable(
                 name: "ChiTietHopDong");
 

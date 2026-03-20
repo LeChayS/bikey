@@ -177,9 +177,9 @@
                         Thông Tin Xe
                         @* @if (ViewBag.HasContracts == true)
                         { *@
-                            <span class="history-indicator float-end">
-                                <i class="bi bi-clock-history"></i> Có lịch sử thuê
-                            </span>
+                        <span class="history-indicator float-end">
+                            <i class="bi bi-clock-history"></i> Có lịch sử thuê
+                        </span>
                         @* } *@
                     </h5>
 
@@ -258,7 +258,7 @@
             </div>
 
             <div class="modal-body">
-                <div class="xe-details-info-card">
+                <div class="xe-details-info-card mb-3">
                     <h4><i class="bi bi-info-circle"></i> Thông tin cơ bản</h4>
                     <div class="xe-details-info-grid">
                         <div class="xe-details-info-item">
@@ -284,6 +284,37 @@
                         <div class="xe-details-info-item">
                             <span class="xe-details-info-label">Loại xe</span>
                             <span class="xe-details-info-value" id="xeLoaiXe">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status -->
+                <div class="xe-details-info-card mb-3">
+                    <h4><i class="bi bi-flag"></i> Trạng thái</h4>
+                    <div id="xeTrangThaiContainer">
+                        <!-- Status badge will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Financial Info -->
+                <div class="xe-details-info-card mb-3">
+                    <h4><i class="bi bi-currency-dollar"></i> Thông tin tài chính</h4>
+                    <div class="xe-details-info-grid">
+                        <div class="xe-details-info-item">
+                            <span class="xe-details-info-label">Giá thuê/ngày</span>
+                            <span class="xe-details-info-value" id="xeGiaThue">-</span>
+                        </div>
+                        <div class="xe-details-info-item">
+                            <span class="xe-details-info-label">Giá trị xe</span>
+                            <span class="xe-details-info-value" id="xeGiaTriXe">-</span>
+                        </div>
+                        <div class="xe-details-info-item">
+                            <span class="xe-details-info-label">Tổng chi phí</span>
+                            <span class="xe-details-info-value" id="xeTongChiPhi">-</span>
+                        </div>
+                        <div class="xe-details-info-item">
+                            <span class="xe-details-info-label">Chi phí sửa chữa</span>
+                            <span class="xe-details-info-value" id="xeChiPhiSuaChua">-</span>
                         </div>
                     </div>
                 </div>
