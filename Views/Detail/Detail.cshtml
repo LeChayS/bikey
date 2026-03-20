@@ -1,0 +1,129 @@
+@model ChiTietXeViewModel
+
+@{
+    ViewData["Title"] = "Chi Tiet Xe";
+    var coAnhThucTe = Model.HinhAnh.Count > 0;
+}
+
+<section class="bike-detail-page py-5">
+    <div class="container">
+        <div class="bike-detail-card">
+            <div class="row g-4 align-items-start">
+                <div class="col-lg-6">
+                    <div class="bike-detail-gallery">
+                        <div class="bike-detail-gallery__main">
+                            @if (coAnhThucTe)
+                            {
+                                <img src="@Model.HinhAnh[0]" alt="@Model.TenXe" class="bike-detail-gallery__image" />
+                            }
+                            else
+                            {
+                                <div class="bike-detail-gallery__placeholder">
+                                    <div class="bike-detail-gallery__badge">BIKEY</div>
+                                    <i class="bi bi-scooter"></i>
+                                    <strong>@Model.TenXe</strong>
+                                    <span>@Model.HangXe - @Model.DongXe</span>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="bike-detail-gallery__thumbs">
+                            @if (coAnhThucTe)
+                            {
+                                @foreach (var hinhAnh in Model.HinhAnh.Take(3))
+                                {
+                                    <div class="bike-detail-thumb">
+                                        <img src="@hinhAnh" alt="@Model.TenXe" class="bike-detail-thumb__image" />
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="bike-detail-thumb bike-detail-thumb--placeholder">
+                                    <i class="bi bi-image"></i>
+                                </div>
+                                <div class="bike-detail-thumb bike-detail-thumb--brand">
+                                    @Model.HangXe
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="bike-detail-content">
+                        <div class="bike-detail-title-block">
+                            <div class="bike-detail-title-line"></div>
+                            <h1>@Model.TenXe</h1>
+                            <button type="button" class="bike-detail-share-btn">
+                                <i class="bi bi-share"></i> Chia se
+                            </button>
+                        </div>
+
+                        <div class="bike-detail-price-card">
+                            <span>Gia thue tu:</span>
+                            <strong>@Model.GiaThue.ToString("N0") VND / ngay</strong>
+                        </div>
+
+                        <div class="bike-detail-info-card">
+                            <div class="bike-detail-info-row">
+                                <span><i class="bi bi-tag"></i> Hang xe:</span>
+                                <strong>@Model.HangXe</strong>
+                            </div>
+                            <div class="bike-detail-info-row">
+                                <span><i class="bi bi-bicycle"></i> Dong xe:</span>
+                                <strong>@Model.DongXe</strong>
+                            </div>
+                            <div class="bike-detail-info-row">
+                                <span><i class="bi bi-grid"></i> Loai xe:</span>
+                                <strong>@Model.LoaiXe</strong>
+                            </div>
+                            <div class="bike-detail-info-row">
+                                <span><i class="bi bi-credit-card-2-front"></i> Bien so:</span>
+                                <strong>@Model.BienSoXe</strong>
+                            </div>
+                            <div class="bike-detail-info-row">
+                                <span><i class="bi bi-check-circle"></i> Trang thai:</span>
+                                <strong>
+                                    <span class="status-pill @(Model.CoTheDatXe ? "success" : "pending")">@Model.TrangThaiHienThi</span>
+                                </strong>
+                            </div>
+                        </div>
+
+                        @if (Model.CoTheDatXe)
+                        {
+                            <a asp-controller="DatXe" asp-action="Create" asp-route-maXe="@Model.MaXe" class="bike-detail-action-btn bike-detail-action-btn--primary">
+                                <i class="bi bi-calendar-check"></i> Dat xe ngay
+                            </a>
+                        }
+                        else
+                        {
+                            <button type="button" class="bike-detail-action-btn bike-detail-action-btn--disabled" disabled>
+                                <i class="bi bi-x-circle"></i> Xe dang duoc thue
+                            </button>
+                        }
+
+                        <div class="bike-detail-note-card">
+                            <h2><i class="bi bi-info-circle"></i> Yeu cau thue xe</h2>
+                            <p class="bike-detail-hotline">
+                                <i class="bi bi-telephone"></i> Hotline: 0908.428.642 / 0908.630.065
+                            </p>
+
+                            <ul class="bike-detail-rule-list">
+                                <li>Nguoi duoi 18 tuoi khong duoc phep thue xe.</li>
+                                <li>Khi thue xe ban duoc cap 2 mu bao hiem, mac dinh la 1.</li>
+                                <li>Bat buoc phai dat coc khi nhan xe, hoan tra day du khi tra xe.</li>
+                                <li>Giao xe tan noi trong noi thanh TP.HCM, co the phat sinh phi dich vu.</li>
+                            </ul>
+                        </div>
+
+                        <div class="bike-detail-description-card">
+                            <h2>Mo ta xe</h2>
+                            <p>@Model.MoTa</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,51 +1,31 @@
-﻿// Tab switching functionality
-document.querySelectorAll(".tab-btn").forEach((btn) => {
-    btn.addEventListener("click", function () {
-        document
-            .querySelectorAll(".tab-btn")
-            .forEach((b) => b.classList.remove("active"));
-        this.classList.add("active");
-    });
-});
+document.addEventListener("DOMContentLoaded", () => {
+    const navbar = document.querySelector(".main-navbar");
+    const navCollapse = document.querySelector(".navbar-collapse");
+    const navLinks = document.querySelectorAll(".navbar-nav .nav-link");
 
-// Sticky navbar with scroll effect
-window.addEventListener("scroll", function () {
-    const navbar = document.querySelector(".navbar");
-    if (window.scrollY > 50) {
-        navbar.classList.add("scrolled");
-    } else {
-        navbar.classList.remove("scrolled");
+    if (!navbar) {
+        return;
     }
-});
 
-// Cart functionality
-$(document).ready(function () {
-    loadCartCount();
-});
-
-function loadCartCount() {
-    $.ajax({
-        url: '@Url.Action("GetItemCount", "Cart")',
-        type: 'GET',
-        success: function (response) {
-            updateCartBadge(response.count);
-        },
-        error: function () {
-            console.log('Error loading cart count');
+    const toggleNavbarShadow = () => {
+        if (window.scrollY > 16) {
+            navbar.classList.add("scrolled");
+        } else {
+            navbar.classList.remove("scrolled");
         }
+    };
+
+    toggleNavbarShadow();
+    window.addEventListener("scroll", toggleNavbarShadow);
+
+    navLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+            if (!navCollapse?.classList.contains("show")) {
+                return;
+            }
+
+            const collapseInstance = bootstrap.Collapse.getInstance(navCollapse);
+            collapseInstance?.hide();
+        });
     });
-}
-
-function updateCartBadge(count) {
-    const badge = $('.cart-badge');
-    if (count > 0) {
-        badge.text(count).show();
-    } else {
-        badge.hide();
-    }
-}
-
-function updateCartCountDisplay() {
-    // Function to be called from other scripts to update cart count
-    loadCartCount();
-}
+});

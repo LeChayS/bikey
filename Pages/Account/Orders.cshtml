@@ -1,0 +1,58 @@
+@page
+@model bikey.Pages.Account.OrdersModel
+@{
+    ViewData["Title"] = "Lich su don hang";
+}
+
+<section class="account-page py-5">
+    <div class="container">
+        <div class="account-panel">
+            <div class="account-panel__header">
+                <h1>Lịch sử đơn hàng</h1>
+            </div>
+
+            <div class="order-summary-grid mt-4">
+                <div class="profile-item">
+                    <span>Tổng đơn hàng</span>
+                    <strong>@Model.TotalOrders</strong>
+                </div>
+                <div class="profile-item">
+                    <span>Đơn đang xử lý</span>
+                    <strong>@Model.ProcessingOrders</strong>
+                </div>
+            </div>
+
+            <div class="order-list mt-4">
+                @if (Model.Orders.Count == 0)
+                {
+                    <div class="profile-item">
+                        <span>Đơn hàng</span>
+                        <strong>Bạn chưa có đơn đặt xe nào.</strong>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var order in Model.Orders)
+                    {
+                        <article class="order-card">
+                            <div>
+                                <h2>@order.MaDon</h2>
+                                <p>@order.TenXe - @order.ThoiGianThue</p>
+                                <ul class="order-detail-list">
+                                    <li>Ngày đặt: @order.NgayDat</li>
+                                    <li>Nhận xe: @order.NgayNhan</li>
+                                    <li>Trả xe: @order.NgayTra</li>
+                                </ul>
+                            </div>
+
+                            <div class="order-meta">
+                                <span class="status-pill @order.StatusCssClass">@order.TrangThai</span>
+                                <strong>@order.TongTien</strong>
+                            </div>
+                        </article>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</section>

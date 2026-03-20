@@ -1,0 +1,49 @@
+@model DatCho
+
+@{
+    ViewData["Title"] = "Dat Xe Thanh Cong";
+}
+
+<section class="account-page py-5">
+    <div class="container">
+        <div class="account-panel">
+            <div class="account-panel__header">
+                <span class="eyebrow">Yeu cau da duoc gui</span>
+                <h1>Dat xe thanh cong</h1>
+                <p>@TempData["BookingSuccessMessage"]</p>
+            </div>
+
+            <div class="booking-summary-grid mt-4">
+                <div class="profile-item">
+                    <span>Ma don dat cho</span>
+                    <strong>#@Model.MaDatCho</strong>
+                </div>
+                <div class="profile-item">
+                    <span>Trang thai</span>
+                    <strong>@Model.TrangThai</strong>
+                </div>
+                <div class="profile-item">
+                    <span>Ten xe</span>
+                    <strong>@Model.Xe?.TenXe</strong>
+                </div>
+                <div class="profile-item">
+                    <span>Khach hang</span>
+                    <strong>@Model.HoTen</strong>
+                </div>
+                <div class="profile-item">
+                    <span>Thoi gian du kien</span>
+                    <strong>@Model.NgayNhanXe.ToString("dd/MM/yyyy") - @Model.NgayTraXe.ToString("dd/MM/yyyy")</strong>
+                </div>
+                <div class="profile-item">
+                    <span>Tong tien du kien</span>
+                    <strong>@Model.TongTienDuKien.ToString("N0") VND</strong>
+                </div>
+            </div>
+
+            <div class="account-panel-footer mt-4">
+                <a asp-page="/Account/Orders" class="btn btn-outline-primary">Xem lich su don hang</a>
+                <a asp-controller="TrangChu" asp-action="DanhSachXe" class="btn btn-primary">Tiep tuc dat xe</a>
+            </div>
+        </div>
+    </div>
+</section>

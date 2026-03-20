@@ -1,8 +1,92 @@
-﻿@{
-    ViewData["Title"] = "Trang Chủ";
+@model TrangChuViewModel
+
+@{
+    ViewData["Title"] = "Trang Chu";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="home-hero" id="gioi-thieu">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-7">
+                <h1>Chọn nhanh chiếc xe phù hợp với bạn</h1>
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <strong>20+</strong>
+                        <span>Mẫu xe sẵn sàng</span>
+                    </div>
+                    <div class="hero-stat">
+                        <strong>15 phut</strong>
+                        <span>Hỗ trợ nhanh chóng</span>
+                    </div>
+                    <div class="hero-stat">
+                        <strong>24/7</strong>
+                        <span>Tư vấn đặt xe</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="bike-list-section py-5" id="danh-sach-xe">
+    <div class="container">
+        <div class="section-header text-center">
+            <h2>Danh sách xe sẵn sàng</h2>
+        </div>
+
+<div class="row g-4">
+            @foreach (var xe in Model.DanhSachXe)
+            {
+                <div class="col-md-6 col-xl-4" id="@xe.Slug">
+                    <article class="bike-card bike-card--catalog">
+                        <div class="bike-thumbnail">
+                            <i class="bi @xe.BieuTuong"></i>
+                        </div>
+                        <div class="bike-info">
+                            <div class="bike-meta">
+                                <span class="bike-tag">@xe.LoaiXe</span>
+                            </div>
+
+                            <h3 class="bike-name">@xe.TenXe</h3>
+                            <div class="bike-card__footer">
+                                <div class="bike-price">@xe.GiaTheoNgay</div>
+                                <div class="bike-actions">
+                                    <a asp-controller="DatXe" asp-action="Create" asp-route-maXe="@xe.MaXe" class="btn btn-primary">Đặt xe</a>
+                                    <a asp-controller="Detail" asp-action="Detail" asp-route-slug="@xe.Slug" class="btn btn-outline-primary">Xem chi tiết</a>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="info-strip py-5" id="tin-tuc">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="info-card">
+                    <i class="bi bi-check2-circle"></i>
+                    <h3>Thủ tục nhanh</h3>
+                    <p>Xác nhận thông tin nhanh, phù hợp cho nhu cầu cần xe gặp.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="info-card">
+                    <i class="bi bi-truck"></i>
+                    <h3>Nhận xe như hình</h3>
+                    <p>Nhận xe như hình, không sai lệch về mặt hình ảnh.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="info-card">
+                    <i class="bi bi-headset"></i>
+                    <h3>Hỗ trợ tại nơi</h3>
+                    <p>Tư vấn mẫu xe phù hợp, linh hoạt theo lịch trình và ngân sách.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

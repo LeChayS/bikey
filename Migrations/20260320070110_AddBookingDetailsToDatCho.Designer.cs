@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using bikey.Repository;
 
@@ -11,9 +12,11 @@ using bikey.Repository;
 namespace bikey.Migrations
 {
     [DbContext(typeof(BikeyDbContext))]
-    partial class BikeyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260320070110_AddBookingDetailsToDatCho")]
+    partial class AddBookingDetailsToDatCho
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,49 @@ namespace bikey.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("bikey.Models.Banner", b =>
+                {
+                    b.Property<int>("MaBanner")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaBanner"));
+
+                    b.Property<string>("HinhAnh")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("LinkLienKet")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("MoTa")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime?>("NgayCapNhat")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("NgayTao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ThuTu")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TieuDe")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<bool>("TrangThai")
+                        .HasColumnType("bit");
+
+                    b.HasKey("MaBanner");
+
+                    b.ToTable("Banner");
+                });
 
             modelBuilder.Entity("bikey.Models.ChiTietHopDong", b =>
                 {
@@ -423,6 +469,12 @@ namespace bikey.Migrations
                     b.Property<bool>("CanCreateLoaiXe")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("CanCreateNhanVien")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CanCreateThietHai")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("CanCreateUser")
                         .HasColumnType("bit");
 
@@ -447,6 +499,12 @@ namespace bikey.Migrations
                     b.Property<bool>("CanDeleteLoaiXe")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("CanDeleteNhanVien")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CanDeleteThietHai")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("CanDeleteUser")
                         .HasColumnType("bit");
 
@@ -466,6 +524,12 @@ namespace bikey.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("CanEditLoaiXe")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CanEditNhanVien")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CanEditThietHai")
                         .HasColumnType("bit");
 
                     b.Property<bool>("CanEditUser")
@@ -495,6 +559,12 @@ namespace bikey.Migrations
                     b.Property<bool>("CanManageLoaiXe")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("CanManageNhanVien")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CanManageThietHai")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("CanManageUser")
                         .HasColumnType("bit");
 
@@ -505,6 +575,9 @@ namespace bikey.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("CanPrintHopDong")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CanThanhToanThietHai")
                         .HasColumnType("bit");
 
                     b.Property<bool>("CanUploadHinhAnhXe")
@@ -532,6 +605,12 @@ namespace bikey.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("CanViewLoaiXe")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CanViewNhanVien")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CanViewThietHai")
                         .HasColumnType("bit");
 
                     b.Property<bool>("CanViewThongKe")

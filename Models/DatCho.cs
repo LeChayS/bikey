@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace bikey.Models
@@ -30,6 +30,14 @@ namespace bikey.Models
         [Display(Name = "Số điện thoại")]
         [StringLength(20)]
         public string? SoDienThoai { get; set; }
+
+        [Display(Name = "Địa chỉ")]
+        [StringLength(255)]
+        public string? DiaChi { get; set; }
+
+        [Display(Name = "Căn cước công dân")]
+        [StringLength(12)]
+        public string? SoCanCuoc { get; set; }
 
         [Display(Name = "Email")]
         [StringLength(100)]
