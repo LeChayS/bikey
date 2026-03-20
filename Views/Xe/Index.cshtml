@@ -5,10 +5,8 @@
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/xe/index.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/css/shared/responsive.css" asp-append-version="true"/>
-    @* <link rel="stylesheet" href="~/css/custom-modal.css" /> *@
-    @* <link rel="stylesheet" href="~/css/xe/xe-details-modal.css" /> *@
+    <link rel="stylesheet" href="~/css/xe/index.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/shared/responsive.css" asp-append-version="true" />
 }
 
 @section Scripts {
@@ -163,7 +161,79 @@
 
 </div>
 
+@* modal thêm mới loại xe *@
+<div class="modal fade" id="createLoai" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
 
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-person-plus"></i> Thêm loại xe mới</h5>
+                <button type="button" class="btn-close  btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
 
+            <div class="modal-body">
+                <form asp-action="Create" method="post">
+                    <label class="form-label" for="createTenLoaiXe">Tên loại xe *</label>
+                    <input type="text" id="createTenLoaiXe" name="TenLoaiXe" class="form-input" required />
+                    <span id="createTenLoaiXeError" class="validation-error"></span>
+                </form>
+            </div>
 
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button class="btn btn-primary" asp-action="submit"><i class="bi bi-check-circle"></i> Thêm mới</button>
+            </div>
+        </div>
+    </div>
+</div>
 
+@* modal chỉnh sửa thông tin loại xe *@
+<div class="modal fade" id="editLoai" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-pencil-square"></i> Sửa loại xe</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <form asp-action="Edit" method="post">
+                    <input type="hidden" />
+                    <label class="form-label" for="editTenLoaiXe">Tên loại xe</label>
+                    <input type="text" id="editTenLoaiXe" name="TenLoaiXe" class="form-input" required />
+                    <span id="editTenLoaiXeError" class="validation-error"></span>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button class="btn btn-primary" asp-action="submit"><i class="bi bi-check-circle"></i> Lưu thay
+                    đổi</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* modal xóa tài khoản *@
+<div class="modal fade" id="deleteLoai" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-exclamation-circle"></i> Xóa loại xe</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <h5>Bạn có chắc chắn muốn xóa loại xe này?</h5>
+                <small class="text-muted">Loại xe bị xóa sẽ không thể khôi phục lại được</small>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button class="btn btn-danger" asp-action="submit"><i class="bi bi-check-circle"></i> Xóa loại xe</button>
+            </div>
+        </div>
+    </div>
+</div>
