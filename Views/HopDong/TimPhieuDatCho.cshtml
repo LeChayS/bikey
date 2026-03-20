@@ -5,6 +5,7 @@
 
 @section Styles {
     <link rel="stylesheet" href="/css/hopdong/timphieudatcho.css" asp-append-version="true" />
+    <link rel="stylesheet" href="/css/shared/Components/ordercard.css" asp-append-version="true"/>
 }
 
 @section Scripts {
@@ -57,98 +58,10 @@
                 {
                     @foreach (var phieu in (List<bikey.Models.DatCho>)ViewBag.DanhSachPhieu)
                     { *@
-            <div class="result-card">
 
-                <div class="result-card-header">
-                    <div>
-                        <div class="booking-code">Mã: DC000011</div>
-                        <p class="mb-0">Ngày đặt: 19/03/2026</p>
-                    </div>
-                    <span class="status-badge status-waiting">
-                        Chờ xác nhận
-                    </span>
-                </div>
+                        @await Component.InvokeAsync("OrderCard");
 
-                <div class="result-card-body">
-                    <div class="info-group">
-                        <div class="info-label">Khách hàng</div>
-                        <div class="info-value">tên khách</div>
-                    </div>
-
-                    <div class="info-group">
-                        <div class="info-label">Xe thuê</div>
-                        <div class="info-value">tên xe</div>
-                        <div class="text-muted small">
-                            Biển số: biển số xe<br />
-                        </div>
-                    </div>
-
-                    <div class="info-group">
-                        <div class="info-label">Thời gian thuê</div>
-                        <div class="info-value">
-                            Từ: 20/03/2026<br />
-                            Đến: 25/03/2026
-                        </div>
-                    </div>
-
-                    <div class="info-group">
-                        <div class="info-label">Tổng tiền dự kiến</div>
-                        <div class="info-value text-danger">200,000đ</div>
-                    </div>
-                </div>
-                <div class="result-card-actions">
-                    <a class="btn btn-create-contract" data-bs-toggle="modal" data-bs-target="#bannerModal">
-                        <i class=" bi bi-file-earmark-text"></i> Tạo hợp đồng
-                    </a>
-                </div>
-            </div>
-
-            <div class="result-card">
-
-                <div class="result-card-header">
-                    <div>
-                        <div class="booking-code">Mã: DC000011</div>
-                        <p class="mb-0">Ngày đặt: 19/03/2026</p>
-                    </div>
-                    <span class="status-badge status-holding">
-                        Đang giữ chỗ
-                    </span>
-                </div>
-
-                <div class="result-card-body">
-                    <div class="info-group">
-                        <div class="info-label">Khách hàng</div>
-                        <div class="info-value">tên khách</div>
-                    </div>
-
-                    <div class="info-group">
-                        <div class="info-label">Xe thuê</div>
-                        <div class="info-value">tên xe</div>
-                        <div class="text-muted small">
-                            Biển số: biển số xe<br />
-                        </div>
-                    </div>
-
-                    <div class="info-group">
-                        <div class="info-label">Thời gian thuê</div>
-                        <div class="info-value">
-                            Từ: 20/03/2026<br />
-                            Đến: 25/03/2026
-                        </div>
-                    </div>
-
-                    <div class="info-group">
-                        <div class="info-label">Tổng tiền dự kiến</div>
-                        <div class="info-value text-danger">200,000đ</div>
-                    </div>
-                </div>
-                <div class="result-card-actions">
-                    <a class="btn btn-create-contract" data-bs-toggle="modal" data-bs-target="#bannerModal">
-                        <i class=" bi bi-file-earmark-text"></i> Tạo hợp đồng
-                    </a>
-                </div>
-            </div>
-            @* }
+                    @* }
                 }
                 else
                 { *@
@@ -162,24 +75,6 @@
     </div>
 </div>
 
-@* modal xác nhận tạo hợp đồng từ phiếu đặt chỗ *@
-<div class="modal fade" id="bannerModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+@await Html.PartialAsync("_OrderCardCreateModal")
+@await Html.PartialAsync("_OrderCardDenyModal")
 
-            <div class="modal-header">
-                <h5 class="modal-title">Xác nhận Tạo hợp đồng</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-
-            <div class="modal-body">
-                Nội dung popup ở đây
-            </div>
-
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                <button class="btn btn-primary" asp-action="Create">Tạo hợp đồng</button>
-            </div>
-        </div>
-    </div>
-</div>
