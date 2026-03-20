@@ -1,0 +1,41 @@
+@model TrangChuViewModel
+
+@{
+    ViewData["Title"] = "Danh Sach Xe";
+}
+
+<section class="bike-list-section py-5">
+    <div class="container">
+        <div class="section-header text-center">
+            <h2>Danh sách xe</h2>
+            <p>Khám phá đầy đủ các mẫu xe hiện có, so sánh nhanh giá thuê, loại xe và khu vực nhận xe để chọn mẫu phù hợp.</p>
+        </div>
+
+        <div class="row g-4">
+            @foreach (var xe in Model.DanhSachXe)
+            {
+                <div class="col-md-6 col-xl-4" id="@xe.Slug">
+                    <article class="bike-card bike-card--catalog">
+                        <div class="bike-thumbnail">
+                            <i class="bi @xe.BieuTuong"></i>
+                        </div>
+                        <div class="bike-info">
+                            <div class="bike-meta">
+                                <span class="bike-tag">@xe.LoaiXe</span>
+                            </div>
+
+                            <h3 class="bike-name">@xe.TenXe</h3>
+                            <div class="bike-card__footer">
+                                <div class="bike-price">@xe.GiaTheoNgay</div>
+                                <div class="bike-actions">
+                                    <a asp-controller="DatXe" asp-action="Create" asp-route-maXe="@xe.MaXe" class="btn btn-primary">Đặt xe</a>
+                                    <a asp-controller="Detail" asp-action="Detail" asp-route-slug="@xe.Slug" class="btn btn-outline-primary">Xem chi tiết</a>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            }
+        </div>
+    </div>
+</section>

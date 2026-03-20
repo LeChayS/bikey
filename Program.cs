@@ -6,6 +6,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.LogoutPath = "/Account/Logout";
+        options.AccessDeniedPath = "/Account/Login";
+    });
+builder.Services.AddAuthorization();
 
 // Cấu hình Entity Framework với SQL Server - tối ưu performance
 builder.Services.AddDbContext<BikeyDbContext>(options =>
@@ -37,6 +46,8 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=TrangChu}/{action=Index}/{id?}")
     .WithStaticAssets();
+
+app.MapRazorPages();
 
 app.Run();
 

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -6,215 +6,123 @@
     <title>@ViewData["Title"] - Bikey</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" /> <!--Link icon-->
-    @* <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/bikey.styles.css" asp-append-version="true" /> *@
-    <link rel="stylesheet" href="~/css/shared/customlayout.css" />
-    <script src="~/js/shared/customlayout.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/shared/customlayout.css" asp-append-version="true" />
     @RenderSection("Styles", required: false)
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    @RenderSection("Scripts", required: false)
 </head>
 <body>
-    @* Top bar *@
-    <div class="top-bar">
+    <nav class="navbar navbar-expand-lg main-navbar">
         <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <i class="bi bi-clock"></i> THỜI GIAN LÀM VIỆC CHÍNH : 8H - 20H | <a asp-action="Index" asp-controller="BaoCao">Trang Admin</a>
-                </div>
-                <div class="col-md-6 text-end">
-                    <i class="bi bi-envelope"></i> Email : zzcz4991@gmail.com
-                    <span class="ms-3"><i class="bi bi-telephone"></i> Hotline : 0383407538</span>
-                </div>
-            </div>
-        </div>
-    </div>
+            <a class="navbar-brand brand-mark" asp-controller="TrangChu" asp-action="Index">
+                <span class="brand-mark__icon"><i class="bi bi-scooter"></i></span>
+                <span>
+                    <strong>BIKEY</strong>
+                    <small>Dịch vụ thuê xe</small>
+                </span>
+            </a>
 
-    @* Navbar *@
-    <nav class="navbar navbar-expand-lg">
-        <div class="container">
-            <button class="navbar-toggler"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
+                <ul class="navbar-nav align-items-lg-center">
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="bi bi-house-door"></i></a>
+                        <a class="nav-link" asp-controller="TrangChu" asp-action="Index"><i class="bi bi-house-door"></i> Trang chủ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">GIỚI THIỆU</a>
+                        <a class="nav-link" asp-controller="TrangChu" asp-action="GioiThieu">Giới thiệu</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle"
-                           href="#"
-                           id="navbarDropdown"
-                           role="button"
-                           data-bs-toggle="dropdown"
-                           aria-expanded="false">
-                            DANH SÁCH XE CHO THUÊ
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            @* @if (ViewBag.DanhSachLoaiXe != null)
-                            {
-                                var danhSachLoaiXe = ViewBag.DanhSachLoaiXe as List<bike.Models.LoaiXe>;
-                                var xeTheoLoai = ViewBag.XeTheoLoai as Dictionary<int, List<bike.Models.Xe>>;
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="TrangChu" asp-action="DanhSachXe">Danh sách xe</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="TrangChu" asp-action="ChiNhanh">Chi nhánh</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="TrangChu" asp-action="TinTuc">Tin tức</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="TrangChu" asp-action="LienHe">Liên hệ</a>
+                    </li>
+                </ul>
 
-                                @foreach (var loaiXe in danhSachLoaiXe)
-                                {
-                                    <li class="dropdown-header">@loaiXe.TenLoaiXe.ToUpper()</li>
-
-                                    @if (xeTheoLoai != null && xeTheoLoai.ContainsKey(loaiXe.MaLoaiXe))
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <li class="nav-item account-nav-item">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <div class="dropdown">
+                                <button class="nav-link nav-button dropdown-toggle account-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="account-avatar"><i class="bi bi-person-circle"></i></span>
+                                    <span>@User.Identity.Name</span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end account-dropdown">
+                                    <li><a class="dropdown-item" asp-page="/Account/Profile">Chỉnh sửa thông tin</a></li>
+                                    <li><a class="dropdown-item" asp-page="/Account/Orders">Lịch sử đơn hàng</a></li>
+                                    @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
                                     {
-                                        @foreach (var xe in xeTheoLoai[loaiXe.MaLoaiXe])
-                                        {
-                                            <li><a class="dropdown-item" href="@Url.Action("XemChiTiet", "Home", new { id = xe.MaXe })">@xe.TenXe</a></li>
-                                        }
+                                        <li><a class="dropdown-item" asp-controller="QuanLyDatCho" asp-action="Index">Quan ly dat cho</a></li>
                                     }
-
+                                    <li><hr class="dropdown-divider" /></li>
                                     <li>
-                                        <a class="dropdown-item text-primary fw-bold" href="@Url.Action("Index", "Home", new { loaiXe = loaiXe.MaLoaiXe })">
-                                            <i class="bi bi-arrow-right"></i> Xem tất cả @loaiXe.TenLoaiXe
-                                        </a>
+                                        <form asp-controller="Account" asp-action="Logout" method="post" class="logout-form">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="dropdown-item">Đăng xuất</button>
+                                        </form>
                                     </li>
-
-                                    @if (loaiXe != danhSachLoaiXe.Last())
-                                    {
-                                        <li><hr class="dropdown-divider" /></li>
-                                    }
-                                }
-                                <li><hr class="dropdown-divider" /></li>
-                                <li>
-                                    <a class="dropdown-item fw-bold" href="@Url.Action("Index", "Home")">
-                                        <strong><i class="bi bi-grid"></i> Xem tất cả xe</strong>
-                                    </a>
-                                </li>
-                            }
-                            else
-                            { *@
-                                <!-- Fallback nếu không có dữ liệu -->
-                                <li class="dropdown-header">XE TAY GA</li>
-                                <li><a class="dropdown-item" href="#">Honda SH Mode</a></li>
-                                <li><a class="dropdown-item" href="#">Honda Air Blade</a></li>
-                                <li><hr class="dropdown-divider" /></li>
-                                <li class="dropdown-header">XE SỐ</li>
-                                <li><a class="dropdown-item" href="#">Honda Wave Alpha</a></li>
-                                <li><a class="dropdown-item" href="#">Honda Future</a></li>
-                                <li><hr class="dropdown-divider" /></li>
-                                <li>
-                                    <a class="dropdown-item" href="@Url.Action("Index", "TrangChu")"><strong>Xem tất cả xe</strong></a>
-                                </li>
-                            @* } *@
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">CHI NHÁNH</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">TIN TỨC</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">LIÊN HỆ</a>
+                                </ul>
+                            </div>
+                        }
+                        else
+                        {
+                            <a class="nav-link login-link" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Context.Request.Path">
+                                <i class="bi bi-box-arrow-in-right"></i> Đăng nhập
+                            </a>
+                        }
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    @RenderBody()
+    <main>
+        @RenderBody()
+    </main>
 
-    @* Footer *@
-    <footer class="footer">
+    <footer class="footer" id="lien-he">
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
-                    <div style="
-                background: white;
-                padding: 15px;
-                border-radius: 10px;
-                display: inline-block;
-                margin-bottom: 20px;
-              ">
-                        <i class="bi bi-scooter"
-                           style="font-size: 50px; color: #0066cc"></i>
-                    </div>
-                    <p>
-                        Công ty uy tín cho thuê xe máy tại TPHCM
-                    </p>
-                    <p class="mt-3">
-                        Đối Tác SEO : KIM RI CHA AND MOHAMED SATI
-                    </p>
+                    <div class="footer-badge"><i class="bi bi-scooter"></i></div>
+                    <p>Công ty uy tín cho thuê xe</p>
+                    <p class="mt-3">Hỗ trợ đặt xe linh hoạt cho chuyến du lịch, công tác và di chuyển hàng ngày.</p>
                 </div>
                 <div class="col-md-4">
-                    <h3>CHÍNH SÁCH CHÚNG TÔI</h3>
+                    <h3>Chính sách của chúng tôi</h3>
                     <ul>
                         <li>Chính sách và quy định</li>
-                        <li>Quy Định Khi Thuê Xe</li>
-                        <li>Quy định về thanh toán</li>
-                        <li>Chính sách vận chuyển, giao nhận</li>
+                        <li>Quy định khi thuê xe</li>
+                        <li>Hướng dẫn đặc cơ và thanh toán</li>
+                        <li>Hỗ trợ giao nhận xe tại nơi</li>
                     </ul>
                 </div>
-                <div class="col-md-4">
-                    <h3>CÔNG TY TNHH DỊCH VỤ XE TỐI XUÂN HẠNH</h3>
-                    <h2 class="footer-company-name">CHO THUÊ XE MÁY SÀI GÒN</h2>
+                <div class="col-md-4" id="chi-nhanh">
+                    <h3>Thông tin liên hệ</h3>
+                    <h2 class="footer-company-name">Dịch vụ thuê xe</h2>
                     <div class="contact-info">
-                        <p>
-                            <i class="bi bi-geo-alt-fill"></i> Địa chỉ: 95/38 Nguyễn Văn
-                            Trỗi Phường 12 Quận Phú Nhuận TP.HCM
-                        </p>
-                        <p>
-                            <i class="bi bi-telephone-fill"></i> Điện thoại: 0908 630 065
-                        </p>
-                        <p>
-                            <i class="bi bi-envelope-fill"></i> Email:
-                            hanhduong.2006@yahoo.com
-                        </p>
-                        <p>
-                            <i class="bi bi-globe"></i> Email:
-                            https://chothuexemaysaigon.com
-                        </p>
+                        <p><i class="bi bi-geo-alt-fill"></i>Số 806 Quốc lộ 22, ấp Mỹ Hòa 3, Xã Tân Xuân, Huyện Hóc Môn, TP. Hồ Chí Minh</p>
+                        <p><i class="bi bi-telephone-fill"></i> 0900 090 090</p>
+                        <p><i class="bi bi-envelope-fill"></i> support@bikey.vn</p>
+                        <p><i class="bi bi-clock-fill"></i> Hoạt động từ 8:00 - 20:00 mỗi ngày</p>
                     </div>
                 </div>
             </div>
-        </div>
-    </footer>
-
-
-    @* <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">bikey</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - bikey - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>*@
-    @await RenderSectionAsync("Scripts", required: false) 
+    <script src="~/js/shared/customlayout.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
