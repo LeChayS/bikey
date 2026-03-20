@@ -10,35 +10,29 @@
 @section Scripts {
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-
             document.querySelectorAll(".tab-item").forEach(tab => {
-
                 tab.addEventListener("click", function () {
-
                     document.querySelectorAll(".tab-item")
                         .forEach(t => t.classList.remove("active"))
-
                     document.querySelectorAll(".tab-content")
                         .forEach(c => c.classList.remove("active"))
-
                     this.classList.add("active")
-
                     const id = this.getAttribute("data-tab")
                     document.getElementById(id).classList.add("active")
-
                 })
-
             })
-
         })
     </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
 
 <!-- Top Header -->
 <div class="top-header">
     <h1 class="mb-0"><i class="bi bi-people"></i> Quản Lý Người dùng</h1>
     <div>
-        <a asp-action="Create" class="btn btn-primary">
+        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createUser">
             <i class="bi bi-plus-circle"></i> Thêm người dùng
         </a>
     </div>
@@ -349,8 +343,10 @@
                             </td>
                             <td>12/12/1212</td>
                             <td>
-                                <a asp-action="Edit" class="btn btn-warning btn-sm btn-action" title="Sửa"><i
-                                        class="bi bi-pencil"></i></a>
+                                <a class="btn btn-warning btn-sm btn-action" title="Sửa" data-bs-toggle="modal"
+                                    data-bs-target="#editUser">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
                                 <a asp-action="Permission" class="btn btn-info btn-sm btn-action"
                                     title="Quản lý quyền"><i class="bi bi-shield-check"></i></a>
                             </td>
@@ -372,8 +368,10 @@
                             </td>
                             <td>12/12/1212</td>
                             <td>
-                                <a asp-action="Edit" class="btn btn-warning btn-sm btn-action" title="Sửa"><i
-                                        class="bi bi-pencil"></i></a>
+                                <a asp-action="Edit" class="btn btn-warning btn-sm btn-action" title="Sửa"
+                                    data-bs-toggle="modal" data-bs-target="#editUser">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
                                 <a asp-action="Permission" class="btn btn-info btn-sm btn-action"
                                     title="Quản lý quyền"><i class="bi bi-shield-check"></i></a>
                                 @* @if (user.Id != int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value))
@@ -403,8 +401,10 @@
                             </td>
                             <td>12/12/1212</td>
                             <td>
-                                <a asp-action="Edit" class="btn btn-warning btn-sm btn-action" title="Sửa"><i
-                                        class="bi bi-pencil"></i></a>
+                                <a asp-action="Edit" class="btn btn-warning btn-sm btn-action" title="Sửa"
+                                    data-bs-toggle="modal" data-bs-target="#editUser">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
                                 <a asp-action="Permission" class="btn btn-info btn-sm btn-action"
                                     title="Quản lý quyền"><i class="bi bi-shield-check"></i></a>
                                 @* @if (user.Id != int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value))
@@ -427,8 +427,129 @@
 
     </div>
 
-
     <!-- Thông báo -->
     <div id="userAlert" style="position:fixed;top:20px;right:20px;z-index:9999;min-width:300px;"></div>
 </div>
+
+@* modal thêm mới tài khoản *@
+<div class="modal fade" id="createUser" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-person-plus"></i> Thêm người dùng mới</h5>
+                <button type="button" class="btn-close  btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <form asp-action="Create" method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Họ và tên *</label>
+                        <input class="form-control" required />
+                        <span class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email *</label>
+                        <input class="form-control" type="email" required />
+                        <span class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mật khẩu *</label>
+                        <input class="form-control" type="password" required />
+                        <span class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Xác nhận mật khẩu *</label>
+                        <input class="form-control" type="password" required />
+                        <span class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Quyền *</label>
+                        <select class="form-select" required asp-items="ViewBag.Roles">
+                            <option value="">-- Chọn quyền --</option>
+                        </select>
+                        <span class="text-danger"></span>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button class="btn btn-primary" asp-action="submit"><i class="bi bi-check-circle"></i> Thêm nguời
+                    dùng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* modal chỉnh sửa thông tin tài khoản *@
+<div class="modal fade" id="editUser" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-person-plus"></i> Thêm người dùng mới</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <form asp-action="Edit" method="post">
+                    <input type="hidden"  />
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Họ và tên *</label>
+                            <input class="form-control" required />
+                            <span class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email *</label>
+                            <input class="form-control" type="email" required />
+                            <span class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Số điện thoại</label>
+                            <input class="form-control" />
+                            <span class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Địa chỉ</label>
+                            <input class="form-control" />
+                            <span class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Mật khẩu mới</label>
+                            <input class="form-control" type="password"
+                                placeholder="Để trống nếu không đổi" />
+                            <spanclass="text-danger"></spanclass=>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Xác nhận mật khẩu</label>
+                            <input class="form-control" type="password"
+                                placeholder="Để trống nếu không đổi" />
+                            <span class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Quyền *</label>
+                            <select class="form-select" required asp-items="ViewBag.Roles">
+                                <option value="">-- Chọn quyền --</option>
+                            </select>
+                            <span class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Trạng thái</label>
+                            <select class="form-select">
+                                <option value="true">Hoạt động</option>
+                                <option value="false">Khóa</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button class="btn btn-primary" asp-action="submit"><i class="bi bi-check-circle"></i> Lưu thay đổi</button>
+            </div>
+        </div>
+    </div>
 </div>
