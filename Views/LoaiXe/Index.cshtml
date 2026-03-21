@@ -9,37 +9,7 @@
 }
 
 @section Scripts {
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editModalEl = document.getElementById('editLoai');
-            if (editModalEl) {
-                editModalEl.addEventListener('show.bs.modal', function (event) {
-                    const triggerBtn = event.relatedTarget;
-                    const id = triggerBtn ? triggerBtn.getAttribute('data-id') : '';
-                    const ten = triggerBtn ? triggerBtn.getAttribute('data-ten') : '';
-
-                    const editMaLoaiXe = document.getElementById('editMaLoaiXe');
-                    const editTenLoaiXe = document.getElementById('editTenLoaiXe');
-                    if (editMaLoaiXe) editMaLoaiXe.value = id || '';
-                    if (editTenLoaiXe) editTenLoaiXe.value = ten || '';
-                });
-            }
-
-            const deleteModalEl = document.getElementById('deleteLoai');
-            if (deleteModalEl) {
-                deleteModalEl.addEventListener('show.bs.modal', function (event) {
-                    const triggerBtn = event.relatedTarget;
-                    const id = triggerBtn ? triggerBtn.getAttribute('data-id') : '';
-                    const ten = triggerBtn ? triggerBtn.getAttribute('data-ten') : '';
-
-                    const deleteId = document.getElementById('deleteLoaiId');
-                    const deleteTenLoaiXeText = document.getElementById('deleteTenLoaiXeText');
-                    if (deleteId) deleteId.value = id || '';
-                    if (deleteTenLoaiXeText) deleteTenLoaiXeText.textContent = ten || '';
-                });
-            }
-        });
-    </script>
+    <script src="~/js/loaixe/index.js" asp-append-version="true"></script>
 }
 
 <!-- Top Header -->
@@ -53,7 +23,23 @@
 </div>
 
 <div class="wrapper">
-    <div id="alert-container"></div>
+    @* server-side alerts *@
+    <div>
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show loaiXe-alert" role="alert">
+                <span class="loaiXe-alert__message"><i class="bi bi-check-circle"></i> @TempData["Success"]</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show loaiXe-alert" role="alert">
+                <span class="loaiXe-alert__message"><i class="bi bi-exclamation-circle"></i> @TempData["Error"]</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+    </div>
 
     <div class="container-fluid">
         <div class="table-container">
@@ -113,18 +99,6 @@
         </div>
 
     </div>
-</div>
-
-@* server-side alerts *@
-<div>
-    @if (TempData["Success"] != null)
-    {
-        <div class="alert alert-success m-3">@TempData["Success"]</div>
-    }
-    @if (TempData["Error"] != null)
-    {
-        <div class="alert alert-danger m-3">@TempData["Error"]</div>
-    }
 </div>
 
 @* modal thêm mới loại xe *@

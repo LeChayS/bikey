@@ -1,4 +1,4 @@
-﻿.top-header {
+.top-header {
     padding: 20px 50px;
     display: flex;
     justify-content: space-between;
@@ -35,6 +35,31 @@
     border-radius: 4px;
     margin-bottom: 20px;
     font-size: 14px;
+}
+
+/* LoaiXe alert with close button */
+.loaiXe-alert {
+    position: relative;
+    padding-right: 44px; /* leave room for close button */
+}
+
+.loaiXe-alert .btn-close {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.loaiXe-alert .btn-close:hover {
+    opacity: 1;
+}
+
+.alert span{
+    font-size: 16px;
+}
+
+.alert .btn-close{
+    padding: 10px;
 }
 
 .alert-success {
