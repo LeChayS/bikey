@@ -1,4 +1,4 @@
-﻿.top-header {
+.top-header {
     color: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     padding: 20px 50px;
     display: flex;
@@ -305,7 +305,9 @@
     width: 100%;
     max-width: 300px;
     height: 200px;
-    object-fit: cover;
+    object-fit: contain;
+    object-position: center;
+    background: #f8f9fa;
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     margin-bottom: 16px;

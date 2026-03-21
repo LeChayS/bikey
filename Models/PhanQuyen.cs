@@ -47,13 +47,6 @@ namespace bikey.Models
         public bool CanEditUser { get; set; } = false;
         public bool CanDeleteUser { get; set; } = false;
 
-        // Quyền quản lý banner
-        public bool CanManageBanner { get; set; } = false;
-        public bool CanViewBanner { get; set; } = true;
-        public bool CanCreateBanner { get; set; } = false;
-        public bool CanEditBanner { get; set; } = false;
-        public bool CanDeleteBanner { get; set; } = false;
-
         // Quyền báo cáo thống kê
         public bool CanViewBaoCao { get; set; } = false;
         public bool CanViewThongKe { get; set; } = false;
