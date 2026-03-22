@@ -1,8 +1,24 @@
-﻿@using bikey.Repository
+@using bikey.Repository
 @using Microsoft.EntityFrameworkCore
-@* @using bikey.Services *@
 @inject BikeyDbContext _context
-@* @inject IPermissionService _permissionService *@
+@{
+    var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+    var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
+        ? parsedUserId
+        : 0;
+
+    var permission = userId > 0
+        ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(item => item.UserId == userId)
+        : null;
+
+    var canSeeDashboard = userRole == "Admin" || userRole == "Staff" || userRole == "Nhân viên";
+    var canSeeBaoCao = permission?.CanViewBaoCao == true || permission?.CanViewThongKe == true || permission?.CanExportBaoCao == true;
+    var canSeeHopDong = permission?.CanViewHopDong == true || permission?.CanManageHopDong == true || permission?.CanCreateHopDong == true || permission?.CanEditHopDong == true || permission?.CanDeleteHopDong == true || permission?.CanPrintHopDong == true;
+    var canSeeHoaDon = permission?.CanViewHoaDon == true || permission?.CanManageHoaDon == true || permission?.CanCreateHoaDon == true || permission?.CanEditHoaDon == true || permission?.CanDeleteHoaDon == true || permission?.CanPrintHoaDon == true;
+    var canSeeXe = permission?.CanViewXe == true || permission?.CanManageXe == true || permission?.CanCreateXe == true || permission?.CanEditXe == true || permission?.CanDeleteXe == true;
+    var canSeeLoaiXe = permission?.CanViewLoaiXe == true || permission?.CanManageLoaiXe == true || permission?.CanCreateLoaiXe == true || permission?.CanEditLoaiXe == true || permission?.CanDeleteLoaiXe == true;
+    var canSeeNguoiDung = userRole == "Admin" && (permission?.CanViewUser == true || permission?.CanManageUser == true || permission?.CanCreateUser == true || permission?.CanEditUser == true || permission?.CanDeleteUser == true);
+}
 
 @section Styles {
     <link rel="stylesheet" href="~/css/shared/adminsidebar.css" />
@@ -36,66 +52,74 @@
         <h3>ADMIN PANEL</h3>
     </div>
     <ul class="sidebar-menu">
-        @* Dashboard - Chỉ Admin *@
-        @* @if (userRole == "Admin")
-        { *@
+        @if (canSeeDashboard)
+        {
             <li>
                 <a asp-controller="Admin" asp-action="Index">
                     <i class="bi bi-speedometer2"></i>
                     <span class="menu-text">Dashboard</span>
                 </a>
             </li>
+        }
+
+        @if (canSeeBaoCao)
+        {
             <li>
                 <a asp-controller="ThongKeBaoCao" asp-action="Index">
                     <i class="bi bi-bar-chart-line"></i>
                     <span class="menu-text">Thống kê & Báo cáo</span>
                 </a>
             </li>
-        @* } *@
+        }
 
-        @* Menu cho Admin và Staff *@
-        @* @if (userRole == "Admin" || userRole == "Staff")
-        { *@
+        @if (canSeeHopDong)
+        {
             <li>
-                <a asp-controller="HopDong" asp-action="Index" style="position: relative;">
+                <a asp-controller="HopDong" asp-action="Index">
                     <i class="bi bi-receipt"></i>
                     <span class="menu-text">Quản lý hợp đồng</span>
-                    @* @if (donChoXuLyMoi > 0)
-                    {
-                        <span class="sidebar-notification-badge">@donChoXuLyMoi</span>
-                    } *@
                 </a>
             </li>
+        }
 
+        @if (canSeeHoaDon)
+        {
             <li>
                 <a asp-controller="HoaDon" asp-action="Index">
                     <i class="bi bi-receipt-cutoff"></i>
                     <span class="menu-text">Quản lý hóa đơn</span>
                 </a>
             </li>
+        }
+
+        @if (canSeeXe)
+        {
             <li>
                 <a asp-controller="Xe" asp-action="Index">
                     <i class="bi bi-scooter"></i>
                     <span class="menu-text">Quản lý xe</span>
                 </a>
             </li>
+        }
+
+        @if (canSeeLoaiXe)
+        {
             <li>
                 <a asp-controller="LoaiXe" asp-action="Index">
                     <i class="bi bi-tags"></i>
                     <span class="menu-text">Quản lý loại xe</span>
                 </a>
             </li>
-        @* } *@
+        }
 
-        @* Quản lý người dùng - Chỉ Admin *@
-        @* @if (userRole == "Admin")
-        { *@
+        @if (canSeeNguoiDung)
+        {
             <li>
                 <a asp-controller="NguoiDung" asp-action="Index">
                     <i class="bi bi-people"></i>
                     <span class="menu-text">Quản lý người dùng</span>
                 </a>
             </li>
-        @* } *@
+        }
     </ul>
 </div>

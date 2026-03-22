@@ -19,31 +19,9 @@
                             else
                             {
                                 <div class="bike-detail-gallery__placeholder">
-                                    <div class="bike-detail-gallery__badge">BIKEY</div>
                                     <i class="bi bi-scooter"></i>
                                     <strong>@Model.TenXe</strong>
                                     <span>@Model.HangXe - @Model.DongXe</span>
-                                </div>
-                            }
-                        </div>
-
-                        <div class="bike-detail-gallery__thumbs">
-                            @if (coAnhThucTe)
-                            {
-                                @foreach (var hinhAnh in Model.HinhAnh.Take(3))
-                                {
-                                    <div class="bike-detail-thumb">
-                                        <img src="@hinhAnh" alt="@Model.TenXe" class="bike-detail-thumb__image" />
-                                    </div>
-                                }
-                            }
-                            else
-                            {
-                                <div class="bike-detail-thumb bike-detail-thumb--placeholder">
-                                    <i class="bi bi-image"></i>
-                                </div>
-                                <div class="bike-detail-thumb bike-detail-thumb--brand">
-                                    @Model.HangXe
                                 </div>
                             }
                         </div>
@@ -55,35 +33,32 @@
                         <div class="bike-detail-title-block">
                             <div class="bike-detail-title-line"></div>
                             <h1>@Model.TenXe</h1>
-                            <button type="button" class="bike-detail-share-btn">
-                                <i class="bi bi-share"></i> Chia se
-                            </button>
                         </div>
 
                         <div class="bike-detail-price-card">
-                            <span>Gia thue tu:</span>
-                            <strong>@Model.GiaThue.ToString("N0") VND / ngay</strong>
+                            <span>Giá thuê theo ngày:</span>
+                            <strong>@Model.GiaThue.ToString("N0") VNĐ / ngày</strong>
                         </div>
 
                         <div class="bike-detail-info-card">
                             <div class="bike-detail-info-row">
-                                <span><i class="bi bi-tag"></i> Hang xe:</span>
+                                <span><i class="bi bi-tag"></i> Hãng xe:</span>
                                 <strong>@Model.HangXe</strong>
                             </div>
                             <div class="bike-detail-info-row">
-                                <span><i class="bi bi-bicycle"></i> Dong xe:</span>
+                                <span><i class="bi bi-bicycle"></i> Dòng xe:</span>
                                 <strong>@Model.DongXe</strong>
                             </div>
                             <div class="bike-detail-info-row">
-                                <span><i class="bi bi-grid"></i> Loai xe:</span>
+                                <span><i class="bi bi-grid"></i> Loại xe:</span>
                                 <strong>@Model.LoaiXe</strong>
                             </div>
                             <div class="bike-detail-info-row">
-                                <span><i class="bi bi-credit-card-2-front"></i> Bien so:</span>
+                                <span><i class="bi bi-credit-card-2-front"></i> Biển số:</span>
                                 <strong>@Model.BienSoXe</strong>
                             </div>
                             <div class="bike-detail-info-row">
-                                <span><i class="bi bi-check-circle"></i> Trang thai:</span>
+                                <span><i class="bi bi-check-circle"></i> Trạng thái:</span>
                                 <strong>
                                     <span class="status-pill @(Model.CoTheDatXe ? "success" : "pending")">@Model.TrangThaiHienThi</span>
                                 </strong>
@@ -93,33 +68,27 @@
                         @if (Model.CoTheDatXe)
                         {
                             <a asp-controller="DatXe" asp-action="Create" asp-route-maXe="@Model.MaXe" class="bike-detail-action-btn bike-detail-action-btn--primary">
-                                <i class="bi bi-calendar-check"></i> Dat xe ngay
+                                <i class="bi bi-calendar-check"></i> Đặt xe ngay
                             </a>
                         }
                         else
                         {
                             <button type="button" class="bike-detail-action-btn bike-detail-action-btn--disabled" disabled>
-                                <i class="bi bi-x-circle"></i> Xe dang duoc thue
+                                <i class="bi bi-x-circle"></i> Xe đang được thuê
                             </button>
                         }
 
                         <div class="bike-detail-note-card">
-                            <h2><i class="bi bi-info-circle"></i> Yeu cau thue xe</h2>
+                            <h2><i class="bi bi-info-circle"></i> Yêu cầu thuê xe</h2>
                             <p class="bike-detail-hotline">
-                                <i class="bi bi-telephone"></i> Hotline: 0908.428.642 / 0908.630.065
+                                <i class="bi bi-telephone"></i> Hotline: 0900 090 090
                             </p>
 
                             <ul class="bike-detail-rule-list">
-                                <li>Nguoi duoi 18 tuoi khong duoc phep thue xe.</li>
-                                <li>Khi thue xe ban duoc cap 2 mu bao hiem, mac dinh la 1.</li>
-                                <li>Bat buoc phai dat coc khi nhan xe, hoan tra day du khi tra xe.</li>
-                                <li>Giao xe tan noi trong noi thanh TP.HCM, co the phat sinh phi dich vu.</li>
+                                <li>Từ 18+ mới được thuê xe</li>
+                                <li>Bắt buộc phải đặt cọc khi nhận xe, trả tiền đầy đủ khi trả xe.</li>
+                                <li>Giao xe tại nơi thuê, có thể phát sinh thêm phí dịch vụ.</li>
                             </ul>
-                        </div>
-
-                        <div class="bike-detail-description-card">
-                            <h2>Mo ta xe</h2>
-                            <p>@Model.MoTa</p>
                         </div>
                     </div>
                 </div>

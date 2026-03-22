@@ -9,10 +9,9 @@
     <div class="container">
         <div class="login-card shadow-lg">
             <div class="login-card__intro">
-                <span class="eyebrow">Tao tai khoan moi</span>
-                <h1>Dang ky tai khoan khach hang</h1>
+                <h1>Đăng ký</h1>
                 <p>
-                    Dien day du thong tin de tao tai khoan moi va bat dau quan ly lich su dat xe ngay tren he thong.
+                    Vui lòng nhập thông tin đầy đủ để tạo tài khoản mới
                 </p>
             </div>
 
@@ -23,38 +22,38 @@
 
                 <div class="mb-3">
                     <label for="HoTen" class="form-label">@Html.DisplayNameFor(model => model.HoTen)</label>
-                    <input asp-for="HoTen" class="form-control form-control-lg" placeholder="Nguyen Van A" />
+                    <input asp-for="HoTen" class="form-control form-control-lg" placeholder="Nhập họ và tên" />
                     <span asp-validation-for="HoTen" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
                     <label for="Email" class="form-label">@Html.DisplayNameFor(model => model.Email)</label>
-                    <input asp-for="Email" class="form-control form-control-lg" placeholder="name@example.com" />
+                    <input asp-for="Email" class="form-control form-control-lg" placeholder="Nhập email" />
                     <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
                     <label for="SoDienThoai" class="form-label">@Html.DisplayNameFor(model => model.SoDienThoai)</label>
-                    <input asp-for="SoDienThoai" class="form-control form-control-lg" placeholder="0900000000" />
+                    <input asp-for="SoDienThoai" class="form-control form-control-lg" placeholder="Nhập số điện thoại" />
                     <span asp-validation-for="SoDienThoai" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
                     <label for="MatKhau" class="form-label">@Html.DisplayNameFor(model => model.MatKhau)</label>
-                    <input asp-for="MatKhau" class="form-control form-control-lg" placeholder="Nhap mat khau" />
+                    <input asp-for="MatKhau" class="form-control form-control-lg" placeholder="Nhập mật khẩu" />
                     <span asp-validation-for="MatKhau" class="text-danger"></span>
                 </div>
 
                 <div class="mb-4">
                     <label for="XacNhanMatKhau" class="form-label">@Html.DisplayNameFor(model => model.XacNhanMatKhau)</label>
-                    <input asp-for="XacNhanMatKhau" class="form-control form-control-lg" placeholder="Nhap lai mat khau" />
+                    <input asp-for="XacNhanMatKhau" class="form-control form-control-lg" placeholder="Nhập lại mật khẩu" />
                     <span asp-validation-for="XacNhanMatKhau" class="text-danger"></span>
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-lg w-100">Dang ky</button>
+                <button type="submit" class="btn btn-primary btn-lg w-100">Đăng ký</button>
 
                 <div class="login-card__actions mt-3">
-                    <a asp-action="Login" asp-controller="Account" class="btn btn-outline-secondary">Quay lai dang nhap</a>
+                    <a asp-action="Login" asp-controller="Account" class="btn btn-outline-secondary">Đăng nhập</a>
                 </div>
             </form>
         </div>

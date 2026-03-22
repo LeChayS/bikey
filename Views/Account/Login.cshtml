@@ -9,10 +9,9 @@
     <div class="container">
         <div class="login-card shadow-lg">
             <div class="login-card__intro">
-                <span class="eyebrow">Tai khoan khach hang</span>
-                <h1>Dang nhap de quan ly thong tin thue xe</h1>
+                <h1>Đăng nhập</h1>
                 <p>
-                    Dang nhap bang email de quan ly thong tin ca nhan, lich su don hang va cac yeu cau dat xe cua ban.
+                    Vui lòng nhập Email và mật khẩu của bạn để đăng nhập
                 </p>
             </div>
 
@@ -24,21 +23,21 @@
 
                 <div class="mb-3">
                     <label for="Email" class="form-label">@Html.DisplayNameFor(model => model.Email)</label>
-                    <input asp-for="Email" class="form-control form-control-lg" placeholder="name@example.com" />
+                    <input asp-for="Email" class="form-control form-control-lg" placeholder="Nhập email" />
                     <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
 
                 <div class="mb-4">
                     <label for="MatKhau" class="form-label">@Html.DisplayNameFor(model => model.MatKhau)</label>
-                    <input asp-for="MatKhau" class="form-control form-control-lg" placeholder="Nhap mat khau" />
+                    <input asp-for="MatKhau" class="form-control form-control-lg" placeholder="Nhập mật khẩu" />
                     <span asp-validation-for="MatKhau" class="text-danger"></span>
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-lg w-100">Dang nhap</button>
+                <button type="submit" class="btn btn-primary btn-lg w-100">Đăng nhập</button>
 
                 <div class="login-card__actions mt-3">
-                    <a asp-action="Register" asp-controller="Account" class="btn btn-outline-primary">Dang ky</a>
-                    <a asp-action="ForgotPassword" asp-controller="Account" class="btn btn-outline-secondary">Quen mat khau</a>
+                    <a asp-action="Register" asp-controller="Account" class="btn btn-outline-primary">Đăng ký</a>
+                    <a asp-action="ForgotPassword" asp-controller="Account" class="btn btn-outline-secondary">Quên mật khẩu</a>
                 </div>
             </form>
         </div>

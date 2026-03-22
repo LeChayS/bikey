@@ -24,7 +24,7 @@ namespace bikey.Controllers
         {
             if (User.Identity?.IsAuthenticated == true)
             {
-                return RedirectToAction("Index", "TrangChu");
+                return RedirectToDefaultPageByRole();
             }
 
             return View(new LoginViewModel { ReturnUrl = returnUrl });
@@ -40,11 +40,14 @@ namespace bikey.Controllers
                 return View(model);
             }
 
+            var normalizedEmail = NormalizeEmail(model.Email);
+
             var matchedUser = await _context.NguoiDung
                 .AsNoTracking()
                 .FirstOrDefaultAsync(user =>
                     user.IsActive &&
-                    user.Email == model.Email &&
+                    user.Email != null &&
+                    user.Email.ToLower() == normalizedEmail &&
                     user.MatKhau == model.MatKhau);
 
             if (matchedUser is null)
@@ -55,12 +58,17 @@ namespace bikey.Controllers
 
             await SignInUserAsync(matchedUser);
 
+            if (IsAdminOrStaff(matchedUser.VaiTro))
+            {
+                return RedirectToAction("Index", "Admin");
+            }
+
             if (!string.IsNullOrWhiteSpace(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
             {
                 return Redirect(model.ReturnUrl);
             }
 
-            return RedirectToAction("Index", "TrangChu");
+            return RedirectToDefaultPageByRole(matchedUser.VaiTro);
         }
 
         [AllowAnonymous]
@@ -69,7 +77,7 @@ namespace bikey.Controllers
         {
             if (User.Identity?.IsAuthenticated == true)
             {
-                return RedirectToAction("Index", "TrangChu");
+                return RedirectToDefaultPageByRole();
             }
 
             return View(new RegisterViewModel());
@@ -85,8 +93,10 @@ namespace bikey.Controllers
                 return View(model);
             }
 
+            var normalizedEmail = NormalizeEmail(model.Email);
+
             var emailExists = await _context.NguoiDung
-                .AnyAsync(user => user.Email == model.Email);
+                .AnyAsync(user => user.Email != null && user.Email.ToLower() == normalizedEmail);
 
             if (emailExists)
             {
@@ -106,10 +116,10 @@ namespace bikey.Controllers
             var newUser = new Models.NguoiDung
             {
                 Ten = model.HoTen,
-                Email = model.Email,
+                Email = normalizedEmail,
                 SoDienThoai = model.SoDienThoai,
                 MatKhau = model.MatKhau,
-                VaiTro = "User",
+                VaiTro = "Khách hàng",
                 IsActive = true,
                 NgayTao = DateTime.Now
             };
@@ -132,14 +142,27 @@ namespace bikey.Controllers
         [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult ForgotPassword(ForgotPasswordViewModel model)
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            ViewBag.StatusMessage = "Yêu cầu đặt lại mật khẩu đã được ghi nhận. Vui lòng liên hệ quản trị viên hoặc triển khai luồng gửi email để hoàn tất.";
+            var normalizedEmail = NormalizeEmail(model.Email);
+            var user = await _context.NguoiDung
+                .FirstOrDefaultAsync(item => item.Email != null && item.Email.ToLower() == normalizedEmail);
+
+            if (user is null)
+            {
+                ModelState.AddModelError(nameof(model.Email), "Không tìm thấy tài khoản với email này.");
+                return View(model);
+            }
+
+            user.MatKhau = model.MatKhauMoi;
+            await _context.SaveChangesAsync();
+
+            ViewBag.StatusMessage = "Mật khẩu đã được cập nhật thành công. Bạn có thể đăng nhập lại ngay bây giờ.";
             ModelState.Clear();
             return View(new ForgotPasswordViewModel());
         }
@@ -148,7 +171,7 @@ namespace bikey.Controllers
         {
             var claims = new List<Claim>
             {
-                new(ClaimTypes.Name, user.Ten ?? user.Email ?? "Khach hang"),
+                new(ClaimTypes.Name, user.Ten ?? user.Email ?? "User"),
                 new(ClaimTypes.MobilePhone, user.SoDienThoai ?? string.Empty)
             };
 
@@ -183,6 +206,30 @@ namespace bikey.Controllers
                     IsPersistent = true,
                     ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
                 });
+        }
+
+        private IActionResult RedirectToDefaultPageByRole(string? role = null)
+        {
+            var currentRole = role ?? User.FindFirstValue(ClaimTypes.Role);
+
+            if (IsAdminOrStaff(currentRole))
+            {
+                return RedirectToAction("Index", "Admin");
+            }
+
+            return RedirectToAction("Index", "TrangChu");
+        }
+
+        private static bool IsAdminOrStaff(string? role)
+        {
+            return string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase) ||
+                   string.Equals(role, "Staff", StringComparison.OrdinalIgnoreCase) ||
+                   string.Equals(role, "Nhân viên", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static string NormalizeEmail(string email)
+        {
+            return email.Trim().ToLowerInvariant();
         }
 
         [Authorize]

@@ -8,9 +8,8 @@
     <div class="container">
         <div class="account-panel">
             <div class="account-panel__header">
-                <span class="eyebrow">Thong tin dat xe</span>
-                <h1>Xac nhan thong tin dat xe</h1>
-                <p>Vui long kiem tra thong tin xe va dien day du thong tin ca nhan truoc khi gui yeu cau den admin panel.</p>
+                <h1>Điền thông tin để đặt xe</h1>
+                <p>Vui lòng điền thông tin cá nhân của bạn để hoàn tất thủ tục đặt xe</p>
             </div>
 
             <form asp-action="Create" method="post" class="account-form mt-4" id="bookingForm">
@@ -26,31 +25,31 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                 <div class="booking-summary-card">
-                    <h2>Thong tin xe</h2>
+                    <h2>Thông tin của xe</h2>
                     <div class="booking-summary-grid">
                         <div class="profile-item">
-                            <span>Ten xe</span>
+                            <span>Tên xe</span>
                             <strong>@Model.TenXe</strong>
                         </div>
                         <div class="profile-item">
-                            <span>Bien so</span>
+                            <span>Biển số</span>
                             <strong>@Model.BienSoXe</strong>
                         </div>
                         <div class="profile-item">
-                            <span>Hang xe</span>
+                            <span>Hãng xe</span>
                             <strong>@Model.HangXe</strong>
                         </div>
                         <div class="profile-item">
-                            <span>Dong xe</span>
+                            <span>Dòng xe</span>
                             <strong>@Model.DongXe</strong>
                         </div>
                         <div class="profile-item">
-                            <span>Trang thai</span>
+                            <span>Trạng thái</span>
                             <strong>@Model.TrangThaiXe</strong>
                         </div>
                         <div class="profile-item">
-                            <span>Gia thue/ngay</span>
-                            <strong id="giaThueDisplay">@Model.GiaThueNgay.ToString("N0") VND</strong>
+                            <span>Giá thuê/ngày</span>
+                            <strong id="giaThueDisplay">@Model.GiaThueNgay.ToString("N0") VNĐ</strong>
                         </div>
                     </div>
                 </div>
@@ -95,18 +94,18 @@
 
                 <div class="mt-3">
                     <label for="GhiChu" class="form-label">@Html.DisplayNameFor(model => model.GhiChu)</label>
-                    <textarea asp-for="GhiChu" class="form-control booking-note-input" rows="4" placeholder="Them yeu cau giao xe, gio nhan xe hoac ghi chu khac neu can"></textarea>
+                    <textarea asp-for="GhiChu" class="form-control booking-note-input" rows="4" placeholder="Thêm yêu cầu giao xe, giờ nhận xe hoặc ghi chú khác nếu cần"></textarea>
                     <span asp-validation-for="GhiChu" class="text-danger"></span>
                 </div>
 
                 <div class="booking-total-card mt-4">
-                    <span>Tong tien du kien</span>
-                    <strong id="tongTienDisplay">@Model.TongTienDuKien.ToString("N0") VND</strong>
+                    <span>Tổng tiền dự kiến</span>
+                    <strong id="tongTienDisplay">@Model.TongTienDuKien.ToString("N0") VNĐ</strong>
                 </div>
 
                 <div class="account-panel-footer mt-4">
-                    <a asp-controller="TrangChu" asp-action="DanhSachXe" class="btn btn-outline-secondary">Quay lai</a>
-                    <button type="submit" class="btn btn-primary">Xac nhan</button>
+                    <a asp-controller="TrangChu" asp-action="DanhSachXe" class="btn btn-outline-secondary">Quay lại</a>
+                    <button type="submit" class="btn btn-primary">Xác nhận</button>
                 </div>
             </form>
         </div>
