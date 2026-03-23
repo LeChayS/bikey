@@ -129,6 +129,8 @@ namespace bikey.Migrations
                     MaUser = table.Column<int>(type: "int", nullable: true),
                     HoTen = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     SoDienThoai = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    DiaChi = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    SoCanCuoc = table.Column<string>(type: "nvarchar(12)", maxLength: 12, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     NgayNhanXe = table.Column<DateTime>(type: "datetime2", nullable: false),
                     NgayTraXe = table.Column<DateTime>(type: "datetime2", nullable: false),

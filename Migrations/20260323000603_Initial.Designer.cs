@@ -12,7 +12,7 @@ using bikey.Repository;
 namespace bikey.Migrations
 {
     [DbContext(typeof(BikeyDbContext))]
-    [Migration("20260320065655_Initial")]
+    [Migration("20260323000603_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -97,6 +97,10 @@ namespace bikey.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaDatCho"));
 
+                    b.Property<string>("DiaChi")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -123,6 +127,10 @@ namespace bikey.Migrations
 
                     b.Property<DateTime>("NgayTraXe")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("SoCanCuoc")
+                        .HasMaxLength(12)
+                        .HasColumnType("nvarchar(12)");
 
                     b.Property<string>("SoDienThoai")
                         .HasMaxLength(20)
