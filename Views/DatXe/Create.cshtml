@@ -199,7 +199,18 @@
         (() => {
             const ngayNhanInput = document.getElementById("NgayNhanDuKien");
             const ngayTraInput = document.getElementById("NgayTraDuKien");
-            const giaThue = Number(document.getElementById("GiaThueNgay").value || 0);
+            const parseDecimalValue = (raw) => {
+                if (!raw) return 0;
+                const normalized = String(raw)
+                    .trim()
+                    .replace(/\s/g, "")
+                    .replace(/\./g, "")
+                    .replace(",", ".");
+                const parsed = Number.parseFloat(normalized);
+                return Number.isFinite(parsed) ? parsed : 0;
+            };
+
+            const giaThue = parseDecimalValue(document.getElementById("GiaThueNgay")?.value);
             const tongTienDisplay = document.getElementById("tongTienDisplay");
             const bookingDateRangeText = document.getElementById("bookingDateRangeText");
             const bookingSoNgaySummary = document.getElementById("bookingSoNgaySummary");
