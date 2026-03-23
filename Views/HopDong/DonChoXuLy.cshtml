@@ -1,4 +1,4 @@
-﻿
+@using bikey.Models.ViewModels
 @model IEnumerable<bikey.Models.DatCho>
 
 @{
@@ -12,14 +12,13 @@
 }
 
 @section Scripts {
-    <script src="/js/hopdong/donchoxuly.js"></script>
 }
 
 <!-- Header -->
 <div class="top-header">
     <div>
         <h1 class="mb-0">Đơn Chờ Xử Lý</h1>
-        <p class="mb-0">Có @ViewBag.TongDonCho 10 đơn cần xử lý</p>
+        <p class="mb-0">Có @ViewBag.TongDonCho đơn cần xử lý</p>
     </div>
     <a asp-action="Index" class="btn btn-primary">
         <i class="bi bi-arrow-left"></i> Quay lại
@@ -59,15 +58,39 @@
             </form>
         </div>
 
+        @if (TempData["HopDongMessage"] is string message)
+        {
+            <div class="alert alert-info">@message</div>
+        }
+
         <!-- Danh sách đơn -->
-        @* @if(Model.Any()){
+        @if (Model.Any())
+        {
             @foreach (var don in Model)
-            { *@
-                @await Component.InvokeAsync("OrderCard");
-            @* }
+            {
+                var vm = new OrderCardVM
+                {
+                    Id = don.MaDatCho,
+                    OrderCode = $"Đơn #DC{don.MaDatCho:D6}",
+                    OrderDate = don.NgayDat,
+                    StatusText = don.TrangThai,
+                    CustomerName = string.IsNullOrWhiteSpace(don.HoTen) ? "Khách vãng lai" : don.HoTen,
+                    Phone = don.SoDienThoai ?? "—",
+                    Email = don.Email ?? "—",
+                    VehicleName = don.Xe?.TenXe ?? "—",
+                    Plate = don.Xe?.BienSoXe ?? "—",
+                    PricePerDay = don.Xe?.GiaThue ?? 0,
+                    TotalDays = don.SoNgayThue,
+                    FromDate = don.NgayNhanXe,
+                    ToDate = don.NgayTraXe,
+                    TotalPrice = don.TongTienDuKien,
+                    Note = don.GhiChu
+                };
+                @await Component.InvokeAsync("OrderCard", new { model = vm })
+            }
         }
         else
-        { *@
+        {
             <div class="empty-state">
                 <i class="bi bi-inbox empty-icon"></i>
                 <h3>Không có đơn chờ xử lý</h3>
@@ -76,10 +99,7 @@
                     <i class="bi bi-arrow-left"></i> Quay lại trang chính
                 </a>
             </div>
-        @* } *@
+        }
     </div>
 
 </div>
-
-@await Html.PartialAsync("_OrderCardCreateModal")
-@await Html.PartialAsync("_OrderCardDenyModal")

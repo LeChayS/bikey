@@ -1,143 +1,75 @@
 @using bikey.Models.ViewModels
 @model OrderCardVM
 
-@*
-                <div class="order-card">
-                    <div class="order-header">
-                        <div>
-                            <div class="order-number">Đơn #DC@(don.MaDatCho.ToString("D6"))</div>
-                            <div class="order-date">
-                                <i class="bi bi-clock"></i> @don.NgayDat.ToString("dd/MM/yyyy HH:mm")
-                            </div>
-                        </div>
-                        <span class="status-badge">
-                            <i class="bi bi-hourglass"></i> @don.TrangThai
-                        </span>
-                    </div>
-
-                    <div class="order-body">
-                        <div class="info-group">
-                            <div class="info-label">Khách hàng</div>
-                            <div class="info-value">@don.HoTen</div>
-                            <div class="text-muted small">
-                                <i class="bi bi-telephone"></i> @don.SoDienThoai<br />
-                                <i class="bi bi-envelope"></i> @don.Email
-                            </div>
-                        </div>
-
-                        <div class="info-group">
-                            <div class="info-label">Xe thuê</div>
-                            <div class="info-value">@don.Xe?.TenXe</div>
-                            <div class="text-muted small">
-                                Biển số: @don.Xe?.BienSoXe<br />
-                                Giá: <span class="text-danger">@don.Xe?.GiaThue.ToString("N0")đ/ngày</span>
-                            </div>
-                        </div>
-
-                        <div class="info-group">
-                            <div class="info-label">Thời gian thuê</div>
-                            <div class="info-value">@don.SoNgayThue ngày</div>
-                            <div class="text-muted small">
-                                Từ: @don.NgayNhanXe.ToString("dd/MM/yyyy")<br />
-                                Đến: @don.NgayTraXe.ToString("dd/MM/yyyy")
-                            </div>
-                        </div>
-
-                        <div class="info-group">
-                            <div class="info-label">Tổng tiền dự kiến</div>
-                            <div class="info-value text-danger">@don.TongTienDuKien.ToString("N0")đ</div>
-                        </div>
-                    </div>
-
-                    @if (!string.IsNullOrEmpty(don.GhiChu))
-                    {
-                        <div class="alert alert-info mb-3">
-                            <i class="bi bi-info-circle"></i> Ghi chú: @don.GhiChu
-                        </div>
-                    }
-
-                    <div class="order-actions">
-                        <button class="btn btn-info btn-sm" onclick="xemChiTiet(@don.MaDatCho)">
-                            <i class="bi bi-eye"></i> Chi tiết
-                        </button>
-                        <form asp-action="XuLyDon" method="post" class="d-inline"
-                            onsubmit="return confirm('Xác nhận xử lý đơn này và tạo hợp đồng?');">
-                            <input type="hidden" name="id" value="@don.MaDatCho" />
-                            <button type="submit" class="btn btn-process btn-sm">
-                                <i class="bi bi-check-circle"></i> Xử lý & Tạo HĐ
-                            </button>
-                        </form>
-                        <button class="btn btn-cancel btn-sm" onclick="huyDon(@don.MaDatCho)">
-                            <i class="bi bi-x-circle"></i> Hủy đơn
-                        </button>
-                    </div>
-                </div>
-    *@
-            <div class="order-card">
-                <div class="order-header">
-                    <div>
-                        <div class="order-number">Đơn #DC00001</div>
-                        <div class="order-date">
-                            <i class="bi bi-clock"></i> 20/0/2026 12:34
-                        </div>
-                    </div>
-                    <span class="status-badge">
-                        <i class="bi bi-hourglass"></i> Chờ xác nhận
-                    </span>
-                </div>
-
-                <div class="order-body">
-                    <div class="info-group">
-                        <div class="info-label">Khách hàng</div>
-                        <div class="info-value">tên khách</div>
-                        <div class="text-muted small">
-                            <i class="bi bi-telephone"></i> 0987654321<br />
-                            <i class="bi bi-envelope"></i> khach@gmail.com
-                        </div>
-                    </div>
-
-                    <div class="info-group">
-                        <div class="info-label">Xe thuê</div>
-                        <div class="info-value">tên xe</div>
-                        <div class="text-muted small">
-                            Biển số: biển số xe<br />
-                            Giá: <span class="text-danger">20,000đ/ngày</span>
-                        </div>
-                    </div>
-
-                    <div class="info-group">
-                        <div class="info-label">Thời gian thuê</div>
-                        <div class="info-value">5 ngày</div>
-                        <div class="text-muted small">
-                            Từ: 20/03/2026<br />
-                            Đến: 25/03/2026
-                        </div>
-                    </div>
-
-                    <div class="info-group">
-                        <div class="info-label">Tổng tiền dự kiến</div>
-                        <div class="info-value text-danger">200,000đ</div>
-                    </div>
-                </div>
-
-                    @* @if (!string.IsNullOrEmpty(don.GhiChu))
-                    { *@
-                        <div class="alert alert-info mb-3">
-                            <i class="bi bi-info-circle"></i> Ghi chú: Ghi chú của đơn là
-                        </div>
-                    @* } *@
-
-                    <div class="order-actions">
-                        <form method="post" class="d-inline">
-                            <input type="hidden" name="id" />
-                            <button type="button" class="btn btn-process btn-sm" data-bs-toggle="modal" data-bs-target="#createHopdong">
-                                <i class="bi bi-check-circle"></i> Xử lý & Tạo HĐ
-                            </button>
-                        </form>
-                        <button class="btn btn-cancel btn-sm" data-bs-toggle="modal" data-bs-target="#denyHopdong">
-                            <i class="bi bi-x-circle"></i> Hủy đơn
-                        </button>
-                    </div>
+<div class="order-card mb-3">
+    <div class="order-header">
+        <div>
+            <div class="order-number">@Model.OrderCode</div>
+            <div class="order-date">
+                <i class="bi bi-clock"></i> @Model.OrderDate.ToString("dd/MM/yyyy HH:mm")
             </div>
+        </div>
+        <span class="status-badge">
+            <i class="bi bi-hourglass"></i> @Model.StatusText
+        </span>
+    </div>
 
-        @* } *@
+    <div class="order-body">
+        <div class="info-group">
+            <div class="info-label">Khách hàng</div>
+            <div class="info-value">@Model.CustomerName</div>
+            <div class="text-muted small">
+                <i class="bi bi-telephone"></i> @Model.Phone<br />
+                <i class="bi bi-envelope"></i> @Model.Email
+            </div>
+        </div>
+
+        <div class="info-group">
+            <div class="info-label">Xe thuê</div>
+            <div class="info-value">@Model.VehicleName</div>
+            <div class="text-muted small">
+                Biển số: @Model.Plate<br />
+                Giá: <span class="text-danger">@Model.PricePerDay.ToString("N0")đ/ngày</span>
+            </div>
+        </div>
+
+        <div class="info-group">
+            <div class="info-label">Thời gian thuê</div>
+            <div class="info-value">@Model.TotalDays ngày</div>
+            <div class="text-muted small">
+                Từ: @Model.FromDate.ToString("dd/MM/yyyy")<br />
+                Đến: @Model.ToDate.ToString("dd/MM/yyyy")
+            </div>
+        </div>
+
+        <div class="info-group">
+            <div class="info-label">Tổng tiền dự kiến</div>
+            <div class="info-value text-danger">@Model.TotalPrice.ToString("N0")đ</div>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Note))
+    {
+        <div class="alert alert-info mb-3">
+            <i class="bi bi-info-circle"></i> Ghi chú: @Model.Note
+        </div>
+    }
+
+    <div class="order-actions">
+        <form action="/HopDong/XuLyDon" method="post" class="d-inline">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.Id" />
+            <button type="submit" class="btn btn-process btn-sm">
+                <i class="bi bi-check-circle"></i> Xử lý & Tạo HĐ
+            </button>
+        </form>
+
+        <form action="/HopDong/HuyDon" method="post" class="d-inline">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.Id" />
+            <button type="submit" class="btn btn-cancel btn-sm">
+                <i class="bi bi-x-circle"></i> Hủy đơn
+            </button>
+        </form>
+    </div>
+</div>
