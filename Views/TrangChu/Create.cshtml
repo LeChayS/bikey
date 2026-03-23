@@ -12,7 +12,7 @@
                 <p>Vui lòng điền thông tin cá nhân của bạn để hoàn tất thủ tục đặt xe</p>
             </div>
 
-            <form asp-action="Create" method="post" class="account-form mt-4" id="bookingForm">
+            <form asp-controller="TrangChu" asp-action="Create" method="post" class="account-form mt-4" id="bookingForm">
                 @Html.AntiForgeryToken()
                 <input asp-for="MaXe" type="hidden" />
                 <input asp-for="GiaThueNgay" type="hidden" />
