@@ -1,0 +1,140 @@
+/* Danh sách xe (TrangChu/Index phần lưới + TrangChu/DanhSachXe) */
+
+.bike-list-section {
+    padding-top: 4.5rem !important;
+    padding-bottom: 4.5rem !important;
+}
+
+.section-header {
+    max-width: 720px;
+    margin: 0 auto 2.4rem;
+}
+
+.section-header h2 {
+    font-size: clamp(1.9rem, 3vw, 2.8rem);
+    font-weight: 800;
+    margin: 1rem 0 0.75rem;
+}
+
+.section-header p {
+    color: var(--text-muted);
+}
+
+.bike-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    overflow: hidden;
+    height: 100%;
+    box-shadow: 0 12px 28px rgba(13, 58, 128, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bike-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 22px 42px rgba(13, 58, 128, 0.14);
+}
+
+.bike-thumbnail {
+    min-height: 210px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #c8e5ff 0%, #8bc7ff 100%);
+    color: var(--navy);
+    font-size: 4rem;
+}
+
+.bike-info {
+    padding: 1.5rem;
+}
+
+.bike-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.bike-tag {
+    background: rgba(13, 110, 253, 0.1);
+    color: var(--primary-blue-dark);
+    border-radius: 999px;
+    padding: 0.35rem 0.8rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.bike-location {
+    color: var(--text-muted);
+    font-size: 0.92rem;
+}
+
+.bike-name {
+    font-size: 1.35rem;
+    font-weight: 800;
+    margin-bottom: 0.65rem;
+}
+
+.bike-description {
+    color: var(--text-muted);
+    min-height: 48px;
+    margin-bottom: 1rem;
+}
+
+.bike-specs {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.25rem;
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.bike-specs li {
+    background: var(--sky);
+    border-radius: 999px;
+    padding: 0.45rem 0.85rem;
+    font-size: 0.92rem;
+    color: var(--text-main);
+}
+
+.bike-card__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.bike-card--catalog .bike-info {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.bike-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.bike-price {
+    color: var(--primary-blue-dark);
+    font-size: 1.2rem;
+    font-weight: 800;
+}
+
+@media (max-width: 767.98px) {
+    .bike-card__footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .bike-meta {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

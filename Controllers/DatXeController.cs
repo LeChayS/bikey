@@ -97,6 +97,9 @@ namespace bikey.Controllers
             var datCho = await _context.DatCho
                 .AsNoTracking()
                 .Include(item => item.Xe)
+                    .ThenInclude(x => x!.LoaiXe)
+                .Include(item => item.Xe)
+                    .ThenInclude(x => x!.HinhAnhXes)
                 .FirstOrDefaultAsync(item => item.MaDatCho == id);
 
             if (datCho is null)
