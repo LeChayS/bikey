@@ -23,6 +23,7 @@ namespace bikey.Controllers
         {
             var xe = await _context.Xe
                 .AsNoTracking()
+                .Include(item => item.LoaiXe)
                 .FirstOrDefaultAsync(item => item.MaXe == maXe);
 
             if (xe is null)
@@ -41,6 +42,7 @@ namespace bikey.Controllers
         {
             var xe = await _context.Xe
                 .AsNoTracking()
+                .Include(item => item.LoaiXe)
                 .FirstOrDefaultAsync(item => item.MaXe == model.MaXe);
 
             if (xe is null)
@@ -73,7 +75,7 @@ namespace bikey.Controllers
                 SoDienThoai = model.SoDienThoai,
                 DiaChi = model.DiaChi,
                 SoCanCuoc = model.CanCuoc,
-                Email = User.FindFirstValue(ClaimTypes.Email),
+                Email = model.Email.Trim(),
                 NgayNhanXe = model.NgayNhanDuKien,
                 NgayTraXe = model.NgayTraDuKien,
                 GhiChu = model.GhiChu,
@@ -112,7 +114,8 @@ namespace bikey.Controllers
                 MaXe = xe.MaXe,
                 HoTenKhachHang = User.FindFirstValue(ClaimTypes.Name) ?? string.Empty,
                 SoDienThoai = User.FindFirstValue(ClaimTypes.MobilePhone) ?? string.Empty,
-                DiaChi = User.FindFirstValue(ClaimTypes.StreetAddress) ?? string.Empty
+                DiaChi = User.FindFirstValue(ClaimTypes.StreetAddress) ?? string.Empty,
+                Email = User.FindFirstValue(ClaimTypes.Email) ?? string.Empty
             };
 
             PopulateVehicleInfo(model, xe);
@@ -127,6 +130,8 @@ namespace bikey.Controllers
             model.DongXe = xe.DongXe;
             model.TrangThaiXe = xe.TrangThai;
             model.GiaThueNgay = xe.GiaThue;
+            model.GiaTriXe = xe.GiaTriXe;
+            model.TenLoaiXe = xe.LoaiXe?.TenLoaiXe ?? "—";
             model.TongTienDuKien = model.SoNgayThue * xe.GiaThue;
         }
 

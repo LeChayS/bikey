@@ -19,13 +19,19 @@ namespace bikey.ViewModels
 
         public decimal GiaThueNgay { get; set; }
 
+        [Display(Name = "Giá trị xe")]
+        public decimal GiaTriXe { get; set; }
+
+        [Display(Name = "Loại xe")]
+        public string TenLoaiXe { get; set; } = string.Empty;
+
         [Required(ErrorMessage = "Vui lòng nhập họ tên khách hàng")]
         [Display(Name = "Họ tên khách hàng")]
         public string HoTenKhachHang { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Vui lòng nhập số điện thoại")]
         [Display(Name = "SĐT")]
-        [RegularExpression(@"^\d{10,11}$", ErrorMessage = "Số điện thoại phải có từ 10 đến 11 chữ số")]
+        [RegularExpression(@"^\d{10}$", ErrorMessage = "Số điện thoại phải có 10 chữ số")]
         public string SoDienThoai { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Vui lòng nhập địa chỉ")]
@@ -36,6 +42,12 @@ namespace bikey.ViewModels
         [Display(Name = "Căn cước")]
         [RegularExpression(@"^\d{12}$", ErrorMessage = "Căn cước phải gồm đúng 12 chữ số")]
         public string CanCuoc { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Vui lòng nhập email")]
+        [EmailAddress(ErrorMessage = "Email không hợp lệ")]
+        [Display(Name = "Email")]
+        [StringLength(100)]
+        public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Vui lòng chọn ngày nhận")]
         [Display(Name = "Ngày nhận dự kiến")]
