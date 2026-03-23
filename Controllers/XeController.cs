@@ -130,7 +130,7 @@ namespace bikey.Controllers
                 await using var stream = System.IO.File.Create(fullPath);
                 await file.CopyToAsync(stream);
 
-                // TenFile lưu dạng "images/xe/<fileName>" để DetailController normalize URL đúng.
+                // TenFile lưu dạng "images/xe/<fileName>" để TrangChuController.ChiTietXe normalize URL đúng.
                 return Path.Combine("images", "xe", fileName).Replace("\\", "/");
             }
 

@@ -119,7 +119,7 @@ namespace bikey.Controllers
                 Email = normalizedEmail,
                 SoDienThoai = model.SoDienThoai,
                 MatKhau = model.MatKhau,
-                VaiTro = "Khách hàng",
+                VaiTro = "User",
                 IsActive = true,
                 NgayTao = DateTime.Now
             };
@@ -223,8 +223,7 @@ namespace bikey.Controllers
         private static bool IsAdminOrStaff(string? role)
         {
             return string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase) ||
-                   string.Equals(role, "Staff", StringComparison.OrdinalIgnoreCase) ||
-                   string.Equals(role, "Nhân viên", StringComparison.OrdinalIgnoreCase);
+                   string.Equals(role, "Staff", StringComparison.OrdinalIgnoreCase);
         }
 
         private static string NormalizeEmail(string email)

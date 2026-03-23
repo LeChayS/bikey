@@ -360,11 +360,6 @@ namespace bikey.Controllers
                 CanCreateUser = permission.CanCreateUser,
                 CanEditUser = permission.CanEditUser,
                 CanDeleteUser = permission.CanDeleteUser,
-                CanManageBanner = permission.CanManageBanner,
-                CanViewBanner = permission.CanViewBanner,
-                CanCreateBanner = permission.CanCreateBanner,
-                CanEditBanner = permission.CanEditBanner,
-                CanDeleteBanner = permission.CanDeleteBanner,
                 CanViewBaoCao = permission.CanViewBaoCao,
                 CanViewThongKe = permission.CanViewThongKe,
                 CanExportBaoCao = permission.CanExportBaoCao,
@@ -414,12 +409,6 @@ namespace bikey.Controllers
             target.CanCreateUser = input.CanCreateUser;
             target.CanEditUser = input.CanEditUser;
             target.CanDeleteUser = input.CanDeleteUser;
-
-            target.CanManageBanner = input.CanManageBanner;
-            target.CanViewBanner = input.CanViewBanner;
-            target.CanCreateBanner = input.CanCreateBanner;
-            target.CanEditBanner = input.CanEditBanner;
-            target.CanDeleteBanner = input.CanDeleteBanner;
 
             target.CanViewBaoCao = input.CanViewBaoCao;
             target.CanViewThongKe = input.CanViewThongKe;

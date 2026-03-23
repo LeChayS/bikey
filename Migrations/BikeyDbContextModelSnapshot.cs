@@ -411,9 +411,6 @@ namespace bikey.Migrations
                     b.Property<bool>("CanCheckout")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("CanCreateBanner")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("CanCreateHoaDon")
                         .HasColumnType("bit");
 
@@ -432,9 +429,6 @@ namespace bikey.Migrations
                     b.Property<bool>("CanDatCho")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("CanDeleteBanner")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("CanDeleteHinhAnhXe")
                         .HasColumnType("bit");
 
@@ -451,9 +445,6 @@ namespace bikey.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("CanDeleteXe")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanEditBanner")
                         .HasColumnType("bit");
 
                     b.Property<bool>("CanEditHinhAnhXe")
@@ -475,9 +466,6 @@ namespace bikey.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("CanExportBaoCao")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanManageBanner")
                         .HasColumnType("bit");
 
                     b.Property<bool>("CanManageCart")
@@ -508,9 +496,6 @@ namespace bikey.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("CanUploadHinhAnhXe")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanViewBanner")
                         .HasColumnType("bit");
 
                     b.Property<bool>("CanViewBaoCao")

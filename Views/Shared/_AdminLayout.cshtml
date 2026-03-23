@@ -1,4 +1,37 @@
-﻿<!DOCTYPE html>
+@using System.Security.Claims
+@{
+    var isSignedIn = User.Identity?.IsAuthenticated == true;
+    var displayName = isSignedIn
+        ? (User.Identity?.Name ?? User.FindFirstValue(ClaimTypes.Email) ?? "Người dùng")
+        : string.Empty;
+    var emailClaim = isSignedIn ? User.FindFirstValue(ClaimTypes.Email) : null;
+    var roleClaim = isSignedIn ? User.FindFirstValue(ClaimTypes.Role) : null;
+    var returnUrl = $"{Context.Request.Path}{Context.Request.QueryString}";
+    string avatarLabel;
+    if (!isSignedIn)
+    {
+        avatarLabel = "?";
+    }
+    else
+    {
+        var parts = displayName.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (parts.Length >= 2)
+        {
+            avatarLabel = $"{char.ToUpperInvariant(parts[0][0])}{char.ToUpperInvariant(parts[1][0])}";
+        }
+        else if (displayName.Length > 0)
+        {
+            avatarLabel = displayName.Length >= 2
+                ? displayName[..2].ToUpperInvariant()
+                : char.ToUpperInvariant(displayName[0]).ToString();
+        }
+        else
+        {
+            avatarLabel = "?";
+        }
+    }
+}
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8" />
@@ -30,42 +63,51 @@
                 <i class="bi bi-list"></i>
             </button>
             <div class="admin-info">
-                <span>Xin chào, <strong>tên người dùng</strong></span>
-                <div class="dropdown d-inline">
-                    <div class="admin-avatar dropdown-toggle" data-bs-toggle="dropdown" style="cursor: pointer;">
-                        tram
+                @if (isSignedIn)
+                {
+                    <span>Xin chào, <strong>@displayName</strong></span>
+                    <div class="dropdown d-inline">
+                        <div class="admin-avatar dropdown-toggle" data-bs-toggle="dropdown" style="cursor: pointer;" title="@displayName">
+                            @avatarLabel
+                        </div>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <span class="dropdown-item-text">
+                                    @displayName<br>
+                                    @if (!string.IsNullOrEmpty(emailClaim))
+                                    {
+                                        <small class="text-muted">@emailClaim</small><br>
+                                    }
+                                    @if (!string.IsNullOrEmpty(roleClaim))
+                                    {
+                                        <small class="text-muted">Vai trò: @roleClaim</small>
+                                    }
+                                </span>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" asp-page="/Account/Profile">
+                                    <i class="bi bi-gear"></i> Cài đặt
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#"
+                                   onclick="event.preventDefault(); document.getElementById('admin-logout-form').submit();">
+                                    <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                                </a>
+                                <form id="admin-logout-form" asp-controller="Account" asp-action="Logout" method="post" style="display: none;">
+                                    @Html.AntiForgeryToken()
+                                </form>
+                            </li>
+                        </ul>
                     </div>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li>
-                            <span class="dropdown-item-text">
-                                    @* @User.Identity.Name *@
-                                    tram <br>
-                                <small class="text-muted">
-                                    @* @User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value *@
-                                    email@gmail.com
-                                </small><br>
-                                <small class="text-muted">Role: Admin
-                                    @* @User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value *@
-                                </small>
-                            </span>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
-                            <a class="dropdown-item" href="/Account/Profile">
-                                <i class="bi bi-gear"></i> Cài đặt
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="/Account/Logout"
-                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                <i class="bi bi-box-arrow-right"></i> Đăng xuất
-                            </a>
-                            <form id="logout-form" action="/Account/Logout" method="post" style="display: none;">
-                                @Html.AntiForgeryToken()
-                            </form>
-                        </li>
-                    </ul>
-                </div>
+                }
+                else
+                {
+                    <a class="btn btn-outline-primary btn-sm" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@returnUrl">
+                        <i class="bi bi-box-arrow-in-right"></i> Đăng nhập
+                    </a>
+                }
             </div>
         </div>
         @RenderBody()

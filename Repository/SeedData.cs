@@ -41,6 +41,84 @@ namespace bikey.Repository
                     context.SaveChanges();
                 }
 
+                if (!context.Xe.Any())
+                {
+                    var maLoaiXeMay = context.LoaiXe
+                        .Where(loaiXe => loaiXe.TenLoaiXe == "Xe Máy")
+                        .Select(loaiXe => loaiXe.MaLoaiXe)
+                        .First();
+
+                    context.Xe.AddRange(
+                        new Xe
+                        {
+                            TenXe = "Honda Air Blade 160",
+                            BienSoXe = "59A3-16001",
+                            HangXe = "Honda",
+                            DongXe = "Air Blade 160",
+                            TrangThai = "Sẵn sàng",
+                            GiaThue = 180000,
+                            GiaTriXe = 55000000,
+                            MaLoaiXe = maLoaiXeMay
+                        },
+                        new Xe
+                        {
+                            TenXe = "Honda Vision",
+                            BienSoXe = "59A3-14002",
+                            HangXe = "Honda",
+                            DongXe = "Vision",
+                            TrangThai = "Sẵn sàng",
+                            GiaThue = 140000,
+                            GiaTriXe = 38000000,
+                            MaLoaiXe = maLoaiXeMay
+                        },
+                        new Xe
+                        {
+                            TenXe = "Yamaha Janus",
+                            BienSoXe = "59A3-15003",
+                            HangXe = "Yamaha",
+                            DongXe = "Janus",
+                            TrangThai = "Sẵn sàng",
+                            GiaThue = 150000,
+                            GiaTriXe = 36000000,
+                            MaLoaiXe = maLoaiXeMay
+                        },
+                        new Xe
+                        {
+                            TenXe = "Honda Wave Alpha",
+                            BienSoXe = "59A3-11004",
+                            HangXe = "Honda",
+                            DongXe = "Wave Alpha",
+                            TrangThai = "Sẵn sàng",
+                            GiaThue = 110000,
+                            GiaTriXe = 21000000,
+                            MaLoaiXe = maLoaiXeMay
+                        },
+                        new Xe
+                        {
+                            TenXe = "Honda Future 125",
+                            BienSoXe = "59A3-13005",
+                            HangXe = "Honda",
+                            DongXe = "Future 125",
+                            TrangThai = "Sẵn sàng",
+                            GiaThue = 130000,
+                            GiaTriXe = 34000000,
+                            MaLoaiXe = maLoaiXeMay
+                        },
+                        new Xe
+                        {
+                            TenXe = "Yamaha Exciter 155",
+                            BienSoXe = "59A3-22006",
+                            HangXe = "Yamaha",
+                            DongXe = "Exciter 155",
+                            TrangThai = "Sẵn sàng",
+                            GiaThue = 220000,
+                            GiaTriXe = 52000000,
+                            MaLoaiXe = maLoaiXeMay
+                        }
+                    );
+                    context.SaveChanges();
+                }
+
                 if (!context.NguoiDung.Any())
                 {
                     context.NguoiDung.AddRange(

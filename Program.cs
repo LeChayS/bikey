@@ -12,7 +12,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     {
         options.LoginPath = "/Account/Login";
         options.LogoutPath = "/Account/Logout";
-        options.AccessDeniedPath = "/Account/Login";
+        options.AccessDeniedPath = "/AccessDenied";
     });
 builder.Services.AddAuthorization();
 
@@ -106,7 +106,7 @@ app.Run();
 //    {
 //        options.LoginPath = "/Account/Login";
 //        options.LogoutPath = "/Account/Logout";
-//        options.AccessDeniedPath = "/Account/AccessDenied";
+//        options.AccessDeniedPath = "/AccessDenied";
 //        options.ExpireTimeSpan = TimeSpan.FromDays(7);
 //        options.SlidingExpiration = true;
 //    });
