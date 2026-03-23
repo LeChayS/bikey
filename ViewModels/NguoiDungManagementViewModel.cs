@@ -129,12 +129,6 @@ namespace bikey.ViewModels
         public bool CanEditUser { get; set; }
         public bool CanDeleteUser { get; set; }
 
-        public bool CanManageBanner { get; set; }
-        public bool CanViewBanner { get; set; }
-        public bool CanCreateBanner { get; set; }
-        public bool CanEditBanner { get; set; }
-        public bool CanDeleteBanner { get; set; }
-
         public bool CanViewBaoCao { get; set; }
         public bool CanViewThongKe { get; set; }
         public bool CanExportBaoCao { get; set; }
@@ -211,18 +205,6 @@ namespace bikey.ViewModels
                     new PermissionItemMetadata("CanEditHoaDon", "Sửa thông tin hóa đơn"),
                     new PermissionItemMetadata("CanDeleteHoaDon", "Xóa hóa đơn"),
                     new PermissionItemMetadata("CanPrintHoaDon", "In hóa đơn")
-                ]
-            },
-            new PermissionGroupMetadata
-            {
-                Title = "Quản lý banner",
-                Icon = "bi-badge-ad",
-                Items =
-                [
-                    new PermissionItemMetadata("CanViewBanner", "Xem"),
-                    new PermissionItemMetadata("CanCreateBanner", "Tạo banner mới"),
-                    new PermissionItemMetadata("CanEditBanner", "Sửa thông tin banner"),
-                    new PermissionItemMetadata("CanDeleteBanner", "Xóa banner")
                 ]
             },
             new PermissionGroupMetadata

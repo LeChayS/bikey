@@ -1,7 +1,13 @@
-﻿@model IEnumerable<bikey.Models.HoaDon>
+@model IEnumerable<bikey.Models.HoaDon>
 @{
     Layout = "_AdminLayout";
     ViewData["Title"] = "Quản lý hóa đơn";
+    int totalItems = ViewBag.TotalItems ?? 0;
+    int pageSize = ViewBag.PageSize ?? 10;
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = pageSize > 0 ? (int)Math.Ceiling((double)totalItems / pageSize) : 1;
+    decimal tongDoanhThu = ViewBag.TongDoanhThu is decimal td ? td : 0m;
+    int soHoaDonHomNay = ViewBag.SoHoaDonHomNay ?? 0;
 }
 @section Styles{
     <link rel="stylesheet" href="~/css/hoadon/index.css" asp-append-version="true"/>
@@ -20,10 +26,6 @@
     <h1><i class="bi bi-receipt-cutoff"></i> Quản Lý Hóa Đơn</h1>
 </div>
 
-
-
-
-
 <div class="wrapper">
 
 
@@ -36,8 +38,7 @@
                     <div>
                         <div class="stat-label">Tổng hóa đơn</div>
                         <div class="stat-value">
-                            @* @ViewBag.TotalItems *@
-                            12
+                            @totalItems
                         </div>
                     </div>
                     <div class="stat-icon orange text-white">
@@ -51,8 +52,7 @@
                     <div>
                         <div class="stat-label">Tổng doanh thu</div>
                         <div class="stat-value stat-revenue">
-                            @* @ViewBag.TongDoanhThu.ToString("N0")đ *@
-                            120,000đ
+                            @tongDoanhThu.ToString("N0")đ
                         </div>
                     </div>
                     <div class="stat-icon green text-white">
@@ -66,8 +66,7 @@
                     <div>
                         <div class="stat-label">Hóa đơn hôm nay</div>
                         <div class="stat-value stat-count">
-                            @* @ViewBag.SoHoaDonHomNay *@
-                            10
+                            @soHoaDonHomNay
                         </div>
                     </div>
                     <div class="stat-icon blue text-white">
@@ -129,80 +128,70 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @* @foreach (var hoaDon in Model)
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var hoaDon in Model)
+                        {
+                            <tr>
+                                <td><strong>HD@(hoaDon.MaHoaDon.ToString("D6"))</strong></td>
+                                <td>
+                                    <a asp-controller="HopDong" asp-action="ChiTiet" asp-route-id="@hoaDon.MaHopDong"
+                                        class="text-decoration-none">
+                                        HD@(hoaDon.MaHopDong.ToString("D6"))
+                                    </a>
+                                </td>
+                                <td>
+                                    @(string.IsNullOrWhiteSpace(hoaDon.HopDong?.HoTenKhach)
+                                        ? "Khách vãng lai"
+                                        : hoaDon.HopDong.HoTenKhach)<br />
+                                    <small class="text-muted">@hoaDon.HopDong?.SoDienThoai</small>
+                                </td>
+                                <td>
+                                    @if (hoaDon.HopDong?.ChiTietHopDong?.Any() == true)
+                                    {
+                                        var xeDau = hoaDon.HopDong.ChiTietHopDong.First();
+                                        @xeDau.Xe?.TenXe
+                                        <br />
+                                        <small class="text-muted">@xeDau.Xe?.BienSoXe</small>
+                                        @if (hoaDon.HopDong.ChiTietHopDong.Count > 1)
+                                        {
+                                            <br/><small class="text-info">+@(hoaDon.HopDong.ChiTietHopDong.Count - 1) xe khác</small>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="text-danger">Không có xe</span>
+                                    }
+                                </td>
+                                <td class="text-success fw-bold">@hoaDon.SoTien.ToString("N0")đ</td>
+                                <td>@hoaDon.NgayThanhToan.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    <span class="status-badge">@hoaDon.TrangThai</span>
+                                </td>
+                                <td>
+                                    <a asp-action="ChiTiet" asp-route-id="@hoaDon.MaHoaDon"
+                                        class="btn btn-sm btn-info" title="Chi tiết">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a asp-controller="HoaDon" asp-action="InHoaDon" asp-route-id="@hoaDon.MaHoaDon"
+                                        target="_blank" class="btn btn-sm btn-secondary" title="In hóa đơn">
+                                        <i class="bi bi-printer"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
                     {
                         <tr>
-                            <td><strong>HD@(hoaDon.MaHoaDon.ToString("D6"))</strong></td>
-                            <td>
-                                <a asp-controller="QuanLyHopDong" asp-action="ChiTiet" asp-route-id="@hoaDon.MaHopDong"
-                                class="text-decoration-none">
-                                    HD@(hoaDon.MaHopDong.ToString("D6"))
-                                </a>
-                            </td>
-                            <td>
-                                @hoaDon.HopDong?.HoTenKhach<br />
-                                <small class="text-muted">@hoaDon.HopDong?.SoDienThoai</small>
-                            </td>
-                            <td>
-                                @if (hoaDon.HopDong?.ChiTietHopDong?.Any() == true)
-                                {
-                                    var xeDau = hoaDon.HopDong.ChiTietHopDong.First();
-                                    @xeDau.Xe?.TenXe
-                                    <br />
-                                    <small class="text-muted">@xeDau.Xe?.BienSoXe</small>
-                                    @if (hoaDon.HopDong.ChiTietHopDong.Count > 1)
-                                    {
-                                        <br/><small class="text-info">+@(hoaDon.HopDong.ChiTietHopDong.Count - 1) xe khác</small>
-                                    }
-                                }
-                                else
-                                {
-                                    <span class="text-danger">Không có xe</span>
-                                }
-                            </td>
-                            <td class="text-success fw-bold">@hoaDon.SoTien.ToString("N0")đ</td>
-                            <td>@hoaDon.NgayThanhToan.ToString("dd/MM/yyyy")</td>
-                            <td>
-                                <span class="status-badge">@hoaDon.TrangThai</span>
-                            </td>
-                            <td>
-                                <a asp-action="ChiTiet" asp-route-id="@hoaDon.MaHoaDon"
-                                class="btn btn-sm btn-info" title="Chi tiết">
-                                    <i class="bi bi-eye"></i>
-                                </a>
-                                <a href="@Url.Action("InHoaDon", "QuanLyHoaDon", new { id = hoaDon.MaHoaDon })"
-                                target="_blank" class="btn btn-sm btn-secondary" title="In hóa đơn">
-                                    <i class="bi bi-printer"></i>
-                                </a>
-                            </td>
+                            <td colspan="8" class="text-center py-4 text-muted">Không có hóa đơn phù hợp.</td>
                         </tr>
-                    } *@
-                    <tr>
-                        <td>mã hóa đơn</td>
-                        <td>mã hợp đồng</td>
-                        <td>tên khách hàng</td>
-                        <td>tên xe</td>
-                        <td>100,000đ</td>
-                        <td>10/03/2026</td>
-                        <td>
-                            <span class="status-badge completed">Đã thanh toán</span>
-                        </td>
-                        <td>
-                            <a asp-action="ChiTiet" asp-route-id=""
-                                class="btn btn-sm btn-info" title="Chi tiết">
-                                    <i class="bi bi-eye"></i>
-                                </a>
-                                <a href=""
-                                target="_blank" class="btn btn-sm btn-secondary" title="In hóa đơn">
-                                    <i class="bi bi-printer"></i>
-                                </a>
-                        </td>
-                    </tr>
+                    }
                 </tbody>
             </table>
 
             <!-- Pagination -->
-            @* @if (totalPages > 1)
+            @if (totalPages > 1)
             {
                 <nav aria-label="Page navigation" class="p-3">
                     <ul class="pagination justify-content-center">
@@ -220,7 +209,7 @@
                         }
                     </ul>
                 </nav>
-            } *@
+            }
         </div>
 
     </div>
