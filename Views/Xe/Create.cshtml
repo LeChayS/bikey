@@ -12,7 +12,82 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    <script src="/js/xe/create.js"></script>
+
+    <script>
+        let selectedAdditionalFiles = [];
+
+        function renderAdditionalImagePreview() {
+            const fileInput = document.getElementById('hinhAnhKhac');
+            const grid = document.getElementById('imagePreviewGrid');
+            const stats = document.getElementById('uploadStats');
+            const statsText = document.getElementById('statsText');
+
+            if (!fileInput || !grid) return;
+            grid.innerHTML = '';
+
+            if (!selectedAdditionalFiles.length) {
+                fileInput.value = '';
+                if (stats) stats.style.display = 'none';
+                if (statsText) statsText.textContent = 'Chưa có hình ảnh nào được chọn';
+                return;
+            }
+
+            const dataTransfer = new DataTransfer();
+            selectedAdditionalFiles.forEach(file => dataTransfer.items.add(file));
+            fileInput.files = dataTransfer.files;
+
+            if (stats) stats.style.display = 'block';
+            if (statsText) statsText.textContent = `Đã chọn ${selectedAdditionalFiles.length} hình ảnh`;
+
+            selectedAdditionalFiles.forEach((file, index) => {
+                const url = URL.createObjectURL(file);
+
+                const item = document.createElement('div');
+                item.className = 'image-preview-item';
+                item.innerHTML = `
+                    <button type="button" class="remove-btn" title="Xóa ảnh">&times;</button>
+                    <img src="${url}" alt="Ảnh xe" />
+                    <div class="file-name" title="${file.name}">${file.name}</div>
+                `;
+
+                const removeBtn = item.querySelector('.remove-btn');
+                if (removeBtn) {
+                    removeBtn.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        selectedAdditionalFiles.splice(index, 1);
+                        renderAdditionalImagePreview();
+                    });
+                }
+
+                grid.appendChild(item);
+            });
+        }
+
+        function previewMainImage(event) {
+            const fileInput = event.target;
+            const file = fileInput.files && fileInput.files[0];
+            const previewContent = document.getElementById('preview-content');
+            if (!previewContent) return;
+
+            if (!file) {
+                previewContent.innerHTML = `
+                    <i class="bi bi-cloud-upload upload-icon"></i>
+                    <p class="mb-0">Click để chọn ảnh chính</p>
+                    <small class="text-muted">JPG, PNG (Max: 5MB)</small>
+                `;
+                return;
+            }
+
+            const url = URL.createObjectURL(file);
+            previewContent.innerHTML = `<img src="${url}" alt="Ảnh chính" />`;
+        }
+
+        function previewMultipleImages(event) {
+            selectedAdditionalFiles = Array.from(event.target.files || []);
+            renderAdditionalImagePreview();
+        }
+    </script>
 }
 
 <!-- Top Header -->
@@ -101,6 +176,16 @@
                         <span asp-validation-for="GiaThue" class="text-danger small"></span>
                     </div>
 
+                    <!-- Giá trị xe -->
+                    <div class="mb-4">
+                        <label asp-for="GiaTriXe" class="form-label">Giá trị xe</label>
+                        <div class="input-group">
+                            <input asp-for="GiaTriXe" class="form-control" placeholder="Ví dụ: 25000000" />
+                            <span class="input-group-text">VNĐ</span>
+                        </div>
+                        <span asp-validation-for="GiaTriXe" class="text-danger small"></span>
+                    </div>
+
                     <!-- Trạng thái -->
                     <div class="mb-4">
                         <label asp-for="TrangThai" class="form-label">
@@ -140,7 +225,7 @@
                             <small class="text-muted">(Tùy chọn)</small>
                         </label>
 
-                        <div class="multi-image-upload" id="multiImageUpload">
+                        <div class="multi-image-upload" id="multiImageUpload" onclick="document.getElementById('hinhAnhKhac').click()">
                             <input type="file" name="hinhAnhKhac" id="hinhAnhKhac" accept="image/*" multiple
                                 style="display:none" onchange="previewMultipleImages(event)" />
                             <i class="bi bi-cloud-upload upload-icon"></i>

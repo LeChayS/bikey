@@ -1,4 +1,5 @@
-﻿@model IEnumerable<bikey.Models.LoaiXe>
+@using System.Linq
+@model IEnumerable<bikey.Models.LoaiXe>
 @{
     Layout = "_AdminLayout";
     ViewData["Title"] = "Quản lý loại xe";
@@ -8,7 +9,7 @@
 }
 
 @section Scripts {
-    <script src="~/js/loaixe/index.js"></script>
+    <script src="~/js/loaixe/index.js" asp-append-version="true"></script>
 }
 
 <!-- Top Header -->
@@ -22,9 +23,23 @@
 </div>
 
 <div class="wrapper">
-    @Html.AntiForgeryToken()
-
-    <div id="alert-container"></div>
+    @* server-side alerts *@
+    <div>
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show loaiXe-alert" role="alert">
+                <span class="loaiXe-alert__message"><i class="bi bi-check-circle"></i> @TempData["Success"]</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show loaiXe-alert" role="alert">
+                <span class="loaiXe-alert__message"><i class="bi bi-exclamation-circle"></i> @TempData["Error"]</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+    </div>
 
     <div class="container-fluid">
         <div class="table-container">
@@ -39,28 +54,46 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @* @foreach (var item in Model)
-                    { *@
-                    <tr>
-                        <td>1</td>
-                        <td>tên loại xe</td>
-                        <td>12/12/1212</td>
-                        <td>12/12/1212 / -</td>
-                        <td>
-                            <button class="btn btn-sm btn-warning" data-bs-toggle="modal"
-                                data-bs-target="#editLoai">Sửa</button>
-                            <button class="btn btn-sm btn-danger" data-bs-toggle="modal"
-                                data-bs-target="#deleteLoai">Xóa</button>
-                        </td>
-                    </tr>
-                    @* } *@
-                    <tr>
-                        <td colspan="9" class="text-center text-muted py-4">
-                            <i class="bi bi-search" style="font-size:2rem;"></i>
-                            <br>
-                            Chưa có loại xe mới
-                        </td>
-                    </tr>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.MaLoaiXe</td>
+                                <td>@item.TenLoaiXe</td>
+                                <td>@item.NgayTao.ToString("dd/MM/yyyy")</td>
+                                <td>@(item.NgayCapNhat.HasValue ? item.NgayCapNhat.Value.ToString("dd/MM/yyyy") : "-")</td>
+                                <td>
+                                    <button type="button"
+                                            class="btn btn-sm btn-warning"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#editLoai"
+                                            data-id="@item.MaLoaiXe"
+                                            data-ten="@item.TenLoaiXe">
+                                        Sửa
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-sm btn-danger"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteLoai"
+                                            data-id="@item.MaLoaiXe"
+                                            data-ten="@item.TenLoaiXe">
+                                        Xóa
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="9" class="text-center text-muted py-4">
+                                <i class="bi bi-search" style="font-size:2rem;"></i>
+                                <br>
+                                Chưa có loại xe mới
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
@@ -79,7 +112,8 @@
             </div>
 
             <div class="modal-body">
-                <form asp-action="Create" method="post">
+                <form asp-action="Create" method="post" id="createForm">
+                    @Html.AntiForgeryToken()
                     <div class="form-group">
                         <label class="form-label" for="createTenLoaiXe">Tên loại xe</label>
                         <input type="text" id="createTenLoaiXe" name="TenLoaiXe" class="form-input" required />
@@ -90,7 +124,9 @@
 
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                <button class="btn btn-primary" asp-action="submit"><i class="bi bi-check-circle"></i> Thêm mới</button>
+                <button type="submit" form="createForm" class="btn btn-primary">
+                    <i class="bi bi-check-circle"></i> Thêm mới
+                </button>
             </div>
         </div>
     </div>
@@ -107,8 +143,9 @@
             </div>
 
             <div class="modal-body">
-                <form asp-action="Edit" method="post">
-                    <input type="hidden" />
+                <form asp-action="Edit" method="post" id="editForm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="editMaLoaiXe" name="MaLoaiXe" />
                     <div class="form-group">
                         <label class="form-label" for="editTenLoaiXe">Tên loại xe</label>
                         <input type="text" id="editTenLoaiXe" name="TenLoaiXe" class="form-input" required />
@@ -119,8 +156,9 @@
 
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                <button class="btn btn-primary" asp-action="submit"><i class="bi bi-check-circle"></i> Lưu thay
-                    đổi</button>
+                <button type="submit" form="editForm" class="btn btn-primary">
+                    <i class="bi bi-check-circle"></i> Lưu thay đổi
+                </button>
             </div>
         </div>
     </div>
@@ -137,14 +175,21 @@
             </div>
 
             <div class="modal-body">
-                <h5>Bạn có chắc chắn muốn xóa loại xe này?</h5>
+                <h5 id="deleteLoaiConfirmText">
+                    Bạn có chắc chắn muốn xóa loại xe "<span id="deleteTenLoaiXeText"></span>"?
+                </h5>
                 <small class="text-muted">Loại xe bị xóa sẽ không thể khôi phục lại được</small>
             </div>
 
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                <button class="btn btn-danger" asp-action="submit"><i class="bi bi-check-circle"></i> Xóa loại
-                    xe</button>
+                <form asp-action="Delete" method="post" id="deleteForm" style="display:inline;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="deleteLoaiId" name="id" />
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-check-circle"></i> Xóa loại xe
+                    </button>
+                </form>
             </div>
         </div>
     </div>
