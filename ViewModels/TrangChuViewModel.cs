@@ -14,6 +14,7 @@ namespace bikey.ViewModels
         public string TenXe { get; init; } = string.Empty;
         public string LoaiXe { get; init; } = string.Empty;
         public string GiaTheoNgay { get; init; } = string.Empty;
+        public string? HinhAnh { get; init; }
         public string DiaDiemNhanXe { get; init; } = string.Empty;
         public string HopSo { get; init; } = string.Empty;
         public string NhienLieu { get; init; } = string.Empty;

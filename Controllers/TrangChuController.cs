@@ -99,9 +99,11 @@ namespace bikey.Controllers
             var danhSachXeDb = await _context.Xe
                 .AsNoTracking()
                 .Include(xe => xe.LoaiXe)
-                .Where(xe => xe.TrangThai != "Đã xóa")
-                .OrderByDescending(xe => xe.TrangThai == "Sẵn sàng")
-                .ThenBy(xe => xe.GiaThue)
+                .Include(xe => xe.HinhAnhXes)
+                // EF Core không dịch được overload string.Equals(..., StringComparison).
+                // Với dữ liệu TrangThai được lưu theo enum/string cố định trong hệ thống, so sánh trực tiếp là đủ.
+                .Where(xe => xe.TrangThai == "Sẵn sàng")
+                .OrderBy(xe => xe.GiaThue)
                 .ToListAsync();
 
             var mappedDanhSachXe = danhSachXeDb
@@ -112,6 +114,7 @@ namespace bikey.Controllers
                     TenXe = xe.TenXe,
                     LoaiXe = xe.LoaiXe != null ? xe.LoaiXe.TenLoaiXe : "Xe máy",
                     GiaTheoNgay = $"{xe.GiaThue:N0}đ / ngày",
+                        HinhAnh = NormalizeImageUrl(xe.HinhAnhHienThi),
                     DiaDiemNhanXe = "Liên hệ cửa hàng",
                     HopSo = string.Empty,
                     NhienLieu = "Xăng",

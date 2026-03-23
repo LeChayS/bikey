@@ -21,7 +21,16 @@
                 <div class="col-md-6 col-xl-4" id="@xe.Slug">
                     <article class="bike-card bike-card--catalog">
                         <div class="bike-thumbnail">
-                            <i class="bi @xe.BieuTuong"></i>
+                            @if (!string.IsNullOrWhiteSpace(xe.HinhAnh))
+                            {
+                                <img src="@xe.HinhAnh" alt="@xe.TenXe" class="bike-thumbnail__image" loading="lazy" />
+                            }
+                            else
+                            {
+                                <div class="bike-thumbnail__placeholder">
+                                    <i class="bi @xe.BieuTuong"></i>
+                                </div>
+                            }
                         </div>
                         <div class="bike-info">
                             <div class="bike-meta">

@@ -235,7 +235,7 @@
                             <br />
                             <small>Ngày thanh toán: @Model.HoaDon.NgayThanhToan.ToString("dd/MM/yyyy")</small>
                         </div>
-                        <a asp-controller="HoaDon" asp-action="ChiTiet" class="btn btn-success btn-sm">
+                        <a asp-controller="HoaDon" asp-action="ChiTiet" asp-route-id="@Model.HoaDon.MaHoaDon" class="btn btn-success btn-sm">
                             <i class="bi bi-receipt"></i> Xem hóa đơn
                         </a>
                     </div>

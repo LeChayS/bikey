@@ -288,7 +288,18 @@ namespace bikey.Controllers
 
                             if (ct.Xe != null)
                             {
-                                ct.Xe.TrangThai = "Sẵn sàng";
+                                if (!laCoSuCo)
+                                {
+                                    ct.Xe.TrangThai = "Sẵn sàng";
+                                }
+                                else if (string.Equals(loaiThietHai, "Mất xe", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    ct.Xe.TrangThai = "Mất";
+                                }
+                                else
+                                {
+                                    ct.Xe.TrangThai = "Hư hỏng";
+                                }
                             }
                         }
 
