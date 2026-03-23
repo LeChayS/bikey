@@ -74,12 +74,12 @@
                                 <form asp-action="TuChoi" method="post">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="id" value="@datCho.MaDatCho" />
-                                    <button type="submit" class="btn btn-outline-danger" @(datCho.TrangThai == "Hủy" ? "disabled" : null)>Tu choi</button>
+                                    <button type="submit" class="btn btn-outline-danger" @(datCho.TrangThai == "Hủy" || datCho.TrangThai == "Đã xử lý" ? "disabled" : null)>Tu choi</button>
                                 </form>
                                 <form asp-action="Duyet" method="post">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="id" value="@datCho.MaDatCho" />
-                                    <button type="submit" class="btn btn-primary" @(datCho.TrangThai == "Đang giữ chỗ" ? "disabled" : null)>Duyet don</button>
+                                    <button type="submit" class="btn btn-primary" @(datCho.TrangThai != "Chờ xác nhận" ? "disabled" : null)>Duyet don</button>
                                 </form>
                             </div>
                         </article>

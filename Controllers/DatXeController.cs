@@ -79,7 +79,7 @@ namespace bikey.Controllers
                 NgayNhanXe = model.NgayNhanDuKien,
                 NgayTraXe = model.NgayTraDuKien,
                 GhiChu = model.GhiChu,
-                TrangThai = "Chờ xác nhận",
+                TrangThai = DatCho.DatChoTrangThai.ChoXacNhan,
                 NgayDat = DateTime.Now
             };
 

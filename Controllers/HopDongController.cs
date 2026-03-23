@@ -4,6 +4,7 @@ using bikey.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static bikey.Models.DatCho.DatChoTrangThai;
 
 namespace bikey.Controllers
 {
@@ -11,7 +12,7 @@ namespace bikey.Controllers
     public class HopDongController : Controller
     {
         private const decimal DepositRate = 0.13m;
-        private const decimal TimeFactor = 0.35m;
+        private const decimal TimeFactor = 0.4m;
         private readonly BikeyDbContext _context;
 
         public HopDongController(BikeyDbContext context)
@@ -49,8 +50,10 @@ namespace bikey.Controllers
             ViewBag.PageSize = pageSize;
             ViewBag.CurrentPage = page;
             ViewBag.TrangThai = trangThai;
-            ViewBag.DonChoXuLy = await _context.DatCho.CountAsync(item => item.TrangThai == "Chờ xác nhận");
-            ViewBag.DonChoXuLyMoi = await _context.DatCho.CountAsync(item => item.TrangThai == "Chờ xác nhận" && item.NgayDat.Date == DateTime.Today);
+            ViewBag.DonChoXuLy = await CountDatChoTrongHangDoiAsync();
+            ViewBag.DonChoXuLyMoi = await _context.DatCho.CountAsync(item =>
+                (item.TrangThai == ChoXacNhan || item.TrangThai == DangGiuCho)
+                && item.NgayDat.Date == DateTime.Today);
             ViewBag.TongDangThue = await allContracts.CountAsync(item => item.TrangThai == "Đang thuê");
             ViewBag.TongHoanThanh = await allContracts.CountAsync(item => item.TrangThai == "Hoàn thành");
 
@@ -63,7 +66,7 @@ namespace bikey.Controllers
             var query = _context.DatCho
                 .AsNoTracking()
                 .Include(item => item.Xe)
-                .Where(item => item.TrangThai == "Chờ xác nhận")
+                .Where(item => item.TrangThai == ChoXacNhan || item.TrangThai == DangGiuCho)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(searchString))
@@ -101,8 +104,6 @@ namespace bikey.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> XuLyDon(int id)
         {
-            // EnableRetryOnFailure (SqlServerRetryingExecutionStrategy) không cho phép gọi BeginTransactionAsync
-            // trực tiếp ngoài execution strategy — phải bọc toàn bộ transaction trong ExecuteAsync.
             var strategy = _context.Database.CreateExecutionStrategy();
             try
             {
@@ -111,87 +112,7 @@ namespace bikey.Controllers
                     await using var transaction = await _context.Database.BeginTransactionAsync();
                     try
                     {
-                        var datCho = await _context.DatCho
-                            .Include(item => item.Xe)
-                            .FirstOrDefaultAsync(item => item.MaDatCho == id);
-
-                        if (datCho is null)
-                        {
-                            throw new XuLyDonNotFoundException();
-                        }
-
-                        if (!string.Equals(datCho.TrangThai, "Chờ xác nhận", StringComparison.OrdinalIgnoreCase))
-                        {
-                            throw new XuLyDonUserMessageException("Đơn này đã được xử lý trước đó.");
-                        }
-
-                        if (datCho.Xe is null)
-                        {
-                            throw new XuLyDonUserMessageException("Không tìm thấy thông tin xe cho đơn đặt chỗ này.");
-                        }
-
-                        if (!string.Equals(datCho.Xe.TrangThai, "Sẵn sàng", StringComparison.OrdinalIgnoreCase))
-                        {
-                            throw new XuLyDonUserMessageException("Xe không còn sẵn sàng để tạo hợp đồng.");
-                        }
-
-                        var cccd = NormalizeDigits(datCho.SoCanCuoc);
-                        if (cccd is null || cccd.Length != 12)
-                        {
-                            throw new XuLyDonUserMessageException("Đơn chưa có CCCD hợp lệ (12 số), không thể tạo hợp đồng.");
-                        }
-
-                        var soDienThoai = NormalizeDigits(datCho.SoDienThoai);
-                        if (soDienThoai is null || (soDienThoai.Length != 10 && soDienThoai.Length != 11))
-                        {
-                            throw new XuLyDonUserMessageException("Đơn chưa có số điện thoại hợp lệ, không thể tạo hợp đồng.");
-                        }
-
-                        var rentalDays = Math.Max(1, (datCho.NgayTraXe - datCho.NgayNhanXe).Days);
-                        var rentalTotal = datCho.Xe.GiaThue * rentalDays;
-                        var deposit = Math.Max(datCho.Xe.GiaTriXe * DepositRate, rentalTotal * TimeFactor);
-                        var maKhachHangHopLe = await ResolveExistingUserIdAsync(datCho.MaUser);
-                        var maNguoiTaoHopLe = await ResolveExistingUserIdAsync(GetCurrentUserId());
-
-                        var hopDong = new HopDong
-                        {
-                            MaDatCho = datCho.MaDatCho,
-                            MaKhachHang = maKhachHangHopLe,
-                            HoTenKhach = string.IsNullOrWhiteSpace(datCho.HoTen) ? "Khách vãng lai" : datCho.HoTen.Trim(),
-                            SoDienThoai = soDienThoai,
-                            SoCCCD = cccd,
-                            DiaChi = datCho.DiaChi,
-                            NgayNhanXe = datCho.NgayNhanXe,
-                            NgayTraXeDuKien = datCho.NgayTraXe,
-                            TienCoc = deposit,
-                            TongTien = rentalTotal,
-                            GhiChu = datCho.GhiChu,
-                            TrangThai = "Đang thuê",
-                            NgayTao = DateTime.Now,
-                            MaNguoiTao = maNguoiTaoHopLe
-                        };
-
-                        _context.HopDong.Add(hopDong);
-                        await _context.SaveChangesAsync();
-
-                        var chiTietHopDong = new ChiTietHopDong
-                        {
-                            MaHopDong = hopDong.MaHopDong,
-                            MaXe = datCho.Xe.MaXe,
-                            GiaThueNgay = datCho.Xe.GiaThue,
-                            NgayNhanXe = datCho.NgayNhanXe,
-                            NgayTraXeDuKien = datCho.NgayTraXe,
-                            SoNgayThue = rentalDays,
-                            ThanhTien = rentalTotal,
-                            TrangThaiXe = "Đang thuê",
-                            NgayTao = DateTime.Now
-                        };
-
-                        _context.ChiTietHopDong.Add(chiTietHopDong);
-                        datCho.Xe.TrangThai = "Đang thuê";
-                        datCho.TrangThai = "Đã xử lý";
-
-                        await _context.SaveChangesAsync();
+                        await XuLyDonTrongGiaoDichAsync(id);
                         await transaction.CommitAsync();
                     }
                     catch
@@ -201,12 +122,13 @@ namespace bikey.Controllers
                     }
                 });
             }
-            catch (XuLyDonNotFoundException)
+            catch (XuLyDonFlowException ex)
             {
-                return NotFound();
-            }
-            catch (XuLyDonUserMessageException ex)
-            {
+                if (ex.NotFound)
+                {
+                    return NotFound();
+                }
+
                 TempData["HopDongMessage"] = ex.Message;
                 return RedirectToAction(nameof(DonChoXuLy));
             }
@@ -231,13 +153,13 @@ namespace bikey.Controllers
                 return NotFound();
             }
 
-            if (!string.Equals(datCho.TrangThai, "Chờ xác nhận", StringComparison.OrdinalIgnoreCase))
+            if (!IsChoStaffQueue(datCho.TrangThai))
             {
                 TempData["HopDongMessage"] = "Đơn này đã được xử lý trước đó.";
                 return RedirectToAction(nameof(DonChoXuLy));
             }
 
-            datCho.TrangThai = "Hủy";
+            datCho.TrangThai = Huy;
             await _context.SaveChangesAsync();
 
             TempData["HopDongMessage"] = "Đã hủy đơn chờ xử lý.";
@@ -254,16 +176,288 @@ namespace bikey.Controllers
             return View();
         }
 
-        public IActionResult ChiTiet()
+        [HttpGet]
+        public async Task<IActionResult> ChiTiet(int id)
         {
-            return View();
+            var hopDong = await _context.HopDong
+                .Include(h => h.ChiTietHopDong)
+                    .ThenInclude(ct => ct.Xe)
+                .Include(h => h.HoaDon)
+                .FirstOrDefaultAsync(h => h.MaHopDong == id);
+
+            if (hopDong is null)
+            {
+                return NotFound();
+            }
+
+            return View(hopDong);
         }
 
-        public IActionResult TraXe()
+        [HttpGet]
+        public async Task<IActionResult> TraXe(int id)
         {
-            return View();
+            var hopDong = await _context.HopDong
+                .Include(h => h.ChiTietHopDong)
+                    .ThenInclude(ct => ct.Xe)
+                .Include(h => h.HoaDon)
+                .FirstOrDefaultAsync(h => h.MaHopDong == id);
+
+            if (hopDong is null)
+            {
+                return NotFound();
+            }
+
+            if (!string.Equals(hopDong.TrangThai, "Đang thuê", StringComparison.OrdinalIgnoreCase))
+            {
+                TempData["HopDongMessage"] = "Hợp đồng này không còn ở trạng thái đang thuê để thực hiện trả xe.";
+                return RedirectToAction(nameof(ChiTiet), new { id });
+            }
+
+            if (hopDong.ChiTietHopDong == null || !hopDong.ChiTietHopDong.Any())
+            {
+                TempData["HopDongMessage"] = "Hợp đồng này không có thông tin xe thuê.";
+                return RedirectToAction(nameof(ChiTiet), new { id });
+            }
+
+            return View(hopDong);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> TraXe(
+            int id,
+            DateTime ngayTraThucTe,
+            decimal phuPhi,
+            string tinhTrangXe,
+            string? loaiThietHai,
+            DateTime? ngayXayRaThietHai,
+            string? moTaThietHai,
+            decimal chiPhiThietHai,
+            string? ghiChu)
+        {
+            var strategy = _context.Database.CreateExecutionStrategy();
+            try
+            {
+                await strategy.ExecuteAsync(async () =>
+                {
+                    await using var transaction = await _context.Database.BeginTransactionAsync();
+                    try
+                    {
+                        var hopDong = await _context.HopDong
+                            .Include(h => h.ChiTietHopDong)
+                                .ThenInclude(ct => ct.Xe)
+                            .Include(h => h.HoaDon)
+                            .FirstOrDefaultAsync(h => h.MaHopDong == id);
+
+                        if (hopDong is null)
+                        {
+                            throw new TraXeFlowException(notFound: true);
+                        }
+
+                        if (!string.Equals(hopDong.TrangThai, "Đang thuê", StringComparison.OrdinalIgnoreCase))
+                        {
+                            throw new TraXeFlowException(notFound: false, message: "Hợp đồng này không còn ở trạng thái đang thuê.");
+                        }
+
+                        if (hopDong.ChiTietHopDong == null || !hopDong.ChiTietHopDong.Any())
+                        {
+                            throw new TraXeFlowException(notFound: false, message: "Hợp đồng này không có thông tin xe thuê.");
+                        }
+
+                        var laCoSuCo = string.Equals(tinhTrangXe, "Có sự cố", StringComparison.OrdinalIgnoreCase);
+
+                        var tienCocDuKien = hopDong.ChiTietHopDong.Sum(ct => TinhTienCocTheoDuKien(
+                            ct.NgayNhanXe,
+                            ct.NgayTraXeDuKien,
+                            ct.GiaThueNgay,
+                            ct.Xe?.GiaTriXe ?? 0));
+
+                        // Cập nhật hợp đồng & chi tiết theo ngày trả thực tế
+                        foreach (var ct in hopDong.ChiTietHopDong)
+                        {
+                            var soNgayThueThucTe = CalcRentalDays(ct.NgayNhanXe, ngayTraThucTe);
+                            ct.NgayTraXeThucTe = ngayTraThucTe;
+                            ct.SoNgayThue = soNgayThueThucTe;
+                            ct.ThanhTien = ct.GiaThueNgay * soNgayThueThucTe;
+
+                            ct.TrangThaiXe = "Đã trả";
+                            ct.TinhTrangTraXe = tinhTrangXe; // map raw theo giá trị từ UI
+                            ct.PhiDenBu = laCoSuCo ? chiPhiThietHai : 0;
+                            ct.MoTaThietHai = laCoSuCo ? moTaThietHai : null;
+                            ct.GhiChu = ghiChu;
+
+                            if (ct.Xe != null)
+                            {
+                                ct.Xe.TrangThai = "Sẵn sàng";
+                            }
+                        }
+
+                        hopDong.NgayTraXeThucTe = ngayTraThucTe;
+                        hopDong.PhuPhi = phuPhi;
+                        hopDong.TongTien = hopDong.ChiTietHopDong.Sum(ct => ct.ThanhTien); // tổng tiền thuê thực tế
+                        hopDong.TienCoc = tienCocDuKien; // thống nhất để tính hóa đơn
+                        hopDong.GhiChu = ghiChu;
+                        hopDong.TrangThai = "Hoàn thành";
+
+                        var tongPhiDenBu = hopDong.ChiTietHopDong.Sum(ct => ct.PhiDenBu);
+                        var tongTienThueXe = hopDong.ChiTietHopDong.Sum(ct => ct.ThanhTien);
+                        var tongCong = tongTienThueXe + phuPhi + tongPhiDenBu;
+                        // Tiền cọc sẽ được hoàn lại, nên số tiền ghi hóa đơn chỉ gồm:
+                        // tiền thuê + phụ phí + phí đền bù.
+                        var soTienHoaDon = Math.Max(0m, tongCong);
+
+                        if (hopDong.HoaDon is null)
+                        {
+                            hopDong.HoaDon = new HoaDon
+                            {
+                                MaHopDong = hopDong.MaHopDong,
+                                NgayThanhToan = DateTime.Now,
+                                SoTien = soTienHoaDon,
+                                TrangThai = "Đã thanh toán",
+                                GhiChu = ghiChu,
+                                NgayTao = DateTime.Now,
+                                MaNguoiTao = GetCurrentUserId()
+                            };
+                        }
+                        else
+                        {
+                            hopDong.HoaDon.NgayThanhToan = DateTime.Now;
+                            hopDong.HoaDon.SoTien = soTienHoaDon;
+                            hopDong.HoaDon.TrangThai = "Đã thanh toán";
+                            hopDong.HoaDon.GhiChu = ghiChu;
+                            hopDong.HoaDon.NgayTao = DateTime.Now;
+                            hopDong.HoaDon.MaNguoiTao = GetCurrentUserId();
+                        }
+
+                        await _context.SaveChangesAsync();
+                        await transaction.CommitAsync();
+                    }
+                    catch
+                    {
+                        await transaction.RollbackAsync();
+                        throw;
+                    }
+                });
+            }
+            catch (TraXeFlowException ex)
+            {
+                if (ex.NotFound)
+                {
+                    return NotFound();
+                }
+
+                TempData["HopDongMessage"] = ex.Message;
+                return RedirectToAction(nameof(ChiTiet), new { id });
+            }
+            catch (Exception ex)
+            {
+                var rootError = ex.InnerException?.Message ?? ex.Message;
+                TempData["HopDongMessage"] = $"Có lỗi khi xử lý trả xe: {rootError}";
+                return RedirectToAction(nameof(ChiTiet), new { id });
+            }
+
+            TempData["HopDongMessage"] = "Đã xử lý trả xe và tạo hóa đơn thành công.";
+            return RedirectToAction(nameof(ChiTiet), new { id });
+        }
+
+        /// <summary>Tạo hợp đồng + chi tiết trong một transaction; một lần SaveChanges.</summary>
+        private async Task XuLyDonTrongGiaoDichAsync(int id)
+        {
+            var datCho = await _context.DatCho
+                .Include(item => item.Xe)
+                .FirstOrDefaultAsync(item => item.MaDatCho == id);
+
+            if (datCho is null)
+            {
+                throw new XuLyDonFlowException(notFound: true);
+            }
+
+            var loi = ValidateDatChoTruocKhiTaoHopDong(datCho);
+            if (loi is not null)
+            {
+                throw new XuLyDonFlowException(notFound: false, message: loi);
+            }
+
+            var xe = datCho.Xe!;
+            var rentalDays = Math.Max(1, (datCho.NgayTraXe - datCho.NgayNhanXe).Days);
+            var rentalTotal = xe.GiaThue * rentalDays;
+            var deposit = Math.Max(xe.GiaTriXe * DepositRate, rentalTotal * TimeFactor);
+            var cccd = NormalizeDigits(datCho.SoCanCuoc);
+            var soDienThoai = NormalizeDigits(datCho.SoDienThoai);
+
+            var maKhachHangHopLe = await ResolveExistingUserIdAsync(datCho.MaUser);
+            var maNguoiTaoHopLe = await ResolveExistingUserIdAsync(GetCurrentUserId());
+
+            var hopDong = new HopDong
+            {
+                MaDatCho = datCho.MaDatCho,
+                MaKhachHang = maKhachHangHopLe,
+                HoTenKhach = string.IsNullOrWhiteSpace(datCho.HoTen) ? "Khách vãng lai" : datCho.HoTen.Trim(),
+                SoDienThoai = soDienThoai,
+                SoCCCD = cccd,
+                DiaChi = datCho.DiaChi,
+                NgayNhanXe = datCho.NgayNhanXe,
+                NgayTraXeDuKien = datCho.NgayTraXe,
+                TienCoc = deposit,
+                TongTien = rentalTotal,
+                GhiChu = datCho.GhiChu,
+                TrangThai = "Đang thuê",
+                NgayTao = DateTime.Now,
+                MaNguoiTao = maNguoiTaoHopLe
+            };
+
+            hopDong.ChiTietHopDong.Add(new ChiTietHopDong
+            {
+                MaXe = xe.MaXe,
+                GiaThueNgay = xe.GiaThue,
+                NgayNhanXe = datCho.NgayNhanXe,
+                NgayTraXeDuKien = datCho.NgayTraXe,
+                SoNgayThue = rentalDays,
+                ThanhTien = rentalTotal,
+                TrangThaiXe = "Đang thuê",
+                NgayTao = DateTime.Now,
+                HopDong = hopDong
+            });
+
+            _context.HopDong.Add(hopDong);
+            xe.TrangThai = "Đang thuê";
+            datCho.TrangThai = DaXuLy;
+
+            await _context.SaveChangesAsync();
+        }
+        private static string? ValidateDatChoTruocKhiTaoHopDong(DatCho datCho)
+        {
+            if (!IsChoStaffQueue(datCho.TrangThai))
+            {
+                return "Đơn này đã được xử lý trước đó.";
+            }
+
+            if (datCho.Xe is null)
+            {
+                return "Không tìm thấy thông tin xe cho đơn đặt chỗ này.";
+            }
+
+            if (!string.Equals(datCho.Xe.TrangThai, "Sẵn sàng", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Xe không còn sẵn sàng để tạo hợp đồng.";
+            }
+
+            var cccd = NormalizeDigits(datCho.SoCanCuoc);
+            if (cccd is null || cccd.Length != 12)
+            {
+                return "Đơn chưa có CCCD hợp lệ (12 số), không thể tạo hợp đồng.";
+            }
+
+            var soDienThoai = NormalizeDigits(datCho.SoDienThoai);
+            if (soDienThoai is null || (soDienThoai.Length != 10 && soDienThoai.Length != 11))
+            {
+                return "Đơn chưa có số điện thoại hợp lệ, không thể tạo hợp đồng.";
+            }
+
+            return null;
+        }
+        private Task<int> CountDatChoTrongHangDoiAsync() =>
+            _context.DatCho.CountAsync(item => item.TrangThai == ChoXacNhan || item.TrangThai == DangGiuCho);
         private static string? NormalizeDigits(string? value)
         {
             if (string.IsNullOrWhiteSpace(value))
@@ -273,14 +467,12 @@ namespace bikey.Controllers
 
             return new string(value.Where(char.IsDigit).ToArray());
         }
-
         private int? GetCurrentUserId()
         {
             return int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId)
                 ? userId
                 : null;
         }
-
         private async Task<int?> ResolveExistingUserIdAsync(int? userId)
         {
             if (!userId.HasValue)
@@ -291,18 +483,41 @@ namespace bikey.Controllers
             var exists = await _context.NguoiDung.AnyAsync(item => item.Id == userId.Value);
             return exists ? userId : null;
         }
-
-        /// <summary>Đơn không tồn tại — trả NotFound.</summary>
-        private sealed class XuLyDonNotFoundException : Exception
+        /// <summary>Lỗi luồng xử lý đơn — NotFound hoặc thông báo hiển thị.</summary>
+        private sealed class XuLyDonFlowException : Exception
         {
-        }
+            public bool NotFound { get; }
 
-        /// <summary>Lỗi nghiệp vụ có thông báo hiển thị cho người dùng.</summary>
-        private sealed class XuLyDonUserMessageException : Exception
-        {
-            public XuLyDonUserMessageException(string message)
-                : base(message)
+            public XuLyDonFlowException(bool notFound, string? message = null)
+                : base(message ?? string.Empty)
             {
+                NotFound = notFound;
+            }
+        }
+        private static int CalcRentalDays(DateTime ngayNhan, DateTime ngayTra)
+        {
+            var days = (ngayTra.Date - ngayNhan.Date).Days;
+            return Math.Max(1, days);
+        }
+        private decimal TinhTienCocTheoDuKien(
+            DateTime ngayNhanXe,
+            DateTime ngayTraXeDuKien,
+            decimal giaThueNgay,
+            decimal giaTriXe)
+        {
+            var rentalDaysDuKien = CalcRentalDays(ngayNhanXe, ngayTraXeDuKien);
+            var depositTheoXe = giaTriXe * DepositRate;
+            var depositTheoThue = giaThueNgay * rentalDaysDuKien * TimeFactor;
+            return Math.Max(depositTheoXe, depositTheoThue);
+        }
+        private sealed class TraXeFlowException : Exception
+        {
+            public bool NotFound { get; }
+
+            public TraXeFlowException(bool notFound, string? message = null)
+                : base(message ?? string.Empty)
+            {
+                NotFound = notFound;
             }
         }
     }

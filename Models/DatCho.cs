@@ -64,7 +64,21 @@ namespace bikey.Models
 
         [Display(Name = "Trạng thái")]
         [StringLength(50)]
-        public string TrangThai { get; set; } = "Chờ xác nhận"; // Chờ xác nhận, Đang giữ chỗ, Đã xử lý, Hủy
+        public string TrangThai { get; set; } = DatChoTrangThai.ChoXacNhan;
+
+        /// <summary>Giá trị trạng thái đơn đặt chỗ — dùng thống nhất trong controller/view.</summary>
+        public static class DatChoTrangThai
+        {
+            public const string ChoXacNhan = "Chờ xác nhận";
+            public const string DangGiuCho = "Đang giữ chỗ";
+            public const string DaXuLy = "Đã xử lý";
+            public const string Huy = "Hủy";
+
+            /// <summary>Đơn vẫn nằm trong hàng đợi xử lý (duyệt giữ chỗ / tạo HĐ / hủy).</summary>
+            public static bool IsChoStaffQueue(string? trangThai) =>
+                string.Equals(trangThai, ChoXacNhan, StringComparison.OrdinalIgnoreCase)
+                || string.Equals(trangThai, DangGiuCho, StringComparison.OrdinalIgnoreCase);
+        }
 
         // Tính số ngày thuê
         [NotMapped]

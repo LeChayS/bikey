@@ -213,12 +213,6 @@
         .status-maintenance::before {
             background: #F59E0B;
         }
-        .status-deleted{
-            color: #333;
-        }
-        .status-deleted::before{
-            background: #666;
-        }
 /* hợp đồng gần đây */
 .status-hopdong {
     padding: 5px 12px;
@@ -259,4 +253,3 @@
     #topVehiclesChart.chart-container {
         height: 250px;
     }
-

@@ -1,4 +1,5 @@
 using bikey.Repository;
+using static bikey.Models.DatCho.DatChoTrangThai;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -37,7 +38,13 @@ namespace bikey.Controllers
                 return NotFound();
             }
 
-            datCho.TrangThai = "Đang giữ chỗ";
+            if (!string.Equals(datCho.TrangThai, ChoXacNhan, StringComparison.OrdinalIgnoreCase))
+            {
+                TempData["BookingAdminMessage"] = "Chỉ duyệt được đơn đang ở trạng thái chờ xác nhận.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            datCho.TrangThai = DangGiuCho;
             await _context.SaveChangesAsync();
 
             TempData["BookingAdminMessage"] = "Đã duyệt đơn đặt chỗ.";
@@ -54,7 +61,13 @@ namespace bikey.Controllers
                 return NotFound();
             }
 
-            datCho.TrangThai = "Hủy";
+            if (!IsChoStaffQueue(datCho.TrangThai))
+            {
+                TempData["BookingAdminMessage"] = "Đơn này đã kết thúc luồng xử lý.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            datCho.TrangThai = Huy;
             await _context.SaveChangesAsync();
 
             TempData["BookingAdminMessage"] = "Đã từ chối đơn đặt chỗ.";
