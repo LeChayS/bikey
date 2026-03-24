@@ -41,19 +41,19 @@ namespace bikey.Pages.Account
 
             if (user is null)
             {
-                ModelState.AddModelError(string.Empty, "Khong tim thay tai khoan de doi mat khau.");
+                ModelState.AddModelError(string.Empty, "Không tìm thấy tài khoản để đổi mật khẩu.");
                 return Page();
             }
 
             if (!string.Equals(user.MatKhau, Input.CurrentPassword, StringComparison.Ordinal))
             {
-                ModelState.AddModelError(nameof(Input.CurrentPassword), "Mat khau hien tai khong chinh xac.");
+                ModelState.AddModelError(nameof(Input.CurrentPassword), "Mật khẩu hiện tại không chính xác.");
                 return Page();
             }
 
             if (string.Equals(Input.CurrentPassword, Input.NewPassword, StringComparison.Ordinal))
             {
-                ModelState.AddModelError(nameof(Input.NewPassword), "Mat khau moi phai khac mat khau hien tai.");
+                ModelState.AddModelError(nameof(Input.NewPassword), "Mật khẩu mới phải khác mật khẩu hiện tại.");
                 return Page();
             }
 
@@ -61,7 +61,7 @@ namespace bikey.Pages.Account
             await _context.SaveChangesAsync();
             await RefreshSignInAsync(user);
 
-            StatusMessage = "Doi mat khau thanh cong.";
+            StatusMessage = "Đổi mật khẩu thành công.";
             ModelState.Clear();
             Input = new InputModel();
             return Page();

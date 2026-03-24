@@ -47,7 +47,7 @@
                                     </div>
                                     <div class="booking-field">
                                         <label asp-for="SoDienThoai" class="form-label"></label>
-                                        <input asp-for="SoDienThoai" class="form-control form-control-lg" />
+                                        <input asp-for="SoDienThoai" class="form-control form-control-lg" inputmode="numeric" maxlength="10" pattern="\d{10}" />
                                         <span asp-validation-for="SoDienThoai" class="text-danger"></span>
                                     </div>
                                     <div class="booking-field">
@@ -76,7 +76,14 @@
                                 <div class="booking-vehicle-detail-stack">
                                     <div class="booking-vehicle-detail-card booking-vehicle-detail-card--media">
                                         <div class="booking-vehicle-detail-media" aria-hidden="true">
-                                            <i class="bi bi-scooter"></i>
+                                            @if (!string.IsNullOrWhiteSpace(Model.HinhAnhXe))
+                                            {
+                                                <img src="@Model.HinhAnhXe" alt="@Model.TenXe" class="img-fluid rounded" style="max-height: 200px; object-fit: cover;" />
+                                            }
+                                            else
+                                            {
+                                                <i class="bi bi-scooter"></i>
+                                            }
                                         </div>
                                     </div>
 
@@ -88,7 +95,7 @@
                                         <div class="booking-vehicle-detail-kv-grid">
                                             <div class="booking-vehicle-detail-kv">
                                                 <span class="booking-vehicle-detail-kv__label">Mã xe</span>
-                                                <span class="booking-vehicle-detail-kv__value">#XE@Model.MaXe.ToString("D3")</span>
+                                                <span class="booking-vehicle-detail-kv__value">#XE@(Model.MaXe.ToString("D3"))</span>
                                             </div>
                                             <div class="booking-vehicle-detail-kv">
                                                 <span class="booking-vehicle-detail-kv__label">Tên xe</span>

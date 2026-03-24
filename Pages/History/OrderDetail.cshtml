@@ -1,0 +1,185 @@
+@page
+@model bikey.Pages.History.OrderDetailModel
+@{
+    ViewData["Title"] = "Chi tiết đơn đặt chỗ";
+}
+
+<section class="account-page py-5">
+    <div class="container">
+        <div class="account-panel">
+            <div class="account-panel__header">
+                <h1>Chi tiết đơn đặt chỗ</h1>
+                <p>Mã đơn: <strong>DC-@Model.Order.MaDatCho.ToString("D5")</strong></p>
+            </div>
+
+            <div class="mt-4">
+                <div class="row g-4">
+                    <div class="col-lg-8">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h3 class="card-title mb-4">
+                                    <i class="bi bi-person-vcard"></i> Thông tin khách hàng
+                                </h3>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="profile-item">
+                                            <span>Họ tên</span>
+                                            <strong>@Model.Order.HoTen</strong>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="profile-item">
+                                            <span>Số điện thoại</span>
+                                            <strong>@Model.Order.SoDienThoai</strong>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="profile-item">
+                                            <span>Email</span>
+                                            <strong>@Model.Order.Email</strong>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="profile-item">
+                                            <span>Căn cước</span>
+                                            <strong>@Model.Order.SoCanCuoc</strong>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="profile-item">
+                                            <span>Địa chỉ</span>
+                                            <strong>@Model.Order.DiaChi</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card shadow-sm mt-4">
+                            <div class="card-body">
+                                <h3 class="card-title mb-4">
+                                    <i class="bi bi-scooter"></i> Thông tin xe thuê
+                                </h3>
+                                @if (Model.Order.Xe != null)
+                                {
+                                    <div class="row g-3">
+                                        @if (!string.IsNullOrWhiteSpace(Model.Order.Xe.HinhAnhHienThi))
+                                        {
+                                            <div class="col-12">
+                                                <img src="/@Model.Order.Xe.HinhAnhHienThi.TrimStart('~', '/')" alt="@Model.Order.Xe.TenXe" class="img-fluid rounded" style="max-height: 250px; object-fit: cover;" />
+                                            </div>
+                                        }
+                                        <div class="col-md-6">
+                                            <div class="profile-item">
+                                                <span>Tên xe</span>
+                                                <strong>@Model.Order.Xe.TenXe</strong>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="profile-item">
+                                                <span>Biển số</span>
+                                                <strong>@Model.Order.Xe.BienSoXe</strong>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="profile-item">
+                                                <span>Hãng xe</span>
+                                                <strong>@Model.Order.Xe.HangXe</strong>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="profile-item">
+                                                <span>Dòng xe</span>
+                                                <strong>@Model.Order.Xe.DongXe</strong>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="profile-item">
+                                                <span>Loại xe</span>
+                                                <strong>@(Model.Order.Xe.LoaiXe?.TenLoaiXe ?? "—")</strong>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="profile-item">
+                                                <span>Giá thuê/ngày</span>
+                                                <strong>@Model.Order.Xe.GiaThue.ToString("N0") VNĐ</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <p class="text-muted">Thông tin xe không khả dụng</p>
+                                }
+                            </div>
+                        </div>
+
+                        @if (!string.IsNullOrWhiteSpace(Model.Order.GhiChu))
+                        {
+                            <div class="card shadow-sm mt-4">
+                                <div class="card-body">
+                                    <h3 class="card-title mb-3">
+                                        <i class="bi bi-chat-left-text"></i> Ghi chú
+                                    </h3>
+                                    <p class="mb-0">@Model.Order.GhiChu</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h3 class="card-title mb-4">
+                                    <i class="bi bi-calendar-check"></i> Thông tin đơn
+                                </h3>
+                                <div class="profile-item">
+                                    <span>Ngày đặt</span>
+                                    <strong>@Model.Order.NgayDat.ToString("dd/MM/yyyy HH:mm")</strong>
+                                </div>
+                                <div class="profile-item">
+                                    <span>Ngày nhận xe</span>
+                                    <strong>@Model.Order.NgayNhanXe.ToString("dd/MM/yyyy")</strong>
+                                </div>
+                                <div class="profile-item">
+                                    <span>Ngày trả xe</span>
+                                    <strong>@Model.Order.NgayTraXe.ToString("dd/MM/yyyy")</strong>
+                                </div>
+                                <div class="profile-item">
+                                    <span>Số ngày thuê</span>
+                                    <strong>@Model.Order.SoNgayThue ngày</strong>
+                                </div>
+                                <div class="profile-item">
+                                    <span>Trạng thái</span>
+                                    <strong>
+                                        @{
+                                            var statusClass = Model.Order.TrangThai switch
+                                            {
+                                                "Chờ xác nhận" => "text-warning",
+                                                "Hủy" => "text-danger",
+                                                "Đã xử lý" => "text-success",
+                                                _ => "text-info"
+                                            };
+                                        }
+                                        <span class="@statusClass">@Model.Order.TrangThai</span>
+                                    </strong>
+                                </div>
+                                <hr />
+                                <div class="profile-item">
+                                    <span>Tổng tiền dự kiến</span>
+                                    <strong class="text-primary fs-5">@Model.Order.TongTienDuKien.ToString("N0") VNĐ</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <a asp-page="/Account/Orders" class="btn btn-outline-secondary w-100">
+                                <i class="bi bi-arrow-left"></i> Quay lại danh sách
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

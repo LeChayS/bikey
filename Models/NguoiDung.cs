@@ -36,6 +36,7 @@ namespace bikey.Models
         public string VaiTro { get; set; } = "User"; // User, Staff, Admin
         [Display(Name = "Số điện thoại")]
         [Phone(ErrorMessage = "Số điện thoại không hợp lệ")]
+        [RegularExpression(@"^\d{10}$", ErrorMessage = "Số điện thoại phải có đúng 10 chữ số.")]
         [StringLength(20)]
         public string? SoDienThoai { get; set; }
 

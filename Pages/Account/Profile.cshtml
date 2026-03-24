@@ -32,7 +32,7 @@
 
                     <div>
                         <label for="Input_SoDienThoai" class="form-label">@Html.DisplayNameFor(model => model.Input.SoDienThoai)</label>
-                        <input asp-for="Input.SoDienThoai" class="form-control form-control-lg" />
+                        <input asp-for="Input.SoDienThoai" class="form-control form-control-lg" inputmode="numeric" maxlength="10" pattern="\d{10}" />
                         <span asp-validation-for="Input.SoDienThoai" class="text-danger"></span>
                     </div>
 

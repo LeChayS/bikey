@@ -25,6 +25,8 @@ namespace bikey.ViewModels
         [Display(Name = "Loại xe")]
         public string TenLoaiXe { get; set; } = string.Empty;
 
+        public string? HinhAnhXe { get; set; }
+
         [Required(ErrorMessage = "Vui lòng nhập họ tên khách hàng")]
         [Display(Name = "Họ tên khách hàng")]
         public string HoTenKhachHang { get; set; } = string.Empty;

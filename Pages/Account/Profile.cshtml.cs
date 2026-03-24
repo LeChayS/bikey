@@ -51,7 +51,7 @@ namespace bikey.Pages.Account
 
             if (user is null)
             {
-                ModelState.AddModelError(string.Empty, "Khong tim thay tai khoan de cap nhat thong tin.");
+                ModelState.AddModelError(string.Empty, "Không tìm thấy tài khoản để cập nhật thông tin.");
                 return Page();
             }
 
@@ -62,7 +62,7 @@ namespace bikey.Pages.Account
 
             if (duplicateEmail)
             {
-                ModelState.AddModelError(nameof(Input.Email), "Email nay da duoc su dung.");
+                ModelState.AddModelError(nameof(Input.Email), "Email này đã được sử dụng.");
                 return Page();
             }
 
@@ -71,7 +71,7 @@ namespace bikey.Pages.Account
 
             if (duplicatePhone)
             {
-                ModelState.AddModelError(nameof(Input.SoDienThoai), "So dien thoai nay da duoc su dung.");
+                ModelState.AddModelError(nameof(Input.SoDienThoai), "Số điện thoại này đã được sử dụng.");
                 return Page();
             }
 
@@ -131,7 +131,7 @@ namespace bikey.Pages.Account
         {
             var claims = new List<Claim>
             {
-                new(ClaimTypes.Name, user.Ten ?? user.Email ?? "Khach hang"),
+                new(ClaimTypes.Name, user.Ten ?? user.Email ?? "User"),
                 new(ClaimTypes.MobilePhone, user.SoDienThoai ?? string.Empty)
             };
 
@@ -173,13 +173,14 @@ namespace bikey.Pages.Account
 
             [Required(ErrorMessage = "Vui lòng nhập số điện thoại")]
             [Display(Name = "Số điện thoại")]
+            [RegularExpression(@"^\d{10}$", ErrorMessage = "Số điện thoại phải có đúng 10 chữ số.")]
             public string SoDienThoai { get; set; } = string.Empty;
 
             [Required(ErrorMessage = "Vui lòng nhập email")]
             [EmailAddress(ErrorMessage = "Email không hợp lệ")]
             public string Email { get; set; } = string.Empty;
 
-            [Required(ErrorMessage = "Vui lòng nhập địa chỉ")]
+            // [Required(ErrorMessage = "Vui lòng nhập địa chỉ")]
             [Display(Name = "Địa chỉ")]
             public string DiaChi { get; set; } = string.Empty;
         }

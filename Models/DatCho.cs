@@ -72,6 +72,7 @@ namespace bikey.Models
             public const string ChoXacNhan = "Chờ xác nhận";
             public const string DangGiuCho = "Đang giữ chỗ";
             public const string DaXuLy = "Đã xử lý";
+            public const string HoanThanh = "Hoàn thành";
             public const string Huy = "Hủy";
 
             /// <summary>Đơn vẫn nằm trong hàng đợi xử lý (duyệt giữ chỗ / tạo HĐ / hủy).</summary>

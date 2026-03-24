@@ -24,6 +24,7 @@ namespace bikey.Controllers
             var xe = await _context.Xe
                 .AsNoTracking()
                 .Include(item => item.LoaiXe)
+                .Include(item => item.HinhAnhXes)
                 .FirstOrDefaultAsync(item => item.MaXe == maXe);
 
             if (xe is null)
@@ -43,6 +44,7 @@ namespace bikey.Controllers
             var xe = await _context.Xe
                 .AsNoTracking()
                 .Include(item => item.LoaiXe)
+                .Include(item => item.HinhAnhXes)
                 .FirstOrDefaultAsync(item => item.MaXe == model.MaXe);
 
             if (xe is null)
@@ -135,7 +137,25 @@ namespace bikey.Controllers
             model.GiaThueNgay = xe.GiaThue;
             model.GiaTriXe = xe.GiaTriXe;
             model.TenLoaiXe = xe.LoaiXe?.TenLoaiXe ?? "—";
+            model.HinhAnhXe = NormalizeImageUrl(xe.HinhAnhHienThi);
             model.TongTienDuKien = model.SoNgayThue * xe.GiaThue;
+        }
+
+        private static string? NormalizeImageUrl(string? tenFile)
+        {
+            if (string.IsNullOrWhiteSpace(tenFile))
+            {
+                return null;
+            }
+
+            if (tenFile.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+                tenFile.StartsWith("https://", StringComparison.OrdinalIgnoreCase) ||
+                tenFile.StartsWith("/", StringComparison.OrdinalIgnoreCase))
+            {
+                return tenFile;
+            }
+
+            return $"/{tenFile.TrimStart('~', '/')}";
         }
 
         private int? GetCurrentUserId()

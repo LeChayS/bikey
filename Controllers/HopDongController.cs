@@ -413,6 +413,16 @@ namespace bikey.Controllers
                         hopDong.GhiChu = ghiChu;
                         hopDong.TrangThai = "Hoàn thành";
 
+                        // Cập nhật trạng thái DatCho thành Hoàn thành
+                        if (hopDong.MaDatCho.HasValue)
+                        {
+                            var datCho = await _context.DatCho.FirstOrDefaultAsync(d => d.MaDatCho == hopDong.MaDatCho.Value);
+                            if (datCho != null)
+                            {
+                                datCho.TrangThai = bikey.Models.DatCho.DatChoTrangThai.HoanThanh;
+                            }
+                        }
+
                         var tongPhiDenBu = hopDong.ChiTietHopDong.Sum(ct => ct.PhiDenBu);
                         var tongTienThueXe = hopDong.ChiTietHopDong.Sum(ct => ct.ThanhTien);
                         var tongCong = tongTienThueXe + phuPhi + tongPhiDenBu;

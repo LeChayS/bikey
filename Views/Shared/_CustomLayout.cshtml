@@ -31,10 +31,10 @@
                         <a class="nav-link" asp-controller="TrangChu" asp-action="Index"><i class="bi bi-house-door"></i> Trang chủ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="TrangChu" asp-action="GioiThieu">Giới thiệu</a>
+                        <a class="nav-link" asp-controller="TrangChu" asp-action="DanhSachXe">Danh sách xe</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="TrangChu" asp-action="DanhSachXe">Danh sách xe</a>
+                        <a class="nav-link" asp-controller="TrangChu" asp-action="GioiThieu">Giới thiệu</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="TrangChu" asp-action="ChiNhanh">Chi nhánh</a>
@@ -61,7 +61,6 @@
                                     <li><a class="dropdown-item" asp-page="/Account/Orders">Lịch sử đơn hàng</a></li>
                                     @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
                                     {
-                                        <li><a class="dropdown-item" asp-controller="QuanLyDatCho" asp-action="Index">Quan ly dat cho</a></li>
                                         <li><a class="dropdown-item" asp-page="/Admin/Index">Admin panel</a></li>
                                     }
                                     <li><hr class="dropdown-divider" /></li>
