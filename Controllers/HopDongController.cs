@@ -184,9 +184,28 @@ namespace bikey.Controllers
             return View();
         }
 
-        public IActionResult LichSuKhachHang()
+        [HttpGet]
+        public async Task<IActionResult> LichSuKhachHang(string? soDienThoai)
         {
-            return View();
+            ViewBag.SoDienThoai = soDienThoai;
+
+            if (string.IsNullOrWhiteSpace(soDienThoai))
+            {
+                ViewBag.HasSearched = false;
+                return View(Array.Empty<HopDong>());
+            }
+
+            ViewBag.HasSearched = true;
+            var phone = soDienThoai.Trim();
+            var list = await _context.HopDong
+                .AsNoTracking()
+                .Include(h => h.ChiTietHopDong).ThenInclude(ct => ct.Xe)
+                .Include(h => h.KhachHang)
+                .Where(h => h.SoDienThoai == phone)
+                .OrderByDescending(h => h.NgayTao)
+                .ToListAsync();
+
+            return View(list);
         }
 
         [HttpGet]

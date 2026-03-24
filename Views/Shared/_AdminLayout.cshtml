@@ -48,7 +48,6 @@
     <link href="~/css/shared/adminlayout.css" rel="stylesheet" asp-append-version="true">
     @RenderSection("Styles", required: false)
     <script src="~/js/shared/adminlayout.js"></script>
-    @RenderSection("Scripts", required: false)
 </head>
 <body>
     <!-- SIDEBAR FOR ADMIN -->
@@ -113,5 +112,6 @@
         @RenderBody()
     </div>
     @RenderSection("Modals", required: false)
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

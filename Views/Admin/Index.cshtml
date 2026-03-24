@@ -1,92 +1,87 @@
-﻿@* @model bike.ViewModels.BaoCaoViewModel *@
+@model bikey.ViewModels.AdminDashboardViewModel
 @{
     Layout = "_AdminLayout";
     ViewBag.Title = "Admin Dashboard";
+
+    string ClassXe(string t) => t switch
+    {
+        "Sẵn sàng" => "status-ready",
+        "Đang thuê" => "status-renting",
+        "Bảo trì" => "status-maintenance",
+        "Hư hỏng" => "status-broken",
+        _ => "status-ready"
+    };
+
+    string ClassHd(string t) => t switch
+    {
+        "Hoàn thành" => "status-finished",
+        "Đang thuê" => "status-confirmed",
+        "Hủy" => "status-waiting",
+        _ => "status-waiting"
+    };
 }
 
 @section Styles {
-    <link href="/css/admin/index.css" rel="stylesheet" asp-append-version="true">
+    <link href="~/css/admin/index.css" rel="stylesheet" asp-append-version="true">
 }
 
-@* @section Scripts {
-    <script>
-        // Auto refresh dashboard data every 30 seconds
-        setInterval(function() {
-            location.reload();
-        }, 30000);
-    </script>
-} *@
-
-<!-- Top Header -->
 <div class="top-header">
     <h1 class="mb-0"><i class="bi bi-speedometer2"></i> Dashboard</h1>
 </div>
 
 <div class="wrapper">
 
-    <!-- Statistics Cards -->
     <div class="container-fluid">
-        <!-- row 1 -->
         <div class="row mb-4">
-            @* card 1 *@
             <div class="col-lg-4 col-md-6">
                 <div class="stat-card blue">
                     <div>
-                        <div class="stat-label">Hợp đồng hoàn thành</div>
-                        <div class="stat-value">
-                            @* @Model.TongDonDatXe *@
-                            23
-                        </div>
-                        @* @if (Model.PhanTramDonDat != 0)
+                        <div class="stat-label">Hợp đồng hoàn thành (tháng này)</div>
+                        <div class="stat-value">@Model.HopDongHoanThanh</div>
+                        @if (Model.PhanTramHopDongVsKyTruoc != 0)
                         {
-                            <div class="stat-change @(Model.PhanTramDonDat > 0 ? "positive" : "negative")">
-                                <i class="bi bi-arrow-@(Model.PhanTramDonDat > 0 ? "up" : "down")"></i>
-                                @Math.Abs(Model.PhanTramDonDat).ToString("F1")% so với kỳ trước
+                            <div class="stat-change @(Model.PhanTramHopDongVsKyTruoc > 0 ? "positive" : "negative")">
+                                <i class="bi bi-arrow-@(Model.PhanTramHopDongVsKyTruoc > 0 ? "up" : "down")"></i>
+                                @Math.Abs(Model.PhanTramHopDongVsKyTruoc).ToString("F1")% so với tháng trước
                             </div>
-                        } *@
-                        <div>
-                            tăng 30% so với kỳ trước
-                        </div>
+                        }
+                        else
+                        {
+                            <div class="text-muted small">Không đổi so với tháng trước</div>
+                        }
                     </div>
                     <div class="stat-icon blue text-white">
                         <i class="bi bi-calendar-check "></i>
                     </div>
                 </div>
             </div>
-            @* card 2 *@
             <div class="col-lg-4 col-md-6">
                 <div class="stat-card orange">
                     <div>
                         <div class="stat-label">Doanh thu hôm nay</div>
-                        <div class="stat-value">
-                            @* @Model.DoanhThuHomNay.ToString("N0")đ *@
-                            50,000đ
-                        </div>
-                        @* @if (Model.PhanTramDoanhThu != 0)
+                        <div class="stat-value">@Model.DoanhThuHomNay.ToString("N0")đ</div>
+                        @if (Model.PhanTramDoanhThuVsHomTruoc != 0)
                         {
-                            <div class="stat-change @(Model.PhanTramDoanhThu > 0 ? "positive" : "negative")">
-                                <i class="bi bi-arrow-@(Model.PhanTramDoanhThu > 0 ? "up" : "down")"></i>
-                                @Math.Abs(Model.PhanTramDoanhThu).ToString("F1")% so với kỳ trước
+                            <div class="stat-change @(Model.PhanTramDoanhThuVsHomTruoc > 0 ? "positive" : "negative")">
+                                <i class="bi bi-arrow-@(Model.PhanTramDoanhThuVsHomTruoc > 0 ? "up" : "down")"></i>
+                                @Math.Abs(Model.PhanTramDoanhThuVsHomTruoc).ToString("F1")% so với hôm qua
                             </div>
-                        } *@
-                        <div>
-                            giảm 10% so với kỳ trước
-                        </div>
+                        }
+                        else
+                        {
+                            <div class="text-muted small">Không đổi so với hôm qua</div>
+                        }
                     </div>
                     <div class="stat-icon orange text-white">
                         <i class="bi bi-cash-stack"></i>
                     </div>
                 </div>
             </div>
-            @* card 3 *@
             <div class="col-lg-4 col-md-6">
                 <div class="stat-card green">
                     <div>
                         <div class="stat-label">Xe đang cho thuê</div>
-                        <div class="stat-value">
-                            @* @Model.XeDangChoThue *@
-                            14
-                        </div>
+                        <div class="stat-value">@Model.XeDangChoThue</div>
                     </div>
                     <div class="stat-icon green text-white">
                         <i class="bi bi-bicycle"></i>
@@ -95,47 +90,34 @@
             </div>
         </div>
 
-        <!-- row 2 -->
         <div class="row">
-            @* card 4 *@
             <div class="col-lg-4 col-md-6">
                 <div class="stat-card purple">
                     <div>
                         <div class="stat-label">Hợp đồng hoạt động</div>
-                        <div class="stat-value">
-                            @* @Model.HopDongHoatDong *@
-                            10
-                        </div>
+                        <div class="stat-value">@Model.HopDongHoatDong</div>
                     </div>
                     <div class="stat-icon purple text-white">
                         <i class="bi bi-file-earmark-text"></i>
                     </div>
                 </div>
             </div>
-            @* card 5 *@
             <div class="col-lg-4 col-md-6">
                 <div class="stat-card red">
                     <div>
                         <div class="stat-label">Khách hàng mới hôm nay</div>
-                        <div class="stat-value">
-                            @* @Model.KhachHangMoi *@
-                            25
-                        </div>
+                        <div class="stat-value">@Model.KhachHangMoiHomNay</div>
                     </div>
                     <div class="stat-icon red text-white">
                         <i class="bi bi-person-plus"></i>
                     </div>
                 </div>
             </div>
-            @* Cards 6 *@
             <div class="col-lg-4 col-md-6">
                 <div class="stat-card pink">
                     <div>
                         <div class="stat-label">Tổng số xe</div>
-                        <div class="stat-value">
-                            @* @Model.TongSoXe *@
-                            37
-                        </div>
+                        <div class="stat-value">@Model.TongSoXe</div>
                     </div>
                     <div class="stat-icon pink text-white">
                         <i class="bi bi-collection"></i>
@@ -145,7 +127,6 @@
         </div>
     </div>
 
-    <!-- Quick Actions Section -->
     <div class="container-fluid">
         <div class="title">
             <p>Thao tác nhanh</p>
@@ -182,9 +163,7 @@
         </div>
     </div>
 
-    @* Table ranking best bike *@
     <div class="container-fluid">
-        <!-- Top xe thuê nhiều -->
         <div class="title">
             <p>Top xe được thuê nhiều nhất</p>
             <small class="text-muted">(chỉ tính hợp đồng đã hoàn thành)</small>
@@ -201,59 +180,33 @@
                 </tr>
             </thead>
             <tbody>
-                @* @foreach (var xe in Model.TopXeThueNhieu)
+                @if (Model.TopXeThueNhieu.Count == 0)
                 {
                     <tr>
-                        <td>@xe.TenXe</td>
-                        <td>@xe.BienSo</td>
-                        <td><span class="badge bg-primary">@xe.SoLanThue</span></td>
-                        <td class="text-danger fw-bold">@xe.DoanhThu.ToString("N0")đ</td>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            <i class="bi bi-info-circle"></i> Chưa có dữ liệu xe được thuê
+                        </td>
                     </tr>
-                } *@
-                <tr>
-                    <td>tên của xe</td>
-                    <td>biển số xe</td>
-                    <td>23,000đ</td>
-                    <td><span class="status-xe status-renting">Đang cho thuê</span></td>
-                    <td><strong>5</strong></td>
-                    <td>200,000đ</td>
-                </tr>
-                <tr>
-                    <td>tên của xe</td>
-                    <td>biển số xe</td>
-                    <td>23,000đ</td>
-                    <td><span class="status-xe status-ready">Sẵn sàng</span></td>
-                    <td><strong>5</strong></td>
-                    <td>200,000đ</td>
-                </tr>
-                <tr>
-                    <td>tên của xe</td>
-                    <td>biển số xe</td>
-                    <td>23,000đ</td>
-                    <td><span class="status-xe status-broken">Hư hỏng</span></td>
-                    <td><strong>5</strong></td>
-                    <td>200,000đ</td>
-                </tr>
-                <tr>
-                    <td>tên của xe</td>
-                    <td>biển số xe</td>
-                    <td>23,000đ</td>
-                    <td><span class="status-xe status-maintenance">Bảo trì</span></td>
-                    <td><strong>5</strong></td>
-                    <td>200,000đ</td>
-                </tr>
-                <tr>
-                    <td colspan="6" class="text-center text-muted">
-                        <i class="bi bg-info-circle"></i> Chưa có dữ liệu xe được thuê
-                    </td>
-                </tr>
+                }
+                else
+                {
+                    foreach (var xe in Model.TopXeThueNhieu)
+                    {
+                        <tr>
+                            <td>@xe.TenXe</td>
+                            <td>@xe.BienSo</td>
+                            <td>@xe.GiaThueNgay.ToString("N0")đ</td>
+                            <td><span class="status-xe @ClassXe(xe.TrangThaiXe)">@xe.TrangThaiXe</span></td>
+                            <td><strong>@xe.SoLanThue</strong></td>
+                            <td class="text-danger fw-bold">@xe.DoanhThu.ToString("N0")đ</td>
+                        </tr>
+                    }
+                }
             </tbody>
         </table>
     </div>
 
-    @* Table recent contract *@
     <div class="container-fluid">
-        <!-- Hợp đồng hoàn thành gần đây -->
         <div class="title">
             <p>Hợp đồng gần đây</p>
             <a class="btn btn-sm btn-outline-primary float-end" asp-action="Index" asp-controller="HopDong">
@@ -266,65 +219,32 @@
                     <th>Khách hàng</th>
                     <th>Xe</th>
                     <th>Trạng thái</th>
-                    <th>Ngày hoàn thành</th>
+                    <th>Ngày</th>
                     <th>Tổng tiền</th>
                 </tr>
             </thead>
             <tbody>
-                @* @foreach (var don in Model.DonDatGanDay)
+                @if (Model.HopDongGanDay.Count == 0)
                 {
                     <tr>
-                        <td>@don.TenKhach</td>
-                        <td>@don.TenXe</td>
-                        <td>
-                            @{
-                                string statusClass = don.TrangThai switch
-                                {
-                                                "Chờ xác nhận" => "status-waiting",
-                                                "Đang giữ chỗ" => "status-confirmed",
-                                                "Đã xử lý" => "status-completed",
-                                                "Hoàn thành" => "status-completed",
-                                    _ => ""
-                                };
-                            }
-                            <span class="status-badge @statusClass">@don.TrangThai</span>
+                        <td colspan="5" class="text-center text-muted py-4">
+                            <i class="bi bi-info-circle"></i> Chưa có hợp đồng
                         </td>
-                        <td>@don.NgayTra.ToString("dd/MM/yyyy")</td>
                     </tr>
-                } *@
-                <tr>
-                    <td>tên khách</td>
-                    <td>tên xe</td>
-                    <td><span class="status-hopdong status-completed">Đã xử lý</span></td>
-                    <td>08/03/2026</td>
-                    <td>200,000đ</td>
-                </tr>
-                <tr>
-                    <td>tên khách</td>
-                    <td>tên xe</td>
-                    <td><span class="status-hopdong status-waiting">Chưa xử lý</span></td>
-                    <td>08/03/2026</td>
-                    <td>200,000đ</td>
-                </tr>
-                <tr>
-                    <td>tên khách</td>
-                    <td>tên xe</td>
-                    <td><span class="status-hopdong status-confirmed">Đang giữ chỗ</span></td>
-                    <td>08/03/2026</td>
-                    <td>200,000đ</td>
-                </tr>
-                <tr>
-                    <td>tên khách</td>
-                    <td>tên xe</td>
-                    <td><span class="status-hopdong status-finished">Hoàn thành</span></td>
-                    <td>08/03/2026</td>
-                    <td>200,000đ</td>
-                </tr>
-                <tr>
-                    <td colspan="5" class="text-center text-muted">
-                        <i class="bi bg-info-circle"></i> Chưa có dữ liệu hợp đồng
-                    </td>
-                </tr>
+                }
+                else
+                {
+                    foreach (var hd in Model.HopDongGanDay)
+                    {
+                        <tr>
+                            <td>@hd.TenKhach</td>
+                            <td>@hd.TenXe</td>
+                            <td><span class="status-hopdong @ClassHd(hd.TrangThai)">@hd.TrangThai</span></td>
+                            <td>@(hd.NgayHienThi?.ToString("dd/MM/yyyy") ?? "—")</td>
+                            <td>@hd.TongTien.ToString("N0")đ</td>
+                        </tr>
+                    }
+                }
             </tbody>
         </table>
     </div>

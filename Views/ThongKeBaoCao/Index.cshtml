@@ -1,16 +1,22 @@
-﻿@* @model bikey.ViewModels.BaoCaoViewModel *@
+@model bikey.ViewModels.ThongKeBaoCaoViewModel
+@using System.Text.Json
 @{
     Layout = "_AdminLayout";
     ViewData["Title"] = "Thống kê & báo cáo";
+    var jsonOpts = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+    var thongKeBoot = new
+    {
+        chartFilter = Model.ChartFilter,
+        bieuDoDoanhThu = Model.BieuDoDoanhThu,
+        topXeThueNhieu = Model.TopXeThueNhieu,
+        bieuDoLoaiXe = Model.BieuDoLoaiXe,
+        bieuDoHopDongTrangThai = Model.BieuDoHopDongTrangThai
+    };
+    var thongKeJson = JsonSerializer.Serialize(thongKeBoot, jsonOpts);
 }
 
 @section Styles {
-    <link href="/css/thongkebaocao/index.css" rel="stylesheet" asp-append-version="true">
-}
-
-@section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="/js/thongkebaocao/index.js"></script>
+    <link href="~/css/thongkebaocao/index.css" rel="stylesheet" asp-append-version="true">
 }
 
 <!-- Top Header -->
@@ -20,49 +26,35 @@
 
 <div class="wrapper">
 
-    <!-- Statistics Cards -->
     <div class="container-fluid">
-        @* Row 1 *@
         <div class="row mb-4">
-            @* card 1 *@
             <div class="col-lg-4 col-md-6">
                 <div class="stat-card blue">
                     <div>
-                        <div class="stat-label" id="doanhThuLabel">Doanh thu tháng này</div>
-                        <div class="stat-value" id="doanhThuValue">
-                            @* @Model.DoanhThuHomNay.ToString("N0")đ *@
-                            100,000đ
-                        </div>
+                        <div class="stat-label" id="doanhThuLabel">Doanh thu @Model.PeriodLabel</div>
+                        <div class="stat-value" id="doanhThuValue">@Model.DoanhThu.ToString("N0")đ</div>
                     </div>
                     <div class="stat-icon blue text-white">
                         <i class="bi bi-cash-stack"></i>
                     </div>
                 </div>
             </div>
-            @* card 2 *@
             <div class="col-lg-4 col-md-6">
                 <div class="stat-card orange">
                     <div>
-                        <div class="stat-label" id="donDatLabel">Đơn đặt tháng này</div>
-                        <div class="stat-value" id="donDatValue">
-                            @* @Model.TongDonDatXe *@
-                            20
-                        </div>
+                        <div class="stat-label" id="donDatLabel">Đơn đặt @Model.PeriodLabel</div>
+                        <div class="stat-value" id="donDatValue">@Model.TongDonDat</div>
                     </div>
                     <div class="stat-icon orange text-white">
                         <i class="bi bi-calendar-check"></i>
                     </div>
                 </div>
             </div>
-            @* Cards 3 *@
             <div class="col-lg-4 col-md-6">
                 <div class="stat-card green">
                     <div>
                         <div class="stat-label">Xe đang cho thuê</div>
-                        <div class="stat-value" id="xeDangThueValue">
-                            @* @Model.XeDangChoThue *@
-                            12
-                        </div>
+                        <div class="stat-value" id="xeDangThueValue">@Model.XeDangChoThue</div>
                     </div>
                     <div class="stat-icon green text-white">
                         <i class="bi bi-bicycle"></i>
@@ -71,47 +63,34 @@
             </div>
         </div>
 
-        @* row 2 *@
         <div class="row">
-            @* Cards 4 *@
             <div class="col-lg-4 col-md-6">
                 <div class="stat-card purple">
                     <div>
-                        <div class="stat-label" id="khachHangMoiLabel">Khách hàng mới tháng này</div>
-                        <div class="stat-value" id="khachHangMoiValue">
-                            @* @Model.KhachHangMoi *@
-                            10
-                        </div>
+                        <div class="stat-label" id="khachHangMoiLabel">Khách hàng mới @Model.PeriodLabel</div>
+                        <div class="stat-value" id="khachHangMoiValue">@Model.KhachHangMoi</div>
                     </div>
                     <div class="stat-icon purple text-white">
                         <i class="bi bi-person-plus"></i>
                     </div>
                 </div>
             </div>
-            @* Cards 5 *@
             <div class="col-lg-4 col-md-6">
                 <div class="stat-card red">
                     <div>
-                        <div class="stat-label" id="tongThietHaiLabel">Tổng tiền thiệt hại tháng này</div>
-                        <div class="stat-value" id="tongThietHaiValue">
-                            @* @Model.TongThietHai.ToString("N0")đ *@
-                            100,000đ
-                        </div>
+                        <div class="stat-label" id="tongThietHaiLabel">Tổng phí đền bù @Model.PeriodLabel</div>
+                        <div class="stat-value" id="tongThietHaiValue">@Model.TongThietHai.ToString("N0")đ</div>
                     </div>
                     <div class="stat-icon red text-white">
                         <i class="bi bi-exclamation-triangle"></i>
                     </div>
                 </div>
             </div>
-            @* Cards 6 *@
             <div class="col-lg-4 col-md-6">
                 <div class="stat-card pink">
                     <div>
-                        <div class="stat-label" id="doanhThuGocLabel">Doanh thu gốc tháng này</div>
-                        <div class="stat-value" id="doanhThuGocValue">
-                            @* @Model.DoanhThuGoc.ToString("N0")đ *@
-                            30,000đ
-                        </div>
+                        <div class="stat-label" id="doanhThuGocLabel">Doanh thu gốc @Model.PeriodLabel</div>
+                        <div class="stat-value" id="doanhThuGocValue">@Model.DoanhThuGoc.ToString("N0")đ</div>
                     </div>
                     <div class="stat-icon pink text-white">
                         <i class="bi bi-currency-dollar"></i>
@@ -121,17 +100,55 @@
         </div>
     </div>
 
-    <!-- Filter Section -->
     <div class="container-fluid">
         <div class="row g-4 align-items-end">
             <div class="col-md-6">
                 <label class="form-label">Lọc dữ liệu theo:</label>
                 <select id="chartFilter" class="form-select">
-                    <option value="today">Hôm nay</option>
-                    <option value="7days">7 ngày gần nhất</option>
-                    <option value="week">Tuần này</option>
-                    <option value="month">30 ngày gần nhất</option>
-                    <option value="year">12 tháng gần nhất</option>
+                    @if (Model.ChartFilter == "today")
+                    {
+                        <option value="today" selected>Hôm nay</option>
+                    }
+                    else
+                    {
+                        <option value="today">Hôm nay</option>
+                    }
+
+                    @if (Model.ChartFilter == "7days")
+                    {
+                        <option value="7days" selected>7 ngày gần nhất</option>
+                    }
+                    else
+                    {
+                        <option value="7days">7 ngày gần nhất</option>
+                    }
+
+                    @if (Model.ChartFilter == "week")
+                    {
+                        <option value="week" selected>Tuần này</option>
+                    }
+                    else
+                    {
+                        <option value="week">Tuần này</option>
+                    }
+
+                    @if (Model.ChartFilter == "month")
+                    {
+                        <option value="month" selected>30 ngày gần nhất</option>
+                    }
+                    else
+                    {
+                        <option value="month">30 ngày gần nhất</option>
+                    }
+
+                    @if (Model.ChartFilter == "year")
+                    {
+                        <option value="year" selected>12 tháng gần nhất</option>
+                    }
+                    else
+                    {
+                        <option value="year">12 tháng gần nhất</option>
+                    }
                 </select>
             </div>
             <div class="col-md-6">
@@ -144,10 +161,7 @@
         </div>
     </div>
 
-    <!-- Charts Section -->
-    <!-- Row 1 -->
     <div class="row mb-4">
-        <!-- Biểu đồ doanh thu (Horizontal Bar Chart) -->
         <div class="col-lg-6">
             <div class="chart-card">
                 <div class="chart-header">
@@ -160,7 +174,6 @@
             </div>
         </div>
 
-        <!-- Biểu đồ top 5 xe được thuê nhiều nhất (Bar Chart) -->
         <div class="col-lg-6">
             <div class="chart-card">
                 <div class="chart-header">
@@ -174,9 +187,7 @@
         </div>
     </div>
 
-    <!-- Charts Row 2 -->
     <div class="row mb-4">
-        <!-- Biểu đồ thống kê loại xe (Horizontal Bar Chart) -->
         <div class="col-lg-6">
             <div class="chart-card">
                 <div class="chart-header">
@@ -188,7 +199,6 @@
                 </div>
             </div>
         </div>
-        <!-- Biểu đồ thống kê hợp đồng theo trạng thái (Line Chart) -->
         <div class="col-lg-6">
             <div class="chart-card">
                 <div class="chart-header">
@@ -203,3 +213,11 @@
     </div>
 
 </div>
+
+@section Scripts {
+    <script src="~/lib/chart.js/dist/chart.umd.min.js" asp-append-version="true"></script>
+    <script>
+        window.__THONGKE = @Html.Raw(thongKeJson);
+    </script>
+    <script src="~/js/thongkebaocao/index.js" asp-append-version="true"></script>
+}
