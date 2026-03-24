@@ -1,0 +1,31 @@
+.top-header {
+    color: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.wrapper {
+    padding: 0px 50px;
+    margin-bottom: 30px;
+}
+
+.container-fluid {
+    background-color: white;
+    padding: 30px;
+    border-radius: 30px;
+    margin-bottom: 30px;
+}
+
+/* Ảnh thumbnail trong bảng xe (partial dùng chung với quản lý xe) */
+.xe-table-thumb {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+}
+
+.xe-table-thumb-placeholder {
+    font-size: 30px;
+    color: #ccc;
+}

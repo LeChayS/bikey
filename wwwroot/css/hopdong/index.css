@@ -89,9 +89,12 @@ a .stat-card:hover {
 .filter-section {
     margin-bottom: 30px;
 }
+.filter-section {
+    margin-bottom: 30px;
+}
 
     .filter-section .form-label {
-        font-weight: 600;
+        /* font-weight: 600; */
         color: #495057;
         margin-bottom: 5px;
     }
@@ -111,7 +114,7 @@ a .stat-card:hover {
 
     .filter-section .btn {
         border-radius: 8px;
-        font-weight: 600;
+        /* font-weight: 600; */
         transition: all 0.3s;
     }
 
@@ -307,7 +310,7 @@ tr.highlight-row {
     border: 2px solid white;
 }
 
-@@keyframes pulse-new {
+@keyframes pulse-new {
     0% {
         transform: scale(1);
     }
@@ -366,7 +369,7 @@ tr.highlight-row {
         box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
 
-@@keyframes slideInDown {
+@keyframes slideInDown {
     from {
         transform: translateY(-100%);
         opacity: 0;
@@ -378,7 +381,7 @@ tr.highlight-row {
     }
 }
 
-@@keyframes shimmer {
+@keyframes shimmer {
     0% {
         left: -100%;
     }
@@ -388,7 +391,7 @@ tr.highlight-row {
     }
 }
 
-@@keyframes pulse-icon {
+@keyframes pulse-icon {
     0%, 100% {
         transform: scale(1);
     }

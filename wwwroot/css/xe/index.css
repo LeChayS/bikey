@@ -75,6 +75,7 @@
     border-radius: 8px;
     font-weight: 600;
     transition: all 0.3s;
+    /* max-width: 160px; */
 }
 
 .filter-section .btn:hover {
@@ -895,3 +896,15 @@
         color: #f39c12;
         margin-right: 5px;
     }
+
+/* Ảnh thumbnail trong bảng xe (partial dùng chung) */
+.xe-table-thumb {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+}
+
+.xe-table-thumb-placeholder {
+    font-size: 30px;
+    color: #ccc;
+}

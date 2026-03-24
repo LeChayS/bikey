@@ -33,9 +33,9 @@ function setupFilterEvents() {
     });
 
     // Nút lọc
-    $('#filterBtn').on('click', function () {
-        filterXe();
-    });
+    // $('#filterBtn').on('click', function () {
+    //     filterXe();
+    // });
 
     // Nút xóa lọc
     $('#clearFilterBtn').on('click', function () {

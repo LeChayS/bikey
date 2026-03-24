@@ -10,6 +10,7 @@
 
 @section Styles {
     <link rel="stylesheet" href="/css/hopdong/index.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/shared/admin-filter-bar.css" asp-append-version="true" />
 }
 
 <!-- Top Header -->
@@ -26,11 +27,13 @@
 </div>
 
 <div class="wrapper">
+    @* alert *@
     @if (TempData["HopDongMessage"] is string message)
     {
         <div class="alert alert-info">@message</div>
     }
 
+    @* thông báo đơn chờ xử lý *@
     @if ((ViewBag.DonChoXuLy ?? 0) > 0)
     {
         <div class="alert alert-danger alert-dismissible fade show">
@@ -87,32 +90,68 @@
         </div>
     </div>
 
+    <!-- table & filter -->
     <div class="container-fluid">
+        @* filter *@
         <div class="filter-section">
-            <form method="get" class="row g-3 align-items-center">
-                <div class="col">
-                    <label class="form-label">Trạng thái</label>
-                    <select name="trangThai" class="form-select">
-                        <option value="">Tất cả trạng thái</option>
-                        <option value="Đang thuê" selected="@(ViewBag.TrangThai == "Đang thuê" ? "selected" : null)">
-                            Đang thuê</option>
-                        <option value="Hoàn thành" selected="@(ViewBag.TrangThai == "Hoàn thành" ? "selected" : null)">
-                            Hoàn thành</option>
-                        <option value="Hủy" selected="@(ViewBag.TrangThai == "Hủy" ? "selected" : null)">Hủy</option>
-                    </select>
-                </div>
-                <div class="col">
-                    <label class="form-label">&nbsp;</label>
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="bi bi-funnel"></i> Lọc
-                    </button>
-                </div>
-                <div class="col">
-                    <label class="form-label">&nbsp;</label>
-                    <a asp-action="Index" class="btn btn-secondary w-100">
-                        <i class="bi bi-arrow-clockwise"></i> Làm mới
-                    </a>
-                </div>
+            <form method="get" asp-controller="HopDong" asp-action="Index" class="row g-3 align-items-end filter-bar">
+                    @{
+                        var trangThaiChon = ViewBag.TrangThai as string;
+                    }
+                    <div class="col filter-bar-field">
+                        <label class="form-label" for="filterTrangThai">Trạng thái</label>
+                        <select name="trangThai" id="filterTrangThai" class="form-select">
+                            @if (string.IsNullOrEmpty(trangThaiChon))
+                            {
+                                <option value="" selected>Tất cả trạng thái</option>
+                            }
+                            else
+                            {
+                                <option value="">Tất cả trạng thái</option>
+                            }
+                            @if (trangThaiChon == "Đang thuê")
+                            {
+                                <option value="Đang thuê" selected>Đang thuê</option>
+                            }
+                            else
+                            {
+                                <option value="Đang thuê">Đang thuê</option>
+                            }
+                            @if (trangThaiChon == "Hoàn thành")
+                            {
+                                <option value="Hoàn thành" selected>Hoàn thành</option>
+                            }
+                            else
+                            {
+                                <option value="Hoàn thành">Hoàn thành</option>
+                            }
+                            @if (trangThaiChon == "Hủy")
+                            {
+                                <option value="Hủy" selected>Hủy</option>
+                            }
+                            else
+                            {
+                                <option value="Hủy">Hủy</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col filter-bar-field">
+                        <label class="form-label" for="filterTuKhoa">Tìm theo tên khách hoặc tên xe</label>
+                        <input type="search" name="tuKhoa" id="filterTuKhoa" class="form-control"
+                            value="@ViewBag.TuKhoa" placeholder="Ví dụ: Nguyễn, Honda, 51A…" autocomplete="off" />
+                    </div>
+                    <div class="col-auto filter-bar-action">
+                        <label class="form-label d-block">&nbsp;</label>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-funnel"></i> Lọc dữ liệu
+                        </button>
+                    </div>
+                    <div class="col-auto filter-bar-action">
+                        <label class="form-label d-block">&nbsp;</label>
+                        <a asp-controller="HopDong" asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-arrow-clockwise"></i> Làm mới
+                        </a>
+                    </div>
             </form>
         </div>
 
@@ -172,14 +211,16 @@
                         <td><span class="status-badge @statusClass">@item.TrangThai</span></td>
                         <td>
                             @if (item.HoaDon != null)
-                                    {
-                                        <span class="badge bg-success">HD@(item.HoaDon.MaHoaDon.ToString("D6"))</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-secondary">-</span>
-                                    }
-                                </td>
+                            {
+                                <a asp-controller="HoaDon" asp-action="ChiTiet" asp-route-id="@item.HoaDon.MaHoaDon"
+                                    class="badge bg-success text-decoration-none"
+                                    title="Xem chi tiết hóa đơn">HD@(item.HoaDon.MaHoaDon.ToString("D6"))</a>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">-</span>
+                            }
+                        </td>
                                 <td>
                                     <a asp-action="ChiTiet" asp-route-id="@item.MaHopDong" class="btn btn-sm btn-info"
                                         title="Chi tiết">
@@ -214,7 +255,7 @@
                             {
                                 <li class="page-item">
                                     <a class="page-link"
-                                        href="@Url.Action("Index", new { trangThai = ViewBag.TrangThai, page = currentPage - 1 })">
+                                        href="@Url.Action("Index", new { trangThai = ViewBag.TrangThai, tuKhoa = ViewBag.TuKhoa, page = currentPage - 1 })">
                                         <i class="bi bi-chevron-left"></i>
                                     </a>
                                 </li>
@@ -236,7 +277,7 @@
                                 {
                                     <li class="page-item">
                                         <a class="page-link"
-                                            href="@Url.Action("Index", new { trangThai = ViewBag.TrangThai, page = i })">@i</a>
+                                            href="@Url.Action("Index", new { trangThai = ViewBag.TrangThai, tuKhoa = ViewBag.TuKhoa, page = i })">@i</a>
                                     </li>
                                 }
                             }
@@ -245,7 +286,7 @@
                             {
                                 <li class="page-item">
                                     <a class="page-link"
-                                        href="@Url.Action("Index", new { trangThai = ViewBag.TrangThai, page = currentPage + 1 })">
+                                        href="@Url.Action("Index", new { trangThai = ViewBag.TrangThai, tuKhoa = ViewBag.TuKhoa, page = currentPage + 1 })">
                                         <i class="bi bi-chevron-right"></i>
                                     </a>
                                 </li>

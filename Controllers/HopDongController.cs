@@ -21,7 +21,7 @@ namespace bikey.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string? trangThai, int page = 1)
+        public async Task<IActionResult> Index(string? trangThai, string? tuKhoa, int page = 1)
         {
             const int pageSize = 10;
             page = page < 1 ? 1 : page;
@@ -38,6 +38,18 @@ namespace bikey.Controllers
                 hopDongQuery = hopDongQuery.Where(item => item.TrangThai == trangThai);
             }
 
+            if (!string.IsNullOrWhiteSpace(tuKhoa))
+            {
+                var keyword = tuKhoa.Trim();
+                hopDongQuery = hopDongQuery.Where(item =>
+                    (item.HoTenKhach != null && item.HoTenKhach.Contains(keyword))
+                    || item.ChiTietHopDong.Any(ct =>
+                        ct.Xe != null
+                        && (
+                            (ct.Xe.TenXe != null && ct.Xe.TenXe.Contains(keyword))
+                            || (ct.Xe.BienSoXe != null && ct.Xe.BienSoXe.Contains(keyword)))));
+            }
+
             var totalItems = await hopDongQuery.CountAsync();
             var hopDongList = await hopDongQuery
                 .OrderByDescending(item => item.NgayTao)
@@ -50,6 +62,7 @@ namespace bikey.Controllers
             ViewBag.PageSize = pageSize;
             ViewBag.CurrentPage = page;
             ViewBag.TrangThai = trangThai;
+            ViewBag.TuKhoa = tuKhoa;
             ViewBag.DonChoXuLy = await CountDatChoTrongHangDoiAsync();
             ViewBag.DonChoXuLyMoi = await _context.DatCho.CountAsync(item =>
                 (item.TrangThai == ChoXacNhan || item.TrangThai == DangGiuCho)

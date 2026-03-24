@@ -8,16 +8,24 @@
     int totalPages = pageSize > 0 ? (int)Math.Ceiling((double)totalItems / pageSize) : 1;
     decimal tongDoanhThu = ViewBag.TongDoanhThu is decimal td ? td : 0m;
     int soHoaDonHomNay = ViewBag.SoHoaDonHomNay ?? 0;
+    var tuNgayVal = ViewBag.TuNgay as DateTime?;
+    var denNgayVal = ViewBag.DenNgay as DateTime?;
+    var searchVal = ViewBag.SearchString as string;
 }
 @section Styles{
     <link rel="stylesheet" href="~/css/hoadon/index.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/shared/admin-filter-bar.css" asp-append-version="true" />
 }
 
 @section Scripts {
     <script>
-        // Auto-submit form when date changes
-        $('input[type="date"]').on('change', function() {
-            $(this).closest('form').submit();
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('#hoadon-filter-form input[type="date"]').forEach(function (el) {
+                el.addEventListener('change', function () {
+                    var f = document.getElementById('hoadon-filter-form');
+                    if (f) f.requestSubmit();
+                });
+            });
         });
     </script>
 }
@@ -27,7 +35,6 @@
 </div>
 
 <div class="wrapper">
-
 
     <!-- Statistics -->
     <div class="container-fluid">
@@ -77,38 +84,41 @@
         </div>
     </div>
 
-
     @* table & filter *@
     <div class="container-fluid">
 
 
         <!-- Filter -->
         <div class="filter-section">
-            <form method="get" class="row g-3 align-items-center">
-                <div class="col-md-3">
-                    <label class="form-label">Tìm theo SĐT/Tên khách:</label>
-                    <input type="text" name="searchString" class="form-control"
-                        placeholder="Nhập số điện thoại hoặc tên..."
-                        value="@ViewBag.SearchString" />
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Từ ngày:</label>
-                    <input type="date" name="tuNgay" class="form-control"
-                        value="@ViewBag.TuNgay?.ToString("yyyy-MM-dd")" />
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Đến ngày:</label>
-                    <input type="date" name="denNgay" class="form-control"
-                        value="@ViewBag.DenNgay?.ToString("yyyy-MM-dd")" />
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">&nbsp;</label>
-                    <div>
-                        <button type="submit" class="btn btn-primary w-100">
+            <form id="hoadon-filter-form" method="get" asp-controller="HoaDon" asp-action="Index" class="row g-3 align-items-end filter-bar">
+                    <div class="col filter-bar-field">
+                        <label class="form-label" for="hoadon-search">Tìm theo SĐT/Tên khách</label>
+                        <input type="search" id="hoadon-search" name="searchString" class="form-control"
+                            placeholder="Số điện thoại hoặc tên..."
+                            value="@searchVal" autocomplete="off" />
+                    </div>
+                    <div class="col filter-bar-field">
+                        <label class="form-label" for="hoadon-tu-ngay">Từ ngày</label>
+                        <input type="date" id="hoadon-tu-ngay" name="tuNgay" class="form-control"
+                            value="@tuNgayVal?.ToString("yyyy-MM-dd")" />
+                    </div>
+                    <div class="col filter-bar-field">
+                        <label class="form-label" for="hoadon-den-ngay">Đến ngày</label>
+                        <input type="date" id="hoadon-den-ngay" name="denNgay" class="form-control"
+                            value="@denNgayVal?.ToString("yyyy-MM-dd")" />
+                    </div>
+                    <div class="col-auto filter-bar-action">
+                        <label class="form-label d-block">&nbsp;</label>
+                        <button type="submit" class="btn btn-primary">
                             <i class="bi bi-funnel"></i> Lọc dữ liệu
                         </button>
                     </div>
-                </div>
+                    <div class="col-auto filter-bar-action">
+                        <label class="form-label d-block">&nbsp;</label>
+                        <a asp-controller="HoaDon" asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-arrow-clockwise"></i> Làm mới
+                        </a>
+                    </div>
             </form>
         </div>
 
@@ -200,10 +210,10 @@
                             <li class="page-item @(i == currentPage ? "active" : "")">
                                 <a class="page-link" href="@Url.Action("Index", new {
                                     page = i,
-                                    pageSize = ViewBag.PageSize,
-                                    searchString = ViewBag.SearchString,
-                                    tuNgay = ViewBag.TuNgay?.ToString("yyyy-MM-dd"),
-                                    denNgay = ViewBag.DenNgay?.ToString("yyyy-MM-dd")
+                                    pageSize = pageSize,
+                                    searchString = searchVal,
+                                    tuNgay = tuNgayVal?.ToString("yyyy-MM-dd"),
+                                    denNgay = denNgayVal?.ToString("yyyy-MM-dd")
                                 })">@i</a>
                             </li>
                         }

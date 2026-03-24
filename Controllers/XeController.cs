@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using bikey.Models;
 using bikey.Repository;
+using bikey.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -40,7 +41,7 @@ namespace bikey.Controllers
             ViewBag.BaoTri = xeKhongXoa.Count(x => x.TrangThai == "Bảo trì");
 
             await PopulateIndexFilterViewBagsAsync();
-            return View(xeList);
+            return View(xeKhongXoa);
         }
 
         [HttpGet]
@@ -253,7 +254,11 @@ namespace bikey.Controllers
                 .OrderByDescending(x => x.MaXe)
                 .ToListAsync();
 
-            return PartialView("_XeTablePartial", data);
+            return PartialView("_XeTablePartial", new XeTablePartialModel
+            {
+                Items = data,
+                Variant = XeTableVariant.QuanLy
+            });
         }
 
         [HttpGet]
@@ -439,15 +444,10 @@ namespace bikey.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            foreach (var hinhAnh in xe.HinhAnhXes.ToList())
-            {
-                DeleteXeImageFileIfExists(hinhAnh.TenFile);
-            }
-
-            _context.HinhAnhXe.RemoveRange(xe.HinhAnhXes);
-            _context.Xe.Remove(xe);
+            // Soft-delete: chỉ cập nhật trạng thái để tránh xóa cứng gây xung đột ràng buộc FK.
+            xe.TrangThai = "Đã xóa";
             await _context.SaveChangesAsync();
-            TempData["Success"] = "Đã xóa xe khỏi hệ thống.";
+            TempData["Success"] = "Đã xóa xe (soft-delete) và có thể khôi phục lại từ trang xe đã xóa.";
             return RedirectToAction(nameof(Index));
         }
 
