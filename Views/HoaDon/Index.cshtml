@@ -13,6 +13,7 @@
     var searchVal = ViewBag.SearchString as string;
 }
 @section Styles{
+    <link rel="stylesheet" href="~/css/components/stat-card.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/css/hoadon/index.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/css/shared/admin-filter-bar.css" asp-append-version="true" />
 }
@@ -41,45 +42,26 @@
         <div class="row stat-cards">
             @* card 1 *@
             <div class="col-md-4">
-                <div class="stat-card orange">
-                    <div>
-                        <div class="stat-label">Tổng hóa đơn</div>
-                        <div class="stat-value">
-                            @totalItems
-                        </div>
-                    </div>
-                    <div class="stat-icon orange text-white">
-                        <i class="bi bi-receipt-cutoff"></i>
-                    </div>
-                </div>
+                <stat-card label="Tổng hóa đơn"
+                           value="@totalItems"
+                           icon="bi-receipt-cutoff"
+                           tone="orange" />
             </div>
             @* card 2 *@
             <div class="col-md-4">
-                <div class="stat-card green">
-                    <div>
-                        <div class="stat-label">Tổng doanh thu</div>
-                        <div class="stat-value stat-revenue">
-                            @tongDoanhThu.ToString("N0")đ
-                        </div>
-                    </div>
-                    <div class="stat-icon green text-white">
-                        <i class="bi bi-currency-dollar"></i>
-                    </div>
-                </div>
+                <stat-card label="Tổng doanh thu"
+                           value="@($"{tongDoanhThu:N0}đ")"
+                           value-class="stat-revenue"
+                           icon="bi-currency-dollar"
+                           tone="green" />
             </div>
             @* Cards 3 *@
             <div class="col-md-4">
-                <div class="stat-card blue">
-                    <div>
-                        <div class="stat-label">Hóa đơn hôm nay</div>
-                        <div class="stat-value stat-count">
-                            @soHoaDonHomNay
-                        </div>
-                    </div>
-                    <div class="stat-icon blue text-white">
-                        <i class="bi bi-calendar-day"></i>
-                    </div>
-                </div>
+                <stat-card label="Hóa đơn hôm nay"
+                           value="@soHoaDonHomNay"
+                           value-class="stat-count"
+                           icon="bi-calendar-day"
+                           tone="blue" />
             </div>
         </div>
     </div>

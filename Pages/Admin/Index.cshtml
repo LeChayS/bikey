@@ -23,6 +23,7 @@
 }
 
 @section Styles {
+    <link href="~/css/components/stat-card.css" rel="stylesheet" asp-append-version="true">
     <link href="~/css/pages/admin.css" rel="stylesheet" asp-append-version="true">
 }
 
@@ -34,95 +35,55 @@
     <div class="container-fluid">
         <div class="row mb-4">
             <div class="col-lg-4 col-md-6">
-                <div class="stat-card blue">
-                    <div>
-                        <div class="stat-label">Hợp đồng hoàn thành (tháng này)</div>
-                        <div class="stat-value">@Model.Dashboard.HopDongHoanThanh</div>
-                        @if (Model.Dashboard.PhanTramHopDongVsKyTruoc != 0)
-                        {
-                            <div class="stat-change @(Model.Dashboard.PhanTramHopDongVsKyTruoc > 0 ? "positive" : "negative")">
-                                <i class="bi bi-arrow-@(Model.Dashboard.PhanTramHopDongVsKyTruoc > 0 ? "up" : "down")"></i>
-                                @Math.Abs(Model.Dashboard.PhanTramHopDongVsKyTruoc).ToString("F1")% so với tháng trước
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="text-muted small">Không đổi so với tháng trước</div>
-                        }
-                    </div>
-                    <div class="stat-icon blue text-white">
-                        <i class="bi bi-calendar-check "></i>
-                    </div>
-                </div>
+                <stat-card label="Hợp đồng hoàn thành (tháng này)" value="@Model.Dashboard.HopDongHoanThanh"
+                    icon="bi-calendar-check" tone="blue">
+                    @if (Model.Dashboard.PhanTramHopDongVsKyTruoc != 0)
+                    {
+                        <div class="stat-change @(Model.Dashboard.PhanTramHopDongVsKyTruoc > 0 ? "positive" : "negative")">
+                            <i class="bi bi-arrow-@(Model.Dashboard.PhanTramHopDongVsKyTruoc > 0 ? "up" : "down")"></i>
+                            @Math.Abs(Model.Dashboard.PhanTramHopDongVsKyTruoc).ToString("F1")% so với tháng trước
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-muted small">Không đổi so với tháng trước</div>
+                    }
+                </stat-card>
             </div>
             <div class="col-lg-4 col-md-6">
-                <div class="stat-card orange">
-                    <div>
-                        <div class="stat-label">Doanh thu hôm nay</div>
-                        <div class="stat-value">@Model.Dashboard.DoanhThuHomNay.ToString("N0")đ</div>
-                        @if (Model.Dashboard.PhanTramDoanhThuVsHomTruoc != 0)
-                        {
-                            <div class="stat-change @(Model.Dashboard.PhanTramDoanhThuVsHomTruoc > 0 ? "positive" : "negative")">
-                                <i class="bi bi-arrow-@(Model.Dashboard.PhanTramDoanhThuVsHomTruoc > 0 ? "up" : "down")"></i>
-                                @Math.Abs(Model.Dashboard.PhanTramDoanhThuVsHomTruoc).ToString("F1")% so với hôm qua
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="text-muted small">Không đổi so với hôm qua</div>
-                        }
-                    </div>
-                    <div class="stat-icon orange text-white">
-                        <i class="bi bi-cash-stack"></i>
-                    </div>
-                </div>
+                <stat-card label="Doanh thu hôm nay" value="@($"{Model.Dashboard.DoanhThuHomNay:N0}đ")"
+                    icon="bi-cash-stack" tone="orange">
+                    @if (Model.Dashboard.PhanTramDoanhThuVsHomTruoc != 0)
+                    {
+                        <div
+                            class="stat-change @(Model.Dashboard.PhanTramDoanhThuVsHomTruoc > 0 ? "positive" : "negative")">
+                            <i class="bi bi-arrow-@(Model.Dashboard.PhanTramDoanhThuVsHomTruoc > 0 ? "up" : "down")"></i>
+                            @Math.Abs(Model.Dashboard.PhanTramDoanhThuVsHomTruoc).ToString("F1")% so với hôm qua
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-muted small">Không đổi so với hôm qua</div>
+                    }
+                </stat-card>
             </div>
             <div class="col-lg-4 col-md-6">
-                <div class="stat-card green">
-                    <div>
-                        <div class="stat-label">Xe đang cho thuê</div>
-                        <div class="stat-value">@Model.Dashboard.XeDangChoThue</div>
-                    </div>
-                    <div class="stat-icon green text-white">
-                        <i class="bi bi-bicycle"></i>
-                    </div>
-                </div>
+                <stat-card label="Xe đang cho thuê" value="@Model.Dashboard.XeDangChoThue" icon="bi-bicycle"
+                    tone="green" />
             </div>
         </div>
 
         <div class="row">
             <div class="col-lg-4 col-md-6">
-                <div class="stat-card purple">
-                    <div>
-                        <div class="stat-label">Hợp đồng hoạt động</div>
-                        <div class="stat-value">@Model.Dashboard.HopDongHoatDong</div>
-                    </div>
-                    <div class="stat-icon purple text-white">
-                        <i class="bi bi-file-earmark-text"></i>
-                    </div>
-                </div>
+                <stat-card label="Hợp đồng hoạt động" value="@Model.Dashboard.HopDongHoatDong"
+                    icon="bi-file-earmark-text" tone="purple" />
             </div>
             <div class="col-lg-4 col-md-6">
-                <div class="stat-card red">
-                    <div>
-                        <div class="stat-label">Khách hàng mới hôm nay</div>
-                        <div class="stat-value">@Model.Dashboard.KhachHangMoiHomNay</div>
-                    </div>
-                    <div class="stat-icon red text-white">
-                        <i class="bi bi-person-plus"></i>
-                    </div>
-                </div>
+                <stat-card label="Khách hàng mới hôm nay" value="@Model.Dashboard.KhachHangMoiHomNay"
+                    icon="bi-person-plus" tone="red" />
             </div>
             <div class="col-lg-4 col-md-6">
-                <div class="stat-card teal">
-                    <div>
-                        <div class="stat-label">Tổng số xe</div>
-                        <div class="stat-value">@Model.Dashboard.TongSoXe</div>
-                    </div>
-                    <div class="stat-icon teal text-white">
-                        <i class="bi bi-collection"></i>
-                    </div>
-                </div>
+                <stat-card label="Tổng số xe" value="@Model.Dashboard.TongSoXe" icon="bi-collection" tone="teal" />
             </div>
         </div>
     </div>
