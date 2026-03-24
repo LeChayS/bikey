@@ -1,4 +1,4 @@
-﻿.top-header {
+.top-header {
     color: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     padding: 20px 50px;
     display: flex;
@@ -23,58 +23,6 @@
     align-items: center;
     justify-content: center;
     border-radius: 15px;
-}
-
-/* Stat cards */
-.stat-card {
-    background: white;
-    border-radius: 10px;
-    padding: 20px;
-    transition: transform 0.3s;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 100%;
-    flex-direction: column;
-    text-align: center;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-}
-
-    .stat-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
-    }
-
- .stat-card.blue {
-     background: rgb(158, 198, 243, 0.3);
- }
- .stat-card.green {
-     background: rgb(199, 234, 187, 0.3);
- }
- .stat-card.purple {
-     background: rgb(203, 157, 240, 0.3);
- }
- .stat-card.red {
-     background: rgb(250, 104, 104, 0.3);
- }
-
-/* Hiệu ứng đặc biệt cho card Đơn chờ xử lý */
-a .stat-card:hover {
-    border-color: #ff6b35 !important;
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
-}
-
-.stat-value {
-    font-size: 32px;
-    font-weight: bold;
-    color: black;
-    margin-bottom: 5px;
-}
-
-.stat-label {
-    color: #202020;
-    font-size: 16px;
 }
 
 /* Container cho dòng extra (Click để xử lý) */

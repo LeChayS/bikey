@@ -5,6 +5,7 @@
 }
 
 @section Styles {
+    <link rel="stylesheet" href="~/css/components/stat-card.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/xe/index.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/shared/admin-filter-bar.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/shared/responsive.css" asp-append-version="true" />
@@ -33,39 +34,31 @@
         <div class="row">
             @* card 1 *@
             <div class="col-lg-3 col-md-6">
-                <div class="stat-card blue">
-                    <div class="stat-label">Tổng số xe</div>
-                    <div class="stat-value">
-                        @(ViewBag.TongSoXe ?? 0)
-                    </div>
-                </div>
+                <stat-card label="Tổng số xe"
+                           value="@(ViewBag.TongSoXe ?? 0)"
+                           tone="blue"
+                           align="center" />
             </div>
             @* card 2 *@
             <div class="col-lg-3 col-md-6">
-                <div class="stat-card red">
-                    <div class="stat-label">Xe sẵn sàng</div>
-                    <div class="stat-value">
-                        @(ViewBag.XeSanSang ?? 0)
-                    </div>
-                </div>
+                <stat-card label="Xe sẵn sàng"
+                           value="@(ViewBag.XeSanSang ?? 0)"
+                           tone="red"
+                           align="center" />
             </div>
             @* card 3 *@
             <div class="col-lg-3 col-md-6">
-                <div class="stat-card purple">
-                    <div class="stat-label">Đang cho thuê</div>
-                    <div class="stat-value">
-                        @(ViewBag.DangChoThue ?? 0)
-                    </div>
-                </div>
+                <stat-card label="Đang cho thuê"
+                           value="@(ViewBag.DangChoThue ?? 0)"
+                           tone="purple"
+                           align="center" />
             </div>
             @* card 4 *@
             <div class="col-lg-3 col-md-6">
-                <div class="stat-card green">
-                    <div class="stat-label">Bảo trì</div>
-                    <div class="stat-value">
-                        @(ViewBag.BaoTri ?? 0)
-                    </div>
-                </div>
+                <stat-card label="Bảo trì"
+                           value="@(ViewBag.BaoTri ?? 0)"
+                           tone="green"
+                           align="center" />
             </div>
         </div>
     </div>

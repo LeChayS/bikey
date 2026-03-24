@@ -27,13 +27,17 @@ public class StatCardTagHelper : TagHelper
     [HtmlAttributeName("value-class")]
     public string? ValueClass { get; set; }
 
+    [HtmlAttributeName("align")]
+    public string? Align { get; set; }
+
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
         var childContent = await output.GetChildContentAsync();
+        var hasIcon = !string.IsNullOrWhiteSpace(Icon);
 
         output.TagName = "div";
         output.TagMode = TagMode.StartTagAndEndTag;
-        output.Attributes.SetAttribute("class", $"stat-card {Tone}");
+        output.Attributes.SetAttribute("class", BuildCardClass(hasIcon));
 
         var contentWrap = new TagBuilder("div");
 
@@ -68,17 +72,37 @@ public class StatCardTagHelper : TagHelper
             contentWrap.InnerHtml.AppendHtml(childContent);
         }
 
-        var iconWrap = new TagBuilder("div");
-        iconWrap.AddCssClass("stat-icon");
-        iconWrap.AddCssClass(Tone);
-        iconWrap.AddCssClass("text-white");
-
-        var iconEl = new TagBuilder("i");
-        iconEl.AddCssClass("bi");
-        iconEl.AddCssClass(Icon);
-        iconWrap.InnerHtml.AppendHtml(iconEl);
-
         output.Content.AppendHtml(contentWrap);
-        output.Content.AppendHtml(iconWrap);
+        if (hasIcon)
+        {
+            var iconWrap = new TagBuilder("div");
+            iconWrap.AddCssClass("stat-icon");
+            iconWrap.AddCssClass(Tone);
+            iconWrap.AddCssClass("text-white");
+
+            var iconEl = new TagBuilder("i");
+            iconEl.AddCssClass("bi");
+            iconEl.AddCssClass(Icon);
+            iconWrap.InnerHtml.AppendHtml(iconEl);
+
+            output.Content.AppendHtml(iconWrap);
+        }
+    }
+
+    private string BuildCardClass(bool hasIcon)
+    {
+        var classes = new List<string> { "stat-card", Tone };
+
+        if (!hasIcon)
+        {
+            classes.Add("stat-card--no-icon");
+        }
+
+        if (string.Equals(Align, "center", StringComparison.OrdinalIgnoreCase))
+        {
+            classes.Add("stat-card--center");
+        }
+
+        return string.Join(' ', classes);
     }
 }

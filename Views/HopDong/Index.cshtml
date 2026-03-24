@@ -9,6 +9,7 @@
 }
 
 @section Styles {
+    <link rel="stylesheet" href="~/css/components/stat-card.css" asp-append-version="true" />
     <link rel="stylesheet" href="/css/hopdong/index.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/shared/admin-filter-bar.css" asp-append-version="true" />
 }
@@ -57,35 +58,39 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-3 col-md-6">
-                <div class="stat-card blue">
-                    <div class="stat-label">Tổng hợp đồng</div>
-                    <div class="stat-value">@totalItems</div>
+                <stat-card label="Tổng hợp đồng"
+                           value="@totalItems"
+                           tone="blue"
+                           align="center">
                     <div class="stat-extra-container"></div>
-                </div>
+                </stat-card>
             </div>
             <div class="col-lg-3 col-md-6">
                 <a asp-action="DonChoXuLy" class="text-decoration-none">
-                    <div class="stat-card red"
-                        style="cursor: pointer; transition: all 0.3s; border: 2px solid transparent;">
-                        <div class="stat-label">Đơn chờ xử lý</div>
-                        <div class="stat-value">@ViewBag.DonChoXuLy</div>
+                    <stat-card label="Đơn chờ xử lý"
+                               value="@ViewBag.DonChoXuLy"
+                               tone="red"
+                               align="center"
+                               style="cursor: pointer; transition: all 0.3s; border: 2px solid transparent;">
                         <span class="text-muted small">Click để xử lý</span>
-                    </div>
+                    </stat-card>
                 </a>
             </div>
             <div class="col-lg-3 col-md-6">
-                <div class="stat-card purple">
-                    <div class="stat-label">Đang thuê</div>
-                    <div class="stat-value">@ViewBag.TongDangThue</div>
+                <stat-card label="Đang thuê"
+                           value="@ViewBag.TongDangThue"
+                           tone="purple"
+                           align="center">
                     <div class="stat-extra-container"></div>
-                </div>
+                </stat-card>
             </div>
             <div class="col-lg-3 col-md-6">
-                <div class="stat-card green">
-                    <div class="stat-label">Hoàn thành</div>
-                    <div class="stat-value">@ViewBag.TongHoanThanh</div>
+                <stat-card label="Hoàn thành"
+                           value="@ViewBag.TongHoanThanh"
+                           tone="green"
+                           align="center">
                     <div class="stat-extra-container"></div>
-                </div>
+                </stat-card>
             </div>
         </div>
     </div>
