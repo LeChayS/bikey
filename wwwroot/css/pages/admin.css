@@ -61,8 +61,8 @@
  .stat-card.red{
     background: rgb(250, 104, 104, 0.3);
  }
- .stat-card.pink{
-    background: rgb(253, 121, 121, 0.3);
+ .stat-card.teal{
+    background: rgb(153,246,228, 0.3);
  }
 
 .stat-icon {
@@ -95,8 +95,8 @@
 .stat-icon.red {
     background: rgb(250, 104, 104, 0.3);
 }
-.stat-icon.pink {
-    background: rgb(253, 121, 121, 0.3);
+.stat-icon.teal {
+    background: rgb(153,246,228, 0.3);
 }
 
 .stat-value {

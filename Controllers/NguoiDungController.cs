@@ -476,8 +476,7 @@ namespace bikey.Controllers
                 };
             }
 
-            if (string.Equals(role, "Staff", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(role, "Nhân viên", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(role, "Staff", StringComparison.OrdinalIgnoreCase))
             {
                 return new PermissionSetInput
                 {

@@ -179,9 +179,28 @@ namespace bikey.Controllers
             return RedirectToAction(nameof(DonChoXuLy));
         }
 
-        public IActionResult TimPhieuDatCho()
+        [HttpGet]
+        public async Task<IActionResult> TimPhieuDatCho(string? soDienThoai)
         {
-            return View();
+            ViewBag.SoDienThoai = soDienThoai;
+
+            if (string.IsNullOrWhiteSpace(soDienThoai))
+            {
+                ViewBag.HasSearched = false;
+                return View(new List<DatCho>());
+            }
+
+            ViewBag.HasSearched = true;
+            var phone = soDienThoai.Trim();
+
+            var danhSachPhieu = await _context.DatCho
+                .AsNoTracking()
+                .Include(item => item.Xe)
+                .Where(item => item.SoDienThoai != null && item.SoDienThoai.Contains(phone))
+                .OrderByDescending(item => item.NgayDat)
+                .ToListAsync();
+
+            return View(danhSachPhieu);
         }
 
         [HttpGet]
