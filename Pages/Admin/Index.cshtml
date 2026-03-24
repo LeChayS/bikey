@@ -1,4 +1,5 @@
-@model bikey.ViewModels.AdminDashboardViewModel
+@page "/Admin"
+@model bikey.Pages.Admin.IndexModel
 @{
     Layout = "_AdminLayout";
     ViewBag.Title = "Admin Dashboard";
@@ -30,19 +31,18 @@
 </div>
 
 <div class="wrapper">
-
     <div class="container-fluid">
         <div class="row mb-4">
             <div class="col-lg-4 col-md-6">
                 <div class="stat-card blue">
                     <div>
                         <div class="stat-label">Hợp đồng hoàn thành (tháng này)</div>
-                        <div class="stat-value">@Model.HopDongHoanThanh</div>
-                        @if (Model.PhanTramHopDongVsKyTruoc != 0)
+                        <div class="stat-value">@Model.Dashboard.HopDongHoanThanh</div>
+                        @if (Model.Dashboard.PhanTramHopDongVsKyTruoc != 0)
                         {
-                            <div class="stat-change @(Model.PhanTramHopDongVsKyTruoc > 0 ? "positive" : "negative")">
-                                <i class="bi bi-arrow-@(Model.PhanTramHopDongVsKyTruoc > 0 ? "up" : "down")"></i>
-                                @Math.Abs(Model.PhanTramHopDongVsKyTruoc).ToString("F1")% so với tháng trước
+                            <div class="stat-change @(Model.Dashboard.PhanTramHopDongVsKyTruoc > 0 ? "positive" : "negative")">
+                                <i class="bi bi-arrow-@(Model.Dashboard.PhanTramHopDongVsKyTruoc > 0 ? "up" : "down")"></i>
+                                @Math.Abs(Model.Dashboard.PhanTramHopDongVsKyTruoc).ToString("F1")% so với tháng trước
                             </div>
                         }
                         else
@@ -59,12 +59,12 @@
                 <div class="stat-card orange">
                     <div>
                         <div class="stat-label">Doanh thu hôm nay</div>
-                        <div class="stat-value">@Model.DoanhThuHomNay.ToString("N0")đ</div>
-                        @if (Model.PhanTramDoanhThuVsHomTruoc != 0)
+                        <div class="stat-value">@Model.Dashboard.DoanhThuHomNay.ToString("N0")đ</div>
+                        @if (Model.Dashboard.PhanTramDoanhThuVsHomTruoc != 0)
                         {
-                            <div class="stat-change @(Model.PhanTramDoanhThuVsHomTruoc > 0 ? "positive" : "negative")">
-                                <i class="bi bi-arrow-@(Model.PhanTramDoanhThuVsHomTruoc > 0 ? "up" : "down")"></i>
-                                @Math.Abs(Model.PhanTramDoanhThuVsHomTruoc).ToString("F1")% so với hôm qua
+                            <div class="stat-change @(Model.Dashboard.PhanTramDoanhThuVsHomTruoc > 0 ? "positive" : "negative")">
+                                <i class="bi bi-arrow-@(Model.Dashboard.PhanTramDoanhThuVsHomTruoc > 0 ? "up" : "down")"></i>
+                                @Math.Abs(Model.Dashboard.PhanTramDoanhThuVsHomTruoc).ToString("F1")% so với hôm qua
                             </div>
                         }
                         else
@@ -81,7 +81,7 @@
                 <div class="stat-card green">
                     <div>
                         <div class="stat-label">Xe đang cho thuê</div>
-                        <div class="stat-value">@Model.XeDangChoThue</div>
+                        <div class="stat-value">@Model.Dashboard.XeDangChoThue</div>
                     </div>
                     <div class="stat-icon green text-white">
                         <i class="bi bi-bicycle"></i>
@@ -95,7 +95,7 @@
                 <div class="stat-card purple">
                     <div>
                         <div class="stat-label">Hợp đồng hoạt động</div>
-                        <div class="stat-value">@Model.HopDongHoatDong</div>
+                        <div class="stat-value">@Model.Dashboard.HopDongHoatDong</div>
                     </div>
                     <div class="stat-icon purple text-white">
                         <i class="bi bi-file-earmark-text"></i>
@@ -106,7 +106,7 @@
                 <div class="stat-card red">
                     <div>
                         <div class="stat-label">Khách hàng mới hôm nay</div>
-                        <div class="stat-value">@Model.KhachHangMoiHomNay</div>
+                        <div class="stat-value">@Model.Dashboard.KhachHangMoiHomNay</div>
                     </div>
                     <div class="stat-icon red text-white">
                         <i class="bi bi-person-plus"></i>
@@ -117,7 +117,7 @@
                 <div class="stat-card pink">
                     <div>
                         <div class="stat-label">Tổng số xe</div>
-                        <div class="stat-value">@Model.TongSoXe</div>
+                        <div class="stat-value">@Model.Dashboard.TongSoXe</div>
                     </div>
                     <div class="stat-icon pink text-white">
                         <i class="bi bi-collection"></i>
@@ -135,7 +135,7 @@
             <div class="col-12 p-0">
                 <div class="row">
                     <div class="chart-cart col-md-3">
-                        <a class="btn blue w-100" asp-action="Index" asp-controller="ThongKeBaoCao">
+                        <a class="btn blue w-100" asp-page="/ThongKeBaoCao/Index">
                             <i class="bi bi-bar-chart-line"></i><br>
                             Xem thống kê chi tiết
                         </a>
@@ -180,7 +180,7 @@
                 </tr>
             </thead>
             <tbody>
-                @if (Model.TopXeThueNhieu.Count == 0)
+                @if (Model.Dashboard.TopXeThueNhieu.Count == 0)
                 {
                     <tr>
                         <td colspan="6" class="text-center text-muted py-4">
@@ -190,7 +190,7 @@
                 }
                 else
                 {
-                    foreach (var xe in Model.TopXeThueNhieu)
+                    foreach (var xe in Model.Dashboard.TopXeThueNhieu)
                     {
                         <tr>
                             <td>@xe.TenXe</td>
@@ -224,7 +224,7 @@
                 </tr>
             </thead>
             <tbody>
-                @if (Model.HopDongGanDay.Count == 0)
+                @if (Model.Dashboard.HopDongGanDay.Count == 0)
                 {
                     <tr>
                         <td colspan="5" class="text-center text-muted py-4">
@@ -234,7 +234,7 @@
                 }
                 else
                 {
-                    foreach (var hd in Model.HopDongGanDay)
+                    foreach (var hd in Model.Dashboard.HopDongGanDay)
                     {
                         <tr>
                             <td>@hd.TenKhach</td>
@@ -248,5 +248,4 @@
             </tbody>
         </table>
     </div>
-
 </div>

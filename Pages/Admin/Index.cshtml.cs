@@ -1,26 +1,27 @@
 using bikey.Repository;
 using bikey.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
-namespace bikey.Controllers
+namespace bikey.Pages.Admin
 {
     [Authorize(Roles = "Admin,Staff")]
-    public class AdminController : Controller
+    public class IndexModel : PageModel
     {
         private const string TrangHoanThanh = "Hoàn thành";
         private readonly BikeyDbContext _context;
 
-        public AdminController(BikeyDbContext context)
+        public IndexModel(BikeyDbContext context)
         {
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public AdminDashboardViewModel Dashboard { get; private set; } = new();
+
+        public async Task OnGetAsync()
         {
-            var vm = await BuildDashboardAsync();
-            return View(vm);
+            Dashboard = await BuildDashboardAsync();
         }
 
         private async Task<AdminDashboardViewModel> BuildDashboardAsync()

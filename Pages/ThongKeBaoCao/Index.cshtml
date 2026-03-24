@@ -1,4 +1,5 @@
-@model bikey.ViewModels.ThongKeBaoCaoViewModel
+@page "/ThongKeBaoCao"
+@model bikey.Pages.ThongKeBaoCao.IndexModel
 @using System.Text.Json
 @{
     Layout = "_AdminLayout";
@@ -6,13 +7,13 @@
     var jsonOpts = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
     var thongKeBoot = new
     {
-        chartFilter = Model.ChartFilter,
-        bieuDoDoanhThu = Model.BieuDoDoanhThu,
-        bieuDoChiTieu = Model.BieuDoChiTieu,
-        bieuDoThietHai = Model.BieuDoThietHai,
-        topXeThueNhieu = Model.TopXeThueNhieu,
-        bieuDoLoaiXe = Model.BieuDoLoaiXe,
-        bieuDoHopDongTrangThai = Model.BieuDoHopDongTrangThai
+        chartFilter = Model.Data.ChartFilter,
+        bieuDoDoanhThu = Model.Data.BieuDoDoanhThu,
+        bieuDoChiTieu = Model.Data.BieuDoChiTieu,
+        bieuDoThietHai = Model.Data.BieuDoThietHai,
+        topXeThueNhieu = Model.Data.TopXeThueNhieu,
+        bieuDoLoaiXe = Model.Data.BieuDoLoaiXe,
+        bieuDoHopDongTrangThai = Model.Data.BieuDoHopDongTrangThai
     };
     var thongKeJson = JsonSerializer.Serialize(thongKeBoot, jsonOpts);
 }
@@ -21,20 +22,18 @@
     <link href="~/css/thongkebaocao/index.css" rel="stylesheet" asp-append-version="true">
 }
 
-<!-- Top Header -->
 <div class="top-header">
     <h1 class="mb-0"><i class="bi bi-bar-chart-line"></i> Thống Kê & Báo Cáo</h1>
 </div>
 
 <div class="wrapper">
-
     <div class="container-fluid">
         <div class="row mb-4">
             <div class="col-lg-4 col-md-6">
                 <div class="stat-card blue">
                     <div>
-                        <div class="stat-label" id="doanhThuLabel">Doanh thu @Model.PeriodLabel</div>
-                        <div class="stat-value" id="doanhThuValue">@Model.DoanhThu.ToString("N0")đ</div>
+                        <div class="stat-label" id="doanhThuLabel">Doanh thu @Model.Data.PeriodLabel</div>
+                        <div class="stat-value" id="doanhThuValue">@Model.Data.DoanhThu.ToString("N0")đ</div>
                     </div>
                     <div class="stat-icon blue text-white">
                         <i class="bi bi-cash-stack"></i>
@@ -44,8 +43,8 @@
             <div class="col-lg-4 col-md-6">
                 <div class="stat-card orange">
                     <div>
-                        <div class="stat-label" id="donDatLabel">Đơn đặt @Model.PeriodLabel</div>
-                        <div class="stat-value" id="donDatValue">@Model.TongDonDat</div>
+                        <div class="stat-label" id="donDatLabel">Đơn đặt @Model.Data.PeriodLabel</div>
+                        <div class="stat-value" id="donDatValue">@Model.Data.TongDonDat</div>
                     </div>
                     <div class="stat-icon orange text-white">
                         <i class="bi bi-calendar-check"></i>
@@ -56,7 +55,7 @@
                 <div class="stat-card green">
                     <div>
                         <div class="stat-label">Xe đang cho thuê</div>
-                        <div class="stat-value" id="xeDangThueValue">@Model.XeDangChoThue</div>
+                        <div class="stat-value" id="xeDangThueValue">@Model.Data.XeDangChoThue</div>
                     </div>
                     <div class="stat-icon green text-white">
                         <i class="bi bi-bicycle"></i>
@@ -69,8 +68,8 @@
             <div class="col-lg-4 col-md-6">
                 <div class="stat-card purple">
                     <div>
-                        <div class="stat-label" id="khachHangMoiLabel">Khách hàng mới @Model.PeriodLabel</div>
-                        <div class="stat-value" id="khachHangMoiValue">@Model.KhachHangMoi</div>
+                        <div class="stat-label" id="khachHangMoiLabel">Khách hàng mới @Model.Data.PeriodLabel</div>
+                        <div class="stat-value" id="khachHangMoiValue">@Model.Data.KhachHangMoi</div>
                     </div>
                     <div class="stat-icon purple text-white">
                         <i class="bi bi-person-plus"></i>
@@ -80,8 +79,8 @@
             <div class="col-lg-4 col-md-6">
                 <div class="stat-card red">
                     <div>
-                        <div class="stat-label" id="tongThietHaiLabel">Tổng phí đền bù @Model.PeriodLabel</div>
-                        <div class="stat-value" id="tongThietHaiValue">@Model.TongThietHai.ToString("N0")đ</div>
+                        <div class="stat-label" id="tongThietHaiLabel">Tổng phí đền bù @Model.Data.PeriodLabel</div>
+                        <div class="stat-value" id="tongThietHaiValue">@Model.Data.TongThietHai.ToString("N0")đ</div>
                     </div>
                     <div class="stat-icon red text-white">
                         <i class="bi bi-exclamation-triangle"></i>
@@ -91,8 +90,8 @@
             <div class="col-lg-4 col-md-6">
                 <div class="stat-card pink">
                     <div>
-                        <div class="stat-label" id="doanhThuGocLabel">Doanh thu gốc @Model.PeriodLabel</div>
-                        <div class="stat-value" id="doanhThuGocValue">@Model.DoanhThuGoc.ToString("N0")đ</div>
+                        <div class="stat-label" id="doanhThuGocLabel">Doanh thu gốc @Model.Data.PeriodLabel</div>
+                        <div class="stat-value" id="doanhThuGocValue">@Model.Data.DoanhThuGoc.ToString("N0")đ</div>
                     </div>
                     <div class="stat-icon pink text-white">
                         <i class="bi bi-currency-dollar"></i>
@@ -107,7 +106,7 @@
             <div class="col-md-12">
                 <label class="form-label">Lọc dữ liệu theo:</label>
                 <select id="chartFilter" class="form-select">
-                    @if (Model.ChartFilter == "today")
+                    @if (Model.Data.ChartFilter == "today")
                     {
                         <option value="today" selected>Hôm nay</option>
                     }
@@ -116,7 +115,7 @@
                         <option value="today">Hôm nay</option>
                     }
 
-                    @if (Model.ChartFilter == "week")
+                    @if (Model.Data.ChartFilter == "week")
                     {
                         <option value="week" selected>Tuần này</option>
                     }
@@ -125,7 +124,7 @@
                         <option value="week">Tuần này</option>
                     }
 
-                    @if (Model.ChartFilter == "month")
+                    @if (Model.Data.ChartFilter == "month")
                     {
                         <option value="month" selected>Tháng này</option>
                     }
@@ -134,7 +133,7 @@
                         <option value="month">Tháng này</option>
                     }
 
-                    @if (Model.ChartFilter == "quarter")
+                    @if (Model.Data.ChartFilter == "quarter")
                     {
                         <option value="quarter" selected>Quý này</option>
                     }
@@ -143,7 +142,7 @@
                         <option value="quarter">Quý này</option>
                     }
 
-                    @if (Model.ChartFilter == "year")
+                    @if (Model.Data.ChartFilter == "year")
                     {
                         <option value="year" selected>Năm nay</option>
                     }
@@ -218,7 +217,6 @@
             </div>
         </div>
     </div>
-
 </div>
 
 @section Scripts {

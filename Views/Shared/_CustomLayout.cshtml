@@ -62,7 +62,7 @@
                                     @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
                                     {
                                         <li><a class="dropdown-item" asp-controller="QuanLyDatCho" asp-action="Index">Quan ly dat cho</a></li>
-                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="Index">Admin panel</a></li>
+                                        <li><a class="dropdown-item" asp-page="/Admin/Index">Admin panel</a></li>
                                     }
                                     <li><hr class="dropdown-divider" /></li>
                                     <li>

@@ -45,7 +45,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Admin}/{action=Index}/{id?}")
+    pattern: "{controller=TrangChu}/{action=Index}/{id?}")
     .WithStaticAssets();
 
 app.MapRazorPages();

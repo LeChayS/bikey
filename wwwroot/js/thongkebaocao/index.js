@@ -339,7 +339,7 @@
     }
 
     function updateStatistics(filter) {
-        fetch('/ThongKeBaoCao/GetStatistics?filter=' + encodeURIComponent(filter))
+        fetch('/ThongKeBaoCao?handler=Statistics&filter=' + encodeURIComponent(filter))
             .then(r => r.json())
             .then(function (data) {
                 if (!data.success) return;
@@ -370,7 +370,7 @@
     function updateCharts(filter) {
         showChartLoading(true);
 
-        fetch('/ThongKeBaoCao/GetChartData?filter=' + encodeURIComponent(filter))
+        fetch('/ThongKeBaoCao?handler=ChartData&filter=' + encodeURIComponent(filter))
             .then(r => r.json())
             .then(function (data) {
                 if (!data.success) return;

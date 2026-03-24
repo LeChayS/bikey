@@ -2,32 +2,33 @@ using bikey.Repository;
 using bikey.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
-namespace bikey.Controllers
+namespace bikey.Pages.ThongKeBaoCao
 {
     [Authorize(Roles = "Admin,Staff")]
-    public class ThongKeBaoCaoController : Controller
+    public class IndexModel : PageModel
     {
         private const string TrangHoanThanh = "Hoàn thành";
         private readonly BikeyDbContext _context;
 
-        public ThongKeBaoCaoController(BikeyDbContext context)
+        public IndexModel(BikeyDbContext context)
         {
             _context = context;
         }
 
-        public async Task<IActionResult> Index(string chartFilter = "week")
+        public ThongKeBaoCaoViewModel Data { get; private set; } = new();
+
+        public async Task OnGetAsync(string chartFilter = "week")
         {
-            var model = await BuildViewModelAsync(chartFilter);
-            return View(model);
+            Data = await BuildViewModelAsync(chartFilter);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetChartData(string filter = "week")
+        public async Task<IActionResult> OnGetChartDataAsync(string filter = "week")
         {
             var vm = await BuildViewModelAsync(filter);
-            return Json(new
+            return new JsonResult(new
             {
                 success = true,
                 doanhThu = new
@@ -63,11 +64,10 @@ namespace bikey.Controllers
             });
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetStatistics(string filter = "week")
+        public async Task<IActionResult> OnGetStatisticsAsync(string filter = "week")
         {
             var vm = await BuildViewModelAsync(filter);
-            return Json(new
+            return new JsonResult(new
             {
                 success = true,
                 doanhThu = vm.DoanhThu,
