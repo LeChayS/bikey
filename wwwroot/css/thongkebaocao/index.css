@@ -1,4 +1,4 @@
-﻿.top-header {
+.top-header {
     color: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     padding: 20px 50px;
 }
@@ -102,6 +102,13 @@
     background: white;
     border-radius: 30px;
     padding: 25px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-card--large {
+    min-height: 620px;
 }
 
 .chart-header {
@@ -117,6 +124,17 @@
     font-weight: bold;
     font-size: 20px;
     margin-bottom: 0px;
+}
+
+#revenueChartContainer,
+#topVehiclesChartContainer,
+#vehicleTypesChartContainer,
+#contractStatusChartContainer {
+    min-height: 420px;
+}
+
+#profitBreakdownChartContainer {
+    min-height: 520px;
 }
 
 /* Loading animation */

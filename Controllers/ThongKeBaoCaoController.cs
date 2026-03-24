@@ -17,14 +17,14 @@ namespace bikey.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(string chartFilter = "month")
+        public async Task<IActionResult> Index(string chartFilter = "week")
         {
             var model = await BuildViewModelAsync(chartFilter);
             return View(model);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetChartData(string filter = "month")
+        public async Task<IActionResult> GetChartData(string filter = "week")
         {
             var vm = await BuildViewModelAsync(filter);
             return Json(new
@@ -64,7 +64,7 @@ namespace bikey.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetStatistics(string filter = "month")
+        public async Task<IActionResult> GetStatistics(string filter = "week")
         {
             var vm = await BuildViewModelAsync(filter);
             return Json(new
@@ -82,7 +82,7 @@ namespace bikey.Controllers
 
         private async Task<ThongKeBaoCaoViewModel> BuildViewModelAsync(string filter)
         {
-            filter = string.IsNullOrWhiteSpace(filter) ? "month" : filter.ToLowerInvariant();
+            filter = string.IsNullOrWhiteSpace(filter) ? "week" : filter.ToLowerInvariant();
             var periods = BuildPeriods(filter);
             var rangeStart = periods[0].Start.Date;
             var rangeEnd = periods[^1].End.Date;
@@ -96,6 +96,7 @@ namespace bikey.Controllers
                 {
                     h.TongTien,
                     h.PhuPhi,
+                    TienThue = h.ChiTietHopDong.Sum(ct => ct.ThanhTien),
                     CloseDate = h.NgayTraXeThucTe!.Value.Date
                 })
                 .ToListAsync();
@@ -108,6 +109,7 @@ namespace bikey.Controllers
                 .Select(c => new
                 {
                     c.PhiDenBu,
+                    c.ThanhTien,
                     CloseDate = c.HopDong.NgayTraXeThucTe!.Value.Date
                 })
                 .ToListAsync();
@@ -135,14 +137,23 @@ namespace bikey.Controllers
 
             var topXe = await BuildTopXeAsync(rangeStart, rangeEnd);
 
-            var xeTheoLoai = await _context.Xe.AsNoTracking()
-                .Include(x => x.LoaiXe)
-                .Where(x => x.TrangThai != "Đã xóa")
+            var doanhThuTheoLoaiXe = await _context.ChiTietHopDong.AsNoTracking()
+                .Include(c => c.Xe)
+                    .ThenInclude(x => x.LoaiXe)
+                .Where(c => c.HopDong.TrangThai == TrangHoanThanh
+                    && c.HopDong.NgayTraXeThucTe.HasValue
+                    && c.HopDong.NgayTraXeThucTe.Value.Date >= rangeStart
+                    && c.HopDong.NgayTraXeThucTe.Value.Date <= rangeEnd)
+                .Select(c => new
+                {
+                    TenLoaiXe = c.Xe != null && c.Xe.LoaiXe != null ? c.Xe.LoaiXe.TenLoaiXe : "Khác",
+                    DoanhThu = c.ThanhTien + c.PhiDenBu
+                })
                 .ToListAsync();
 
-            var bieuDoLoaiXe = xeTheoLoai
-                .GroupBy(x => x.LoaiXe?.TenLoaiXe ?? "Khác")
-                .Select(g => new ChartDataItem { Label = g.Key, Value = g.Count() })
+            var bieuDoLoaiXe = doanhThuTheoLoaiXe
+                .GroupBy(x => x.TenLoaiXe)
+                .Select(g => new ChartDataItem { Label = g.Key, Value = g.Sum(x => x.DoanhThu) })
                 .OrderByDescending(x => x.Value)
                 .ToList();
 
@@ -161,6 +172,7 @@ namespace bikey.Controllers
                 .CountAsync(x => x.TrangThai == "Đang thuê");
 
             var tongDoanhThu = hopDone.Sum(x => x.TongTien);
+            var tongTienThue = hopDone.Sum(x => x.TienThue);
             var tongPhuPhi = hopDone.Sum(x => x.PhuPhi);
             var tongPhiDenBu = chiTietDone.Sum(x => x.PhiDenBu);
 
@@ -174,7 +186,7 @@ namespace bikey.Controllers
                 ChartFilter = filter,
                 PeriodLabel = GetPeriodLabel(filter),
                 DoanhThu = tongDoanhThu,
-                DoanhThuGoc = tongDoanhThu,
+                DoanhThuGoc = tongTienThue,
                 TongChiTieu = tongPhuPhi,
                 TongThietHai = tongPhiDenBu,
                 TongDonDat = datCho.Count,
@@ -185,7 +197,17 @@ namespace bikey.Controllers
                 BieuDoThietHai = bieuDoThietHai,
                 TopXeThueNhieu = topXe,
                 BieuDoLoaiXe = bieuDoLoaiXe,
-                BieuDoHopDongTrangThai = bieuHd
+                BieuDoHopDongTrangThai = bieuHd,
+                BangLoiNhuan = new List<ProfitSummaryRow>
+                {
+                    new ProfitSummaryRow
+                    {
+                        Ky = GetPeriodLabel(filter),
+                        TienThue = tongTienThue,
+                        TienSuaChua = tongPhiDenBu,
+                        PhuPhi = tongPhuPhi
+                    }
+                }
             };
         }
 
@@ -226,11 +248,11 @@ namespace bikey.Controllers
         private static string GetPeriodLabel(string filter) => filter switch
         {
             "today" => "hôm nay",
-            "7days" => "7 ngày gần nhất",
             "week" => "tuần này",
-            "month" => "30 ngày gần nhất",
-            "year" => "12 tháng gần nhất",
-            _ => "30 ngày gần nhất"
+            "month" => "tháng này",
+            "quarter" => "quý này",
+            "year" => "năm nay",
+            _ => "tuần này"
         };
 
         private static List<PeriodSlot> BuildPeriods(string filter)
@@ -250,26 +272,37 @@ namespace bikey.Controllers
                         periods.Add(new PeriodSlot(d, d, d.ToString("dd/MM")));
                     }
                     break;
-                case "year":
-                    for (var i = 11; i >= 0; i--)
+                case "quarter":
+                    var quarter = ((now.Month - 1) / 3) + 1;
+                    var quarterStartMonth = (quarter - 1) * 3 + 1;
+                    var quarterStart = new DateTime(now.Year, quarterStartMonth, 1);
+                    for (var i = 0; i < 3; i++)
                     {
-                        var monthStart = new DateTime(now.Year, now.Month, 1).AddMonths(-i);
+                        var monthStart = quarterStart.AddMonths(i);
+                        var monthEnd = monthStart.AddMonths(1).AddDays(-1);
+                        periods.Add(new PeriodSlot(monthStart, monthEnd, $"T{i + 1}"));
+                    }
+                    break;
+                case "year":
+                    for (var i = 1; i <= 12; i++)
+                    {
+                        var monthStart = new DateTime(now.Year, i, 1);
                         var monthEnd = monthStart.AddMonths(1).AddDays(-1);
                         periods.Add(new PeriodSlot(monthStart, monthEnd, monthStart.ToString("MM/yyyy")));
                     }
                     break;
                 case "month":
-                    for (var i = 29; i >= 0; i--)
+                    var startOfMonth = new DateTime(now.Year, now.Month, 1);
+                    for (var d = startOfMonth; d <= now; d = d.AddDays(1))
                     {
-                        var d = now.AddDays(-i);
                         periods.Add(new PeriodSlot(d, d, d.ToString("dd/MM")));
                     }
                     break;
-                case "7days":
                 default:
-                    for (var i = 6; i >= 0; i--)
+                    var defaultStartOfWeek = now.AddDays(-(int)now.DayOfWeek);
+                    for (var i = 0; i < 7; i++)
                     {
-                        var d = now.AddDays(-i);
+                        var d = defaultStartOfWeek.AddDays(i);
                         periods.Add(new PeriodSlot(d, d, d.ToString("dd/MM")));
                     }
                     break;

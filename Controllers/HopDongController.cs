@@ -337,7 +337,7 @@ namespace bikey.Controllers
 
                         hopDong.NgayTraXeThucTe = ngayTraThucTe;
                         hopDong.PhuPhi = phuPhi;
-                        hopDong.TongTien = hopDong.ChiTietHopDong.Sum(ct => ct.ThanhTien); // tổng tiền thuê thực tế
+                        hopDong.TongTien = hopDong.ChiTietHopDong.Sum(ct => ct.ThanhTien) + phuPhi + hopDong.ChiTietHopDong.Sum(ct => ct.PhiDenBu);
                         hopDong.TienCoc = tienCocDuKien; // thống nhất để tính hóa đơn
                         hopDong.GhiChu = ghiChu;
                         hopDong.TrangThai = "Hoàn thành";

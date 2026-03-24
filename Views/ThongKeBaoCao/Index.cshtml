@@ -8,6 +8,8 @@
     {
         chartFilter = Model.ChartFilter,
         bieuDoDoanhThu = Model.BieuDoDoanhThu,
+        bieuDoChiTieu = Model.BieuDoChiTieu,
+        bieuDoThietHai = Model.BieuDoThietHai,
         topXeThueNhieu = Model.TopXeThueNhieu,
         bieuDoLoaiXe = Model.BieuDoLoaiXe,
         bieuDoHopDongTrangThai = Model.BieuDoHopDongTrangThai
@@ -102,7 +104,7 @@
 
     <div class="container-fluid">
         <div class="row g-4 align-items-end">
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <label class="form-label">Lọc dữ liệu theo:</label>
                 <select id="chartFilter" class="form-select">
                     @if (Model.ChartFilter == "today")
@@ -112,15 +114,6 @@
                     else
                     {
                         <option value="today">Hôm nay</option>
-                    }
-
-                    @if (Model.ChartFilter == "7days")
-                    {
-                        <option value="7days" selected>7 ngày gần nhất</option>
-                    }
-                    else
-                    {
-                        <option value="7days">7 ngày gần nhất</option>
                     }
 
                     @if (Model.ChartFilter == "week")
@@ -134,28 +127,30 @@
 
                     @if (Model.ChartFilter == "month")
                     {
-                        <option value="month" selected>30 ngày gần nhất</option>
+                        <option value="month" selected>Tháng này</option>
                     }
                     else
                     {
-                        <option value="month">30 ngày gần nhất</option>
+                        <option value="month">Tháng này</option>
+                    }
+
+                    @if (Model.ChartFilter == "quarter")
+                    {
+                        <option value="quarter" selected>Quý này</option>
+                    }
+                    else
+                    {
+                        <option value="quarter">Quý này</option>
                     }
 
                     @if (Model.ChartFilter == "year")
                     {
-                        <option value="year" selected>12 tháng gần nhất</option>
+                        <option value="year" selected>Năm nay</option>
                     }
                     else
                     {
-                        <option value="year">12 tháng gần nhất</option>
+                        <option value="year">Năm nay</option>
                     }
-                </select>
-            </div>
-            <div class="col-md-6">
-                <label class="form-label">Loại biểu đồ doanh thu:</label>
-                <select id="chartTypeFilter" class="form-select">
-                    <option value="bar">Biểu đồ cột ngang</option>
-                    <option value="line">Biểu đồ đường</option>
                 </select>
             </div>
         </div>
@@ -165,7 +160,7 @@
         <div class="col-lg-6">
             <div class="chart-card">
                 <div class="chart-header">
-                    <p id="revenueTitle">Doanh thu theo thời gian</p>
+                    <p id="revenueTitle">Doanh thu theo ngày</p>
                     <small class="text-muted">Đơn vị: VNĐ</small>
                 </div>
                 <div id="revenueChartContainer" style="width: 100%; height: auto;">
@@ -191,8 +186,8 @@
         <div class="col-lg-6">
             <div class="chart-card">
                 <div class="chart-header">
-                    <p id="vehicleTypesTitle">Thống kê loại xe theo danh mục</p>
-                    <small class="text-muted">Số lượng xe</small>
+                    <p id="vehicleTypesTitle">Doanh thu theo loại xe</p>
+                    <small class="text-muted">Đơn vị: VNĐ</small>
                 </div>
                 <div id="vehicleTypesChartContainer" style="width: 100%; height: auto;">
                     <canvas id="vehicleTypesChart"></canvas>
@@ -208,6 +203,18 @@
                 <div id="contractStatusChartContainer" style="width: 100%; height: auto;">
                     <canvas id="contractStatusChart"></canvas>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="chart-card chart-card--large">
+            <div class="chart-header">
+                <p id="profitBreakdownTitle">Cơ cấu lợi nhuận</p>
+                <small class="text-muted">Tiền thuê + tiền sửa chữa + phụ phí</small>
+            </div>
+            <div id="profitBreakdownChartContainer" style="width: 100%; height: auto;">
+                <canvas id="profitBreakdownChart"></canvas>
             </div>
         </div>
     </div>

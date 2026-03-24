@@ -18,7 +18,7 @@ namespace bikey.ViewModels
 
     public class ThongKeBaoCaoViewModel
     {
-        public string ChartFilter { get; set; } = "month";
+        public string ChartFilter { get; set; } = "week";
         public string PeriodLabel { get; set; } = "";
 
         public decimal DoanhThu { get; set; }
@@ -35,6 +35,16 @@ namespace bikey.ViewModels
         public List<TopXeThueNhieuItem> TopXeThueNhieu { get; set; } = new();
         public List<ChartDataItem> BieuDoLoaiXe { get; set; } = new();
         public List<ChartDataItem> BieuDoHopDongTrangThai { get; set; } = new();
+        public List<ProfitSummaryRow> BangLoiNhuan { get; set; } = new();
+    }
+
+    public class ProfitSummaryRow
+    {
+        public string Ky { get; set; } = "";
+        public decimal TienThue { get; set; }
+        public decimal TienSuaChua { get; set; }
+        public decimal PhuPhi { get; set; }
+        public decimal TongThu => TienThue + TienSuaChua + PhuPhi;
     }
 
     public class RecentHopDongRow

@@ -177,6 +177,13 @@
                         @foreach (var item in Model)
                         {
                             var firstXe = item.ChiTietHopDong?.FirstOrDefault();
+                            var tongTienHienThi = (item.ChiTietHopDong?.Sum(ct => ct.ThanhTienTinhToan) ?? 0m)
+                                + item.PhuPhi
+                                + (item.ChiTietHopDong?.Sum(ct => ct.PhiDenBu) ?? 0m);
+                            if (tongTienHienThi <= 0)
+                            {
+                                tongTienHienThi = item.TongTien;
+                            }
                             var statusClass = item.TrangThai switch
                             {
                                 "Đang thuê" => "status-active",
@@ -207,7 +214,7 @@
                                 @(item.NgayTraXeThucTe?.ToString("dd/MM/yyyy") ??
                                                             item.NgayTraXeDuKien.ToString("dd/MM/yyyy"))
                         </td>
-                        <td class="text-danger fw-bold">@item.TongTien.ToString("N0")đ</td>
+                        <td class="text-danger fw-bold">@tongTienHienThi.ToString("N0")đ</td>
                         <td><span class="status-badge @statusClass">@item.TrangThai</span></td>
                         <td>
                             @if (item.HoaDon != null)
