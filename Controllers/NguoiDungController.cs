@@ -359,14 +359,10 @@ namespace bikey.Controllers
                 CanEditLoaiXe = permission.CanEditLoaiXe,
                 CanDeleteLoaiXe = permission.CanDeleteLoaiXe,
                 CanViewHopDong = permission.CanViewHopDong,
-                CanCreateHopDong = permission.CanCreateHopDong,
-                CanEditHopDong = permission.CanEditHopDong,
-                CanDeleteHopDong = permission.CanDeleteHopDong,
+                CanProcessBooking = permission.CanProcessBooking,
+                CanReturnVehicle = permission.CanReturnVehicle,
                 CanPrintHopDong = permission.CanPrintHopDong,
                 CanViewHoaDon = permission.CanViewHoaDon,
-                CanCreateHoaDon = permission.CanCreateHoaDon,
-                CanEditHoaDon = permission.CanEditHoaDon,
-                CanDeleteHoaDon = permission.CanDeleteHoaDon,
                 CanPrintHoaDon = permission.CanPrintHoaDon,
                 CanViewUser = permission.CanViewUser,
                 CanCreateUser = permission.CanCreateUser,
@@ -376,11 +372,7 @@ namespace bikey.Controllers
                 CanViewThongKe = permission.CanViewThongKe,
                 CanExportBaoCao = permission.CanExportBaoCao,
                 CanDatCho = permission.CanDatCho,
-                CanViewDatCho = permission.CanViewDatCho,
-                CanViewHinhAnhXe = permission.CanViewHinhAnhXe,
-                CanUploadHinhAnhXe = permission.CanUploadHinhAnhXe,
-                CanEditHinhAnhXe = permission.CanEditHinhAnhXe,
-                CanDeleteHinhAnhXe = permission.CanDeleteHinhAnhXe
+                CanViewDatCho = permission.CanViewDatCho
             };
         }
 
@@ -397,15 +389,11 @@ namespace bikey.Controllers
             target.CanDeleteLoaiXe = input.CanDeleteLoaiXe;
 
             target.CanViewHopDong = input.CanViewHopDong;
-            target.CanCreateHopDong = input.CanCreateHopDong;
-            target.CanEditHopDong = input.CanEditHopDong;
-            target.CanDeleteHopDong = input.CanDeleteHopDong;
+            target.CanProcessBooking = input.CanProcessBooking;
+            target.CanReturnVehicle = input.CanReturnVehicle;
             target.CanPrintHopDong = input.CanPrintHopDong;
 
             target.CanViewHoaDon = input.CanViewHoaDon;
-            target.CanCreateHoaDon = input.CanCreateHoaDon;
-            target.CanEditHoaDon = input.CanEditHoaDon;
-            target.CanDeleteHoaDon = input.CanDeleteHoaDon;
             target.CanPrintHoaDon = input.CanPrintHoaDon;
 
             target.CanViewUser = input.CanViewUser;
@@ -419,11 +407,6 @@ namespace bikey.Controllers
 
             target.CanDatCho = input.CanDatCho;
             target.CanViewDatCho = input.CanViewDatCho;
-
-            target.CanViewHinhAnhXe = input.CanViewHinhAnhXe;
-            target.CanUploadHinhAnhXe = input.CanUploadHinhAnhXe;
-            target.CanEditHinhAnhXe = input.CanEditHinhAnhXe;
-            target.CanDeleteHinhAnhXe = input.CanDeleteHinhAnhXe;
         }
 
         private static void EnforceViewPermissionLogic(PhanQuyen permission)
@@ -444,17 +427,13 @@ namespace bikey.Controllers
 
             if (!permission.CanViewHopDong)
             {
-                permission.CanCreateHopDong = false;
-                permission.CanEditHopDong = false;
-                permission.CanDeleteHopDong = false;
+                permission.CanProcessBooking = false;
+                permission.CanReturnVehicle = false;
                 permission.CanPrintHopDong = false;
             }
 
             if (!permission.CanViewHoaDon)
             {
-                permission.CanCreateHoaDon = false;
-                permission.CanEditHoaDon = false;
-                permission.CanDeleteHoaDon = false;
                 permission.CanPrintHoaDon = false;
             }
 
@@ -465,12 +444,6 @@ namespace bikey.Controllers
                 permission.CanDeleteUser = false;
             }
 
-            if (!permission.CanViewHinhAnhXe)
-            {
-                permission.CanUploadHinhAnhXe = false;
-                permission.CanEditHinhAnhXe = false;
-                permission.CanDeleteHinhAnhXe = false;
-            }
         }
 
         private static PermissionSetInput GetDefaultPermissionsByRole(string role)
@@ -488,14 +461,10 @@ namespace bikey.Controllers
                     CanEditLoaiXe = true,
                     CanDeleteLoaiXe = true,
                     CanViewHopDong = true,
-                    CanCreateHopDong = true,
-                    CanEditHopDong = true,
-                    CanDeleteHopDong = true,
+                    CanProcessBooking = true,
+                    CanReturnVehicle = true,
                     CanPrintHopDong = true,
                     CanViewHoaDon = true,
-                    CanCreateHoaDon = true,
-                    CanEditHoaDon = true,
-                    CanDeleteHoaDon = true,
                     CanPrintHoaDon = true,
                     CanViewUser = true,
                     CanCreateUser = true,
@@ -505,11 +474,7 @@ namespace bikey.Controllers
                     CanViewThongKe = true,
                     CanExportBaoCao = true,
                     CanDatCho = true,
-                    CanViewDatCho = true,
-                    CanViewHinhAnhXe = true,
-                    CanUploadHinhAnhXe = true,
-                    CanEditHinhAnhXe = true,
-                    CanDeleteHinhAnhXe = true
+                    CanViewDatCho = true
                 };
             }
 
@@ -526,14 +491,10 @@ namespace bikey.Controllers
                     CanEditLoaiXe = true,
                     CanDeleteLoaiXe = false,
                     CanViewHopDong = true,
-                    CanCreateHopDong = true,
-                    CanEditHopDong = true,
-                    CanDeleteHopDong = false,
+                    CanProcessBooking = true,
+                    CanReturnVehicle = true,
                     CanPrintHopDong = true,
                     CanViewHoaDon = true,
-                    CanCreateHoaDon = true,
-                    CanEditHoaDon = true,
-                    CanDeleteHoaDon = false,
                     CanPrintHoaDon = true,
                     CanViewUser = false,
                     CanCreateUser = false,
@@ -543,11 +504,7 @@ namespace bikey.Controllers
                     CanViewThongKe = true,
                     CanExportBaoCao = true,
                     CanDatCho = true,
-                    CanViewDatCho = true,
-                    CanViewHinhAnhXe = true,
-                    CanUploadHinhAnhXe = true,
-                    CanEditHinhAnhXe = true,
-                    CanDeleteHinhAnhXe = false
+                    CanViewDatCho = true
                 };
             }
             return new PermissionSetInput();

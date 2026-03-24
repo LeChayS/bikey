@@ -172,15 +172,11 @@ namespace bikey.Repository
                             CanDeleteLoaiXe = true,
 
                             CanViewHopDong = true,
-                            CanCreateHopDong = true,
-                            CanEditHopDong = true,
-                            CanDeleteHopDong = true,
+                            CanProcessBooking = true,
+                            CanReturnVehicle = true,
                             CanPrintHopDong = true,
 
                             CanViewHoaDon = true,
-                            CanCreateHoaDon = true,
-                            CanEditHoaDon = true,
-                            CanDeleteHoaDon = true,
                             CanPrintHoaDon = true,
 
                             CanViewUser = true,
@@ -193,12 +189,7 @@ namespace bikey.Repository
                             CanExportBaoCao = true,
 
                             CanDatCho = true,
-                            CanViewDatCho = true,
-
-                            CanViewHinhAnhXe = true,
-                            CanUploadHinhAnhXe = true,
-                            CanEditHinhAnhXe = true,
-                            CanDeleteHinhAnhXe = true,
+                            CanViewDatCho = true
                         },
                         new PhanQuyen
                         {
@@ -215,15 +206,11 @@ namespace bikey.Repository
                             CanDeleteLoaiXe = false,
 
                             CanViewHopDong = true,
-                            CanCreateHopDong = true,
-                            CanEditHopDong = true,
-                            CanDeleteHopDong = false,
+                            CanProcessBooking = true,
+                            CanReturnVehicle = true,
                             CanPrintHopDong = true,
 
                             CanViewHoaDon = true,
-                            CanCreateHoaDon = true,
-                            CanEditHoaDon = true,
-                            CanDeleteHoaDon = false,
                             CanPrintHoaDon = true,
 
                             CanViewUser = true,
@@ -236,12 +223,7 @@ namespace bikey.Repository
                             CanExportBaoCao = true,
 
                             CanDatCho = true,
-                            CanViewDatCho = true,
-
-                            CanViewHinhAnhXe = true,
-                            CanUploadHinhAnhXe = true,
-                            CanEditHinhAnhXe = true,
-                            CanDeleteHinhAnhXe = true,
+                            CanViewDatCho = true
                         }
                     ); context.SaveChanges();
                 }

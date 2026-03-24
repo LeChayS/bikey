@@ -24,16 +24,12 @@ namespace bikey.Models
 
         // Quyền quản lý hợp đồng
         public bool CanViewHopDong { get; set; } = true;
-        public bool CanCreateHopDong { get; set; } = false;
-        public bool CanEditHopDong { get; set; } = false;
-        public bool CanDeleteHopDong { get; set; } = false;
+        public bool CanProcessBooking { get; set; } = false;
+        public bool CanReturnVehicle { get; set; } = false;
         public bool CanPrintHopDong { get; set; } = false;
 
         // Quyền quản lý hóa đơn
         public bool CanViewHoaDon { get; set; } = true;
-        public bool CanCreateHoaDon { get; set; } = false;
-        public bool CanEditHoaDon { get; set; } = false;
-        public bool CanDeleteHoaDon { get; set; } = false;
         public bool CanPrintHoaDon { get; set; } = false;
 
         // Quyền quản lý người dùng
@@ -50,11 +46,5 @@ namespace bikey.Models
         // Quyền đặt chỗ
         public bool CanDatCho { get; set; } = true;
         public bool CanViewDatCho { get; set; } = true;
-
-        // Quyền quản lý hình ảnh xe
-        public bool CanViewHinhAnhXe { get; set; } = true;
-        public bool CanUploadHinhAnhXe { get; set; } = false;
-        public bool CanEditHinhAnhXe { get; set; } = false;
-        public bool CanDeleteHinhAnhXe { get; set; } = false;
     }
 }

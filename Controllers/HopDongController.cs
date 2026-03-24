@@ -76,6 +76,19 @@ namespace bikey.Controllers
         [HttpGet]
         public async Task<IActionResult> DonChoXuLy(string? searchString, DateTime? tuNgay, DateTime? denNgay)
         {
+            var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
+                ? parsedUserId
+                : 0;
+
+            var permission = userId > 0
+                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId)
+                : null;
+
+            if (permission?.CanProcessBooking != true)
+            {
+                return Redirect("/AccessDenied");
+            }
+
             var query = _context.DatCho
                 .AsNoTracking()
                 .Include(item => item.Xe)
@@ -117,6 +130,19 @@ namespace bikey.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> XuLyDon(int id)
         {
+            var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
+                ? parsedUserId
+                : 0;
+
+            var permission = userId > 0
+                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId)
+                : null;
+
+            if (permission?.CanProcessBooking != true)
+            {
+                return Redirect("/AccessDenied");
+            }
+
             var strategy = _context.Database.CreateExecutionStrategy();
             try
             {
@@ -247,6 +273,19 @@ namespace bikey.Controllers
         [HttpGet]
         public async Task<IActionResult> TraXe(int id)
         {
+            var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
+                ? parsedUserId
+                : 0;
+
+            var permission = userId > 0
+                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId)
+                : null;
+
+            if (permission?.CanReturnVehicle != true)
+            {
+                return Redirect("/AccessDenied");
+            }
+
             var hopDong = await _context.HopDong
                 .Include(h => h.ChiTietHopDong)
                     .ThenInclude(ct => ct.Xe)
@@ -286,6 +325,19 @@ namespace bikey.Controllers
             decimal chiPhiThietHai,
             string? ghiChu)
         {
+            var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
+                ? parsedUserId
+                : 0;
+
+            var permission = userId > 0
+                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId)
+                : null;
+
+            if (permission?.CanReturnVehicle != true)
+            {
+                return Redirect("/AccessDenied");
+            }
+
             var strategy = _context.Database.CreateExecutionStrategy();
             try
             {

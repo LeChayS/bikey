@@ -1,4 +1,7 @@
 @model IEnumerable<bikey.Models.HopDong>
+@inject bikey.Repository.BikeyDbContext DbContext
+@using System.Security.Claims
+@using Microsoft.EntityFrameworkCore
 @{
     Layout = "_AdminLayout";
     ViewData["Title"] = "Quản lý hợp đồng";
@@ -6,6 +9,10 @@
     int pageSize = ViewBag.PageSize ?? 10;
     int currentPage = ViewBag.CurrentPage ?? 1;
     int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+    var userId = int.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var parsedUserId) ? parsedUserId : 0;
+    var permission = userId > 0 ? await DbContext.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId) : null;
+    var canProcessBooking = permission?.CanProcessBooking ?? false;
 }
 
 @section Styles {
@@ -35,7 +42,7 @@
     }
 
     @* thông báo đơn chờ xử lý *@
-    @if ((ViewBag.DonChoXuLy ?? 0) > 0)
+    @if (canProcessBooking && (ViewBag.DonChoXuLy ?? 0) > 0)
     {
         <div class="alert alert-danger alert-dismissible fade show">
             <i class="bi bi-check-circle me-2 mt-1" style="font-size: 28px;"></i>

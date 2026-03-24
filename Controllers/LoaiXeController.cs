@@ -28,6 +28,19 @@ namespace bikey.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(string TenLoaiXe)
         {
+            var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
+                ? parsedUserId
+                : 0;
+
+            var permission = userId > 0
+                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId)
+                : null;
+
+            if (permission?.CanCreateLoaiXe != true)
+            {
+                return Redirect("/AccessDenied");
+            }
+
             TenLoaiXe = TenLoaiXe?.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(TenLoaiXe))
             {
@@ -65,6 +78,19 @@ namespace bikey.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int MaLoaiXe, string TenLoaiXe)
         {
+            var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
+                ? parsedUserId
+                : 0;
+
+            var permission = userId > 0
+                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId)
+                : null;
+
+            if (permission?.CanEditLoaiXe != true)
+            {
+                return Redirect("/AccessDenied");
+            }
+
             TenLoaiXe = TenLoaiXe?.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(TenLoaiXe))
             {
@@ -96,6 +122,19 @@ namespace bikey.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
+            var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
+                ? parsedUserId
+                : 0;
+
+            var permission = userId > 0
+                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId)
+                : null;
+
+            if (permission?.CanDeleteLoaiXe != true)
+            {
+                return Redirect("/AccessDenied");
+            }
+
             var loaiXe = await _context.LoaiXe.FirstOrDefaultAsync(x => x.MaLoaiXe == id);
             if (loaiXe is null)
             {

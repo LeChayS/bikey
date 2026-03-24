@@ -47,6 +47,19 @@ namespace bikey.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
+            var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
+                ? parsedUserId
+                : 0;
+
+            var permission = userId > 0
+                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId)
+                : null;
+
+            if (permission?.CanCreateXe != true)
+            {
+                return Redirect("/AccessDenied");
+            }
+
             await PopulateCreateViewBagsAsync();
             return View(new Xe());
         }
@@ -55,6 +68,19 @@ namespace bikey.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Xe xe, IFormFile hinhAnh, IFormFile[]? hinhAnhKhac)
         {
+            var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
+                ? parsedUserId
+                : 0;
+
+            var permission = userId > 0
+                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId)
+                : null;
+
+            if (permission?.CanCreateXe != true)
+            {
+                return Redirect("/AccessDenied");
+            }
+
             // Validate model fields first (DataAnnotations on Xe)
             if (!ModelState.IsValid)
             {
@@ -278,6 +304,19 @@ namespace bikey.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
+            var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
+                ? parsedUserId
+                : 0;
+
+            var permission = userId > 0
+                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId)
+                : null;
+
+            if (permission?.CanEditXe != true)
+            {
+                return Redirect("/AccessDenied");
+            }
+
             var xe = await _context.Xe
                 .Include(x => x.HinhAnhXes)
                 .FirstOrDefaultAsync(x => x.MaXe == id);
@@ -296,6 +335,19 @@ namespace bikey.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Xe model, IFormFile? hinhAnh, IFormFile[]? hinhAnhKhac, int[]? removeImageIds)
         {
+            var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
+                ? parsedUserId
+                : 0;
+
+            var permission = userId > 0
+                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId)
+                : null;
+
+            if (permission?.CanEditXe != true)
+            {
+                return Redirect("/AccessDenied");
+            }
+
             if (id != model.MaXe) return NotFound();
 
             var xe = await _context.Xe
@@ -429,6 +481,19 @@ namespace bikey.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
+            var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
+                ? parsedUserId
+                : 0;
+
+            var permission = userId > 0
+                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId)
+                : null;
+
+            if (permission?.CanDeleteXe != true)
+            {
+                return Redirect("/AccessDenied");
+            }
+
             var xe = await _context.Xe
                 .Include(x => x.HinhAnhXes)
                 .FirstOrDefaultAsync(x => x.MaXe == id);

@@ -1,8 +1,15 @@
 @model bikey.Models.HopDong
+@inject bikey.Repository.BikeyDbContext DbContext
+@using System.Security.Claims
+@using Microsoft.EntityFrameworkCore
 @{
     @* ViewData["Title"] = $"Chi tiết hợp đồng HD{Model.MaHopDong:D6}"; *@
     Layout = "_AdminLayout";
     ViewBag.Title = "Chi Tiết hợp đồng";
+
+    var userId = int.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var parsedUserId) ? parsedUserId : 0;
+    var permission = userId > 0 ? await DbContext.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId) : null;
+    var canReturnVehicle = permission?.CanReturnVehicle ?? false;
 }
 
 @section Styles {
@@ -247,7 +254,7 @@
                 <a class="btn print">
                     <i class="bi bi-printer"></i> In hợp đồng
                 </a>
-                @if (string.Equals(Model.TrangThai, "Đang thuê", StringComparison.OrdinalIgnoreCase))
+                @if (string.Equals(Model.TrangThai, "Đang thuê", StringComparison.OrdinalIgnoreCase) && canReturnVehicle)
                 {
                     <a asp-action="TraXe" asp-route-id="@Model.MaHopDong" class="btn return">
                         <i class="bi bi-check-circle"></i> Xử lý trả xe
