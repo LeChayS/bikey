@@ -11,21 +11,18 @@ namespace bikey.Models
         public virtual NguoiDung User { get; set; }
 
         // Quyền quản lý xe
-        public bool CanManageXe { get; set; } = false;
         public bool CanViewXe { get; set; } = true;
         public bool CanCreateXe { get; set; } = false;
         public bool CanEditXe { get; set; } = false;
         public bool CanDeleteXe { get; set; } = false;
 
         // Quyền quản lý loại xe
-        public bool CanManageLoaiXe { get; set; } = false;
         public bool CanViewLoaiXe { get; set; } = true;
         public bool CanCreateLoaiXe { get; set; } = false;
         public bool CanEditLoaiXe { get; set; } = false;
         public bool CanDeleteLoaiXe { get; set; } = false;
 
         // Quyền quản lý hợp đồng
-        public bool CanManageHopDong { get; set; } = false;
         public bool CanViewHopDong { get; set; } = true;
         public bool CanCreateHopDong { get; set; } = false;
         public bool CanEditHopDong { get; set; } = false;
@@ -33,7 +30,6 @@ namespace bikey.Models
         public bool CanPrintHopDong { get; set; } = false;
 
         // Quyền quản lý hóa đơn
-        public bool CanManageHoaDon { get; set; } = false;
         public bool CanViewHoaDon { get; set; } = true;
         public bool CanCreateHoaDon { get; set; } = false;
         public bool CanEditHoaDon { get; set; } = false;
@@ -41,7 +37,6 @@ namespace bikey.Models
         public bool CanPrintHoaDon { get; set; } = false;
 
         // Quyền quản lý người dùng
-        public bool CanManageUser { get; set; } = false;
         public bool CanViewUser { get; set; } = false;
         public bool CanCreateUser { get; set; } = false;
         public bool CanEditUser { get; set; } = false;
@@ -52,17 +47,11 @@ namespace bikey.Models
         public bool CanViewThongKe { get; set; } = false;
         public bool CanExportBaoCao { get; set; } = false;
 
-        // Quyền quản lý giỏ hàng
-        public bool CanManageCart { get; set; } = false;
-        public bool CanViewCart { get; set; } = true;
-        public bool CanCheckout { get; set; } = true;
-
         // Quyền đặt chỗ
         public bool CanDatCho { get; set; } = true;
         public bool CanViewDatCho { get; set; } = true;
 
         // Quyền quản lý hình ảnh xe
-        public bool CanManageHinhAnhXe { get; set; } = false;
         public bool CanViewHinhAnhXe { get; set; } = true;
         public bool CanUploadHinhAnhXe { get; set; } = false;
         public bool CanEditHinhAnhXe { get; set; } = false;

@@ -10,8 +10,6 @@ namespace bikey.ViewModels
         public CreateNguoiDungInput CreateUser { get; init; } = new();
 
         public EditNguoiDungInput EditUser { get; init; } = new();
-
-        public RolePermissionMatrixViewModel RolePermissions { get; init; } = new();
     }
 
     public class CreateNguoiDungInput
@@ -38,7 +36,7 @@ namespace bikey.ViewModels
         public string XacNhanMatKhau { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Vui lòng chọn quyền.")]
-        public string VaiTro { get; set; } = "Khách hàng";
+        public string VaiTro { get; set; } = "User";
     }
 
     public class EditNguoiDungInput
@@ -68,18 +66,9 @@ namespace bikey.ViewModels
         public string? XacNhanMatKhauMoi { get; set; }
 
         [Required(ErrorMessage = "Vui lòng chọn quyền.")]
-        public string VaiTro { get; set; } = "Khách hàng";
+        public string VaiTro { get; set; } = "User";
 
         public bool IsActive { get; set; } = true;
-    }
-
-    public class RolePermissionMatrixViewModel
-    {
-        public PermissionSetInput Admin { get; set; } = new();
-
-        public PermissionSetInput Staff { get; set; } = new();
-
-        public PermissionSetInput KhachHang { get; set; } = new();
     }
 
     public class UserPermissionEditorViewModel
@@ -97,33 +86,28 @@ namespace bikey.ViewModels
 
     public class PermissionSetInput
     {
-        public bool CanManageXe { get; set; }
         public bool CanViewXe { get; set; }
         public bool CanCreateXe { get; set; }
         public bool CanEditXe { get; set; }
         public bool CanDeleteXe { get; set; }
 
-        public bool CanManageLoaiXe { get; set; }
         public bool CanViewLoaiXe { get; set; }
         public bool CanCreateLoaiXe { get; set; }
         public bool CanEditLoaiXe { get; set; }
         public bool CanDeleteLoaiXe { get; set; }
 
-        public bool CanManageHopDong { get; set; }
         public bool CanViewHopDong { get; set; }
         public bool CanCreateHopDong { get; set; }
         public bool CanEditHopDong { get; set; }
         public bool CanDeleteHopDong { get; set; }
         public bool CanPrintHopDong { get; set; }
 
-        public bool CanManageHoaDon { get; set; }
         public bool CanViewHoaDon { get; set; }
         public bool CanCreateHoaDon { get; set; }
         public bool CanEditHoaDon { get; set; }
         public bool CanDeleteHoaDon { get; set; }
         public bool CanPrintHoaDon { get; set; }
 
-        public bool CanManageUser { get; set; }
         public bool CanViewUser { get; set; }
         public bool CanCreateUser { get; set; }
         public bool CanEditUser { get; set; }
@@ -133,14 +117,9 @@ namespace bikey.ViewModels
         public bool CanViewThongKe { get; set; }
         public bool CanExportBaoCao { get; set; }
 
-        public bool CanManageCart { get; set; }
-        public bool CanViewCart { get; set; }
-        public bool CanCheckout { get; set; }
-
         public bool CanDatCho { get; set; }
         public bool CanViewDatCho { get; set; }
 
-        public bool CanManageHinhAnhXe { get; set; }
         public bool CanViewHinhAnhXe { get; set; }
         public bool CanUploadHinhAnhXe { get; set; }
         public bool CanEditHinhAnhXe { get; set; }

@@ -3,6 +3,21 @@
 @{
     Layout = null;
     ViewData["Title"] = "Không có quyền truy cập";
+
+    var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? "User";
+    var isStaffOrAdmin = userRole == "Admin" || userRole == "Staff";
+
+    string title, message;
+    if (isStaffOrAdmin)
+    {
+        title = "Không có quyền truy cập";
+        message = "Bạn không được phép truy cập vào trang này vì chưa được cấp quyền. Vui lòng liên hệ với quản trị viên để được hỗ trợ.";
+    }
+    else
+    {
+        title = "Không thể vào trang quản trị";
+        message = "Tài khoản của bạn có vai trò <strong>Khách hàng (User)</strong> và không được phép truy cập khu vực dành cho quản trị viên hoặc nhân viên (Staff).";
+    }
 }
 <!DOCTYPE html>
 <html lang="vi">
@@ -23,14 +38,23 @@
                         <i class="bi bi-shield-lock"></i>
                     </div>
                     <p class="access-denied-card__eyebrow">Truy cập bị từ chối</p>
-                    <h1 class="access-denied-card__title">Không thể vào trang quản trị</h1>
+                    <h1 class="access-denied-card__title">@title</h1>
                     <p class="access-denied-card__text">
-                        Tài khoản của bạn có vai trò <strong>Khách hàng (User)</strong> và không được phép truy cập khu vực dành cho quản trị viên hoặc nhân viên (Staff).
+                        @Html.Raw(message)
                     </p>
                     <div class="access-denied-card__actions">
-                        <a asp-controller="TrangChu" asp-action="Index" class="btn btn-primary">
-                            <i class="bi bi-house-door"></i> Về trang chủ
-                        </a>
+                        @if (isStaffOrAdmin)
+                        {
+                            <a asp-controller="Admin" asp-action="Index" class="btn btn-primary">
+                                <i class="bi bi-speedometer2"></i> Về Dashboard
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-controller="TrangChu" asp-action="Index" class="btn btn-primary">
+                                <i class="bi bi-house-door"></i> Về trang chủ
+                            </a>
+                        }
                         @if (User.Identity?.IsAuthenticated == true)
                         {
                             <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">

@@ -13,13 +13,14 @@
 
 .container-fluid {
     background-color: white;
-    padding: 10px 50px;
-    border-radius: 30px;
-    margin-bottom: 30px;
+    padding: 0px ;
+    /* border-radius: 30px; */
+    /* margin-bottom: 30px; */
 }
 
 /* table */
-.user-table{
+.table-container {
+    background: white;
     border-radius: 10px;
     overflow: hidden;
 }

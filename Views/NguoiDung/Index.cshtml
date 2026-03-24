@@ -1,8 +1,24 @@
+@using bikey.Repository
+@using Microsoft.EntityFrameworkCore
+@inject BikeyDbContext _context
 @model NguoiDungManagementViewModel
 @{
     Layout = "_AdminLayout";
     ViewData["Title"] = "Quản lý người dùng";
+
+    var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
+        ? parsedUserId
+        : 0;
+
+    var permission = userId > 0
+        ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(item => item.UserId == userId)
+        : null;
+
+    var canCreateUser = permission?.CanCreateUser == true;
+    var canEditUser = permission?.CanEditUser == true;
+    var canDeleteUser = permission?.CanDeleteUser == true;
 }
+
 @section Styles {
     <link rel="stylesheet" href="/css/nguoidung/index.css" asp-append-version="true" />
 }
@@ -10,15 +26,6 @@
 @section Scripts {
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            document.querySelectorAll(".tab-item").forEach(tab => {
-                tab.addEventListener("click", function () {
-                    document.querySelectorAll(".tab-item").forEach(item => item.classList.remove("active"));
-                    document.querySelectorAll(".tab-content").forEach(content => content.classList.remove("active"));
-                    this.classList.add("active");
-                    document.getElementById(this.getAttribute("data-tab"))?.classList.add("active");
-                });
-            });
-
             const editModal = document.getElementById("editUser");
             const deleteModal = document.getElementById("deleteUser");
 
@@ -33,7 +40,7 @@
                 editModal.querySelector("#EditUser_Email").value = button.getAttribute("data-email") ?? "";
                 editModal.querySelector("#EditUser_SoDienThoai").value = button.getAttribute("data-phone") ?? "";
                 editModal.querySelector("#EditUser_DiaChi").value = button.getAttribute("data-address") ?? "";
-                editModal.querySelector("#EditUser_VaiTro").value = button.getAttribute("data-role") ?? "Khách hàng";
+                editModal.querySelector("#EditUser_VaiTro").value = button.getAttribute("data-role") ?? "User";
                 editModal.querySelector("#EditUser_IsActive").value = button.getAttribute("data-active") ?? "true";
                 editModal.querySelector("#EditUser_MatKhauMoi").value = "";
                 editModal.querySelector("#EditUser_XacNhanMatKhauMoi").value = "";
@@ -57,15 +64,17 @@
 
 <div class="top-header">
     <h1 class="mb-0"><i class="bi bi-people"></i> Quản Lý Người dùng</h1>
-    <div>
-        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createUser">
-            <i class="bi bi-plus-circle"></i> Thêm người dùng
-        </a>
-    </div>
+    @if (canCreateUser)
+    {
+        <div>
+            <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createUser">
+                <i class="bi bi-plus-circle"></i> Thêm người dùng
+            </a>
+        </div>
+    }
 </div>
 
 <div class="wrapper">
-    <div class="container-fluid">
         @if (TempData["UserManagementSuccess"] is string successMessage)
         {
             <div class="alert alert-success mb-3" role="alert">
@@ -80,108 +89,53 @@
             </div>
         }
 
-        <div class="tab-wrapper">
-            <div class="tab-item active" data-tab="roleTab">Theo loại tài khoản</div>
-            <div class="tab-item" data-tab="userTab">Theo tài khoản</div>
-        </div>
 
-        <div id="roleTab" class="tab-content active">
-            <form asp-action="SaveRolePermissions" method="post">
-                @Html.AntiForgeryToken()
-                <div class="per-table">
-                    <table class="table-per table table-hover mb-0">
-                        <thead class="table-primary">
-                            <tr>
-                                <th class="sticky-col">Quyền</th>
-                                <th>Quản trị viên</th>
-                                <th>Nhân viên</th>
-                                <th>Khách hàng</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var group in PermissionGroupMetadata.All)
-                            {
-                                <tr class="group-row">
-                                    <td colspan="4"><i class="bi @group.Icon"></i> @group.Title</td>
-                                </tr>
-
-                                @foreach (var item in group.Items)
-                                {
-                                    var adminChecked = (bool?)Model.RolePermissions.Admin.GetType().GetProperty(item.PropertyName)?.GetValue(Model.RolePermissions.Admin) ?? false;
-                                    var staffChecked = (bool?)Model.RolePermissions.Staff.GetType().GetProperty(item.PropertyName)?.GetValue(Model.RolePermissions.Staff) ?? false;
-                                    var customerChecked = (bool?)Model.RolePermissions.KhachHang.GetType().GetProperty(item.PropertyName)?.GetValue(Model.RolePermissions.KhachHang) ?? false;
-
-                                    <tr>
-                                        <td class="sticky-col">@item.Label</td>
-                                        <td>
-                                            <input type="hidden" name="Admin.@item.PropertyName" value="false" />
-                                            <input type="checkbox" name="Admin.@item.PropertyName" value="true" @(adminChecked ? "checked" : null) />
-                                        </td>
-                                        <td>
-                                            <input type="hidden" name="Staff.@item.PropertyName" value="false" />
-                                            <input type="checkbox" name="Staff.@item.PropertyName" value="true" @(staffChecked ? "checked" : null) />
-                                        </td>
-                                        <td>
-                                            <input type="hidden" name="KhachHang.@item.PropertyName" value="false" />
-                                            <input type="checkbox" name="KhachHang.@item.PropertyName" value="true" @(customerChecked ? "checked" : null) />
-                                        </td>
-                                    </tr>
-                                }
-                            }
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="d-flex justify-content-end mt-3">
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-check-circle"></i> Lưu quyền</button>
-                </div>
-            </form>
-        </div>
-
-        <div id="userTab" class="tab-content">
-            <div class="user-table">
-                <table class="table table-hover mb-0">
-                    <thead class="table-primary">
+    <div class="container-fluid">
+        <div class="table-container">
+            <table class="table table-hover mb-0">
+                <thead class="table-primary">
+                    <tr>
+                        <th>ID</th>
+                        <th>Họ tên</th>
+                        <th>Email</th>
+                        <th>SĐT</th>
+                        <th>Vai trò</th>
+                        <th>Trạng thái</th>
+                        <th>Ngày tạo</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Users.Count == 0)
+                    {
                         <tr>
-                            <th>ID</th>
-                            <th>Họ tên</th>
-                            <th>Email</th>
-                            <th>SĐT</th>
-                            <th>Vai trò</th>
-                            <th>Trạng thái</th>
-                            <th>Ngày tạo</th>
-                            <th>Thao tác</th>
+                            <td colspan="8" class="text-center py-4">Chưa có người dùng nào.</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model.Users.Count == 0)
+                    }
+                    else
+                    {
+                        @foreach (var user in Model.Users)
                         {
-                            <tr>
-                                <td colspan="8" class="text-center py-4">Chưa có người dùng nào.</td>
-                            </tr>
-                        }
-                        else
-                        {
-                            @foreach (var user in Model.Users)
-                            {
-                                var roleCssClass = user.VaiTro == "Admin" ? "role-admin" : user.VaiTro == "Staff" ? "role-staff" : "role-user";
-                                var roleDisplay = user.VaiTro == "Admin" ? "Quản trị" : user.VaiTro == "Staff" ? "Nhân viên" : "Khách hàng";
+                            var roleCssClass = user.VaiTro == "Admin" ? "role-admin" : user.VaiTro == "Staff" ? "role-staff" : "role-user";
+                            var roleDisplay = user.VaiTro == "Admin" ? "Quản trị" : user.VaiTro == "Staff" ? "Nhân viên" : "Khách hàng";
 
-                                <tr>
-                                    <td>#@user.Id</td>
-                                    <td>@user.Ten</td>
-                                    <td>@user.Email</td>
-                                    <td>@user.SoDienThoai</td>
-                                    <td>
-                                        <span class="role-badge @roleCssClass">@roleDisplay</span>
-                                    </td>
-                                    <td>
-                                        <span class="status-badge @(user.IsActive ? "status-active" : "status-inactive")">
-                                            @(user.IsActive ? "Hoạt động" : "Khóa")
-                                        </span>
-                                    </td>
-                                    <td>@user.NgayTao.ToString("dd/MM/yyyy HH:mm")</td>
-                                    <td>
+                            <tr>
+                                <td>#@user.Id</td>
+                                <td>@user.Ten</td>
+                                <td>@user.Email</td>
+                                <td>@user.SoDienThoai</td>
+                                <td>
+                                    <span class="role-badge @roleCssClass">@roleDisplay</span>
+                                </td>
+                                <td>
+                                    <span class="status-badge @(user.IsActive ? "status-active" : "status-inactive")">
+                                        @(user.IsActive ? "Hoạt động" : "Khóa")
+                                    </span>
+                                </td>
+                                <td>@user.NgayTao.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>
+                                    @if (canEditUser)
+                                    {
                                         <button type="button"
                                                 class="btn btn-warning btn-sm btn-action"
                                                 title="Sửa"
@@ -196,9 +150,24 @@
                                                 data-active="@user.IsActive.ToString().ToLowerInvariant()">
                                             <i class="bi bi-pencil"></i>
                                         </button>
-                                        <a asp-action="Permission" asp-route-id="@user.Id" class="btn btn-info btn-sm btn-action" title="Phân quyền">
-                                            <i class="bi bi-shield-check"></i>
-                                        </a>
+                                    }
+                                    @if (canEditUser)
+                                    {
+                                        @if (user.Id == 1)
+                                        {
+                                            <button type="button" class="btn btn-info btn-sm btn-action" disabled title="Tài khoản admin mặc định không thể thay đổi quyền">
+                                                <i class="bi bi-shield-lock"></i>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <a asp-action="Permission" asp-route-id="@user.Id" class="btn btn-info btn-sm btn-action" title="Phân quyền">
+                                                <i class="bi bi-shield-check"></i>
+                                            </a>
+                                        }
+                                    }
+                                    @if (canDeleteUser)
+                                    {
                                         <button type="button"
                                                 class="btn btn-danger btn-sm btn-action"
                                                 title="Xóa"
@@ -206,19 +175,20 @@
                                                 data-bs-target="#deleteUser"
                                                 data-id="@user.Id"
                                                 data-name="@user.Ten"
-                                                @(user.Id == int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0") ? "disabled" : null)>
+                                                @(user.Id == 1 || user.Id == int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0") ? "disabled" : null)>
                                             <i class="bi bi-trash"></i>
                                         </button>
-                                    </td>
-                                </tr>
-                            }
+                                    }
+                                </td>
+                            </tr>
                         }
-                    </tbody>
-                </table>
-            </div>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
+
 
 <div class="modal fade" id="createUser" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">

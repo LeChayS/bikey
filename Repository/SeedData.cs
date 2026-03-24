@@ -130,6 +130,7 @@ namespace bikey.Repository
                             VaiTro = "Admin",
                             SoDienThoai = "0987654321",
                             IsActive = true,
+                            IsSystemAccount = true,
                             NgayTao = DateTime.Now,
                         },
                         new NguoiDung
@@ -160,33 +161,28 @@ namespace bikey.Repository
                         {
                             UserId = 1,
 
-                            CanManageXe = true,
                             CanViewXe = true,
                             CanCreateXe = true,
                             CanEditXe = true,
                             CanDeleteXe = true,
 
-                            CanManageLoaiXe = true,
                             CanViewLoaiXe = true,
                             CanCreateLoaiXe = true,
                             CanEditLoaiXe = true,
                             CanDeleteLoaiXe = true,
 
-                            CanManageHopDong = true,
                             CanViewHopDong = true,
                             CanCreateHopDong = true,
                             CanEditHopDong = true,
                             CanDeleteHopDong = true,
                             CanPrintHopDong = true,
 
-                            CanManageHoaDon = true,
                             CanViewHoaDon = true,
                             CanCreateHoaDon = true,
                             CanEditHoaDon = true,
                             CanDeleteHoaDon = true,
                             CanPrintHoaDon = true,
 
-                            CanManageUser = true,
                             CanViewUser = true,
                             CanCreateUser = true,
                             CanEditUser = true,
@@ -199,11 +195,6 @@ namespace bikey.Repository
                             CanDatCho = true,
                             CanViewDatCho = true,
 
-                            CanManageCart = true,
-                            CanViewCart = true,
-                            CanCheckout = true,
-
-                            CanManageHinhAnhXe = true,
                             CanViewHinhAnhXe = true,
                             CanUploadHinhAnhXe = true,
                             CanEditHinhAnhXe = true,
@@ -213,33 +204,28 @@ namespace bikey.Repository
                         {
                             UserId = 3,
 
-                            CanManageXe = true,
                             CanViewXe = true,
                             CanCreateXe = true,
                             CanEditXe = true,
                             CanDeleteXe = true,
 
-                            CanManageLoaiXe = true,
                             CanViewLoaiXe = true,
                             CanCreateLoaiXe = true,
                             CanEditLoaiXe = true,
                             CanDeleteLoaiXe = false,
 
-                            CanManageHopDong = true,
                             CanViewHopDong = true,
                             CanCreateHopDong = true,
                             CanEditHopDong = true,
                             CanDeleteHopDong = false,
                             CanPrintHopDong = true,
 
-                            CanManageHoaDon = true,
                             CanViewHoaDon = true,
                             CanCreateHoaDon = true,
                             CanEditHoaDon = true,
                             CanDeleteHoaDon = false,
                             CanPrintHoaDon = true,
 
-                            CanManageUser = true,
                             CanViewUser = true,
                             CanCreateUser = true,
                             CanEditUser = true,
@@ -252,11 +238,6 @@ namespace bikey.Repository
                             CanDatCho = true,
                             CanViewDatCho = true,
 
-                            CanManageCart = true,
-                            CanViewCart = true,
-                            CanCheckout = true,
-
-                            CanManageHinhAnhXe = true,
                             CanViewHinhAnhXe = true,
                             CanUploadHinhAnhXe = true,
                             CanEditHinhAnhXe = true,

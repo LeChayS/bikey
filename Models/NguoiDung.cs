@@ -50,6 +50,9 @@ namespace bikey.Models
         [Display(Name = "Trạng thái")]
         public bool IsActive { get; set; } = true;
 
+        [Display(Name = "Tài khoản hệ thống")]
+        public bool IsSystemAccount { get; set; } = false;
+
         [Display(Name = "Ngày tạo")]
         public DateTime NgayTao { get; set; } = DateTime.Now;
 

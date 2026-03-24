@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace bikey.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public class NguoiDungController : Controller
     {
         private readonly BikeyDbContext _context;
@@ -21,6 +21,22 @@ namespace bikey.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
+            var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
+                ? parsedUserId
+                : 0;
+
+            var permission = userId > 0
+                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(item => item.UserId == userId)
+                : null;
+
+            var canManageUsers = permission?.CanViewUser == true || permission?.CanEditUser == true ||
+                                permission?.CanCreateUser == true || permission?.CanDeleteUser == true;
+
+            if (!canManageUsers)
+            {
+                return Redirect("/AccessDenied");
+            }
+
             return View(await BuildViewModelAsync());
         }
 
@@ -28,9 +44,22 @@ namespace bikey.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateNguoiDungInput input)
         {
+            var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
+                ? parsedUserId
+                : 0;
+
+            var userPermission = userId > 0
+                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(item => item.UserId == userId)
+                : null;
+
+            if (userPermission?.CanCreateUser != true)
+            {
+                return Redirect("/AccessDenied");
+            }
+
             if (!ModelState.IsValid)
             {
-                TempData["UserManagementError"] = "Thong tin tao nguoi dung khong hop le.";
+                TempData["UserManagementError"] = "Thông tin không hợp lệ.";
                 return View("Index", await BuildViewModelAsync());
             }
 
@@ -38,13 +67,13 @@ namespace bikey.Controllers
 
             if (await _context.NguoiDung.AnyAsync(item => item.Email != null && item.Email.ToLower() == normalizedEmail))
             {
-                TempData["UserManagementError"] = "Email nay da ton tai.";
+                TempData["UserManagementError"] = "Email đã tồn tại.";
                 return View("Index", await BuildViewModelAsync());
             }
 
             if (await _context.NguoiDung.AnyAsync(item => item.SoDienThoai == input.SoDienThoai))
             {
-                TempData["UserManagementError"] = "So dien thoai nay da ton tai.";
+                TempData["UserManagementError"] = "Số điện thoại đã tồn tại.";
                 return View("Index", await BuildViewModelAsync());
             }
 
@@ -66,7 +95,7 @@ namespace bikey.Controllers
             _context.PhanQuyen.Add(permission);
             await _context.SaveChangesAsync();
 
-            TempData["UserManagementSuccess"] = "Da them nguoi dung moi.";
+            TempData["UserManagementSuccess"] = "Thêm người dùng mới thành công.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -74,9 +103,22 @@ namespace bikey.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EditNguoiDungInput input)
         {
+            var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
+                ? parsedUserId
+                : 0;
+
+            var userPermission = userId > 0
+                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(item => item.UserId == userId)
+                : null;
+
+            if (userPermission?.CanEditUser != true)
+            {
+                return Redirect("/AccessDenied");
+            }
+
             if (!ModelState.IsValid)
             {
-                TempData["UserManagementError"] = "Thong tin cap nhat khong hop le.";
+                TempData["UserManagementError"] = "Thông tin không hợp lệ.";
                 return View("Index", await BuildViewModelAsync());
             }
 
@@ -90,13 +132,13 @@ namespace bikey.Controllers
 
             if (await _context.NguoiDung.AnyAsync(item => item.Id != input.Id && item.Email != null && item.Email.ToLower() == normalizedEmail))
             {
-                TempData["UserManagementError"] = "Email nay da ton tai.";
+                TempData["UserManagementError"] = "Email đã tồn tại.";
                 return RedirectToAction(nameof(Index));
             }
 
             if (await _context.NguoiDung.AnyAsync(item => item.Id != input.Id && item.SoDienThoai == input.SoDienThoai))
             {
-                TempData["UserManagementError"] = "So dien thoai nay da ton tai.";
+                TempData["UserManagementError"] = "Số điện thoại đã tồn tại.";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -113,13 +155,9 @@ namespace bikey.Controllers
             }
 
             var permission = await EnsurePermissionEntityAsync(user.Id, user.VaiTro);
-
             await _context.SaveChangesAsync();
 
-            ApplyRestrictedPermissions(user.VaiTro, permission);
-            await _context.SaveChangesAsync();
-
-            TempData["UserManagementSuccess"] = "Da cap nhat thong tin nguoi dung.";
+            TempData["UserManagementSuccess"] = "Cập nhật thông tin người dùng thành công.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -127,19 +165,28 @@ namespace bikey.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
+            var currentUserId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
+                ? parsedUserId
+                : 0;
+
+            var userPermission = currentUserId > 0
+                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(item => item.UserId == currentUserId)
+                : null;
+
+            if (userPermission?.CanDeleteUser != true)
+            {
+                return Redirect("/AccessDenied");
+            }
+
             var user = await _context.NguoiDung.FirstOrDefaultAsync(item => item.Id == id);
             if (user is null)
             {
                 return NotFound();
             }
 
-            var currentUserId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
-                ? parsedUserId
-                : 0;
-
             if (user.Id == currentUserId)
             {
-                TempData["UserManagementError"] = "Ban khong the xoa chinh tai khoan dang dang nhap.";
+                TempData["UserManagementError"] = "Không thể xóa tài khoản đang đăng nhập.";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -152,13 +199,26 @@ namespace bikey.Controllers
             _context.NguoiDung.Remove(user);
             await _context.SaveChangesAsync();
 
-            TempData["UserManagementSuccess"] = "Da xoa nguoi dung.";
+            TempData["UserManagementSuccess"] = "Xóa người dùng thành công.";
             return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
         public async Task<IActionResult> Permission(int id)
         {
+            var currentUserId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
+                ? parsedUserId
+                : 0;
+
+            var currentUserPermission = currentUserId > 0
+                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(item => item.UserId == currentUserId)
+                : null;
+
+            if (currentUserPermission?.CanEditUser != true)
+            {
+                return Redirect("/AccessDenied");
+            }
+
             var user = await _context.NguoiDung
                 .AsNoTracking()
                 .FirstOrDefaultAsync(item => item.Id == id);
@@ -166,6 +226,12 @@ namespace bikey.Controllers
             if (user is null)
             {
                 return NotFound();
+            }
+
+            if (user.Id == 1)
+            {
+                TempData["UserManagementError"] = "Không thể thay đổi quyền cho tài khoản admin mặc định.";
+                return RedirectToAction(nameof(Index));
             }
 
             var permission = await _context.PhanQuyen
@@ -188,33 +254,37 @@ namespace bikey.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Permission(UserPermissionEditorViewModel model)
         {
+            var currentUserId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
+                ? parsedUserId
+                : 0;
+
+            var currentUserPermission = currentUserId > 0
+                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(item => item.UserId == currentUserId)
+                : null;
+
+            if (currentUserPermission?.CanEditUser != true)
+            {
+                return Redirect("/AccessDenied");
+            }
+
             var user = await _context.NguoiDung.FirstOrDefaultAsync(item => item.Id == model.UserId);
             if (user is null)
             {
                 return NotFound();
             }
 
+            if (user.Id == 1)
+            {
+                TempData["UserManagementError"] = "Không thể thay đổi quyền cho tài khoản admin mặc định.";
+                return RedirectToAction(nameof(Index));
+            }
+
             var permission = await EnsurePermissionEntityAsync(user.Id, user.VaiTro);
             ApplyPermissionSet(permission, model.Permissions);
-            ApplyRestrictedPermissions(user.VaiTro, permission);
-
+            EnforceViewPermissionLogic(permission);
             await _context.SaveChangesAsync();
 
-            TempData["UserManagementSuccess"] = $"Da cap nhat phan quyen cho tai khoan {user.Ten}.";
-            return RedirectToAction(nameof(Index));
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveRolePermissions(RolePermissionMatrixViewModel rolePermissions)
-        {
-            await ApplyPermissionsToRoleAsync("Admin", rolePermissions.Admin);
-            await ApplyPermissionsToRoleAsync("Staff", rolePermissions.Staff);
-            await ApplyPermissionsToCustomerRolesAsync(rolePermissions.KhachHang);
-
-            await _context.SaveChangesAsync();
-
-            TempData["UserManagementSuccess"] = "Da cap nhat phan quyen theo loai tai khoan.";
+            TempData["UserManagementSuccess"] = $"Cập nhật quyền cho tài khoản {user.Ten} thành công.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -233,13 +303,7 @@ namespace bikey.Controllers
 
             return new NguoiDungManagementViewModel
             {
-                Users = users,
-                RolePermissions = new RolePermissionMatrixViewModel
-                {
-                    Admin = BuildRolePermissionSet(users, permissions, "Admin"),
-                    Staff = BuildRolePermissionSet(users, permissions, "Staff"),
-                    KhachHang = BuildRolePermissionSet(users, permissions, "Khách hàng", "User")
-                }
+                Users = users
             };
         }
 
@@ -249,60 +313,13 @@ namespace bikey.Controllers
             [
                 new SelectListItem("Quản trị viên", "Admin"),
                 new SelectListItem("Nhân viên", "Staff"),
-                new SelectListItem("Khách hàng", "Khách hàng")
+                new SelectListItem("Khách hàng", "User")
             ];
         }
 
         private static string NormalizeEmail(string email)
         {
             return email.Trim().ToLowerInvariant();
-        }
-
-        private PermissionSetInput BuildRolePermissionSet(
-            IReadOnlyList<NguoiDung> users,
-            IReadOnlyList<PhanQuyen> permissions,
-            params string[] roles)
-        {
-            var matchedUserIds = users
-                .Where(user => roles.Any(role => string.Equals(user.VaiTro, role, StringComparison.OrdinalIgnoreCase)))
-                .Select(user => user.Id)
-                .ToHashSet();
-
-            var permission = permissions.FirstOrDefault(item => matchedUserIds.Contains(item.UserId));
-            if (permission is not null)
-            {
-                return MapPermissionSet(permission);
-            }
-
-            return GetDefaultPermissionsByRole(roles.FirstOrDefault() ?? "Khách hàng");
-        }
-
-        private async Task ApplyPermissionsToRoleAsync(string role, PermissionSetInput input)
-        {
-            var users = await _context.NguoiDung
-                .Where(item => item.VaiTro == role)
-                .ToListAsync();
-
-            foreach (var user in users)
-            {
-                var permission = await EnsurePermissionEntityAsync(user.Id, user.VaiTro);
-                ApplyPermissionSet(permission, input);
-                ApplyRestrictedPermissions(user.VaiTro, permission);
-            }
-        }
-
-        private async Task ApplyPermissionsToCustomerRolesAsync(PermissionSetInput input)
-        {
-            var users = await _context.NguoiDung
-                .Where(item => item.VaiTro == "Khách hàng" || item.VaiTro == "User")
-                .ToListAsync();
-
-            foreach (var user in users)
-            {
-                var permission = await EnsurePermissionEntityAsync(user.Id, user.VaiTro);
-                ApplyPermissionSet(permission, input);
-                ApplyRestrictedPermissions(user.VaiTro, permission);
-            }
         }
 
         private async Task<PhanQuyen> EnsurePermissionEntityAsync(int userId, string role)
@@ -333,29 +350,24 @@ namespace bikey.Controllers
         {
             return new PermissionSetInput
             {
-                CanManageXe = permission.CanManageXe,
                 CanViewXe = permission.CanViewXe,
                 CanCreateXe = permission.CanCreateXe,
                 CanEditXe = permission.CanEditXe,
                 CanDeleteXe = permission.CanDeleteXe,
-                CanManageLoaiXe = permission.CanManageLoaiXe,
                 CanViewLoaiXe = permission.CanViewLoaiXe,
                 CanCreateLoaiXe = permission.CanCreateLoaiXe,
                 CanEditLoaiXe = permission.CanEditLoaiXe,
                 CanDeleteLoaiXe = permission.CanDeleteLoaiXe,
-                CanManageHopDong = permission.CanManageHopDong,
                 CanViewHopDong = permission.CanViewHopDong,
                 CanCreateHopDong = permission.CanCreateHopDong,
                 CanEditHopDong = permission.CanEditHopDong,
                 CanDeleteHopDong = permission.CanDeleteHopDong,
                 CanPrintHopDong = permission.CanPrintHopDong,
-                CanManageHoaDon = permission.CanManageHoaDon,
                 CanViewHoaDon = permission.CanViewHoaDon,
                 CanCreateHoaDon = permission.CanCreateHoaDon,
                 CanEditHoaDon = permission.CanEditHoaDon,
                 CanDeleteHoaDon = permission.CanDeleteHoaDon,
                 CanPrintHoaDon = permission.CanPrintHoaDon,
-                CanManageUser = permission.CanManageUser,
                 CanViewUser = permission.CanViewUser,
                 CanCreateUser = permission.CanCreateUser,
                 CanEditUser = permission.CanEditUser,
@@ -363,12 +375,8 @@ namespace bikey.Controllers
                 CanViewBaoCao = permission.CanViewBaoCao,
                 CanViewThongKe = permission.CanViewThongKe,
                 CanExportBaoCao = permission.CanExportBaoCao,
-                CanManageCart = permission.CanManageCart,
-                CanViewCart = permission.CanViewCart,
-                CanCheckout = permission.CanCheckout,
                 CanDatCho = permission.CanDatCho,
                 CanViewDatCho = permission.CanViewDatCho,
-                CanManageHinhAnhXe = permission.CanManageHinhAnhXe,
                 CanViewHinhAnhXe = permission.CanViewHinhAnhXe,
                 CanUploadHinhAnhXe = permission.CanUploadHinhAnhXe,
                 CanEditHinhAnhXe = permission.CanEditHinhAnhXe,
@@ -378,33 +386,28 @@ namespace bikey.Controllers
 
         private static void ApplyPermissionSet(PhanQuyen target, PermissionSetInput input)
         {
-            target.CanManageXe = input.CanManageXe;
             target.CanViewXe = input.CanViewXe;
             target.CanCreateXe = input.CanCreateXe;
             target.CanEditXe = input.CanEditXe;
             target.CanDeleteXe = input.CanDeleteXe;
 
-            target.CanManageLoaiXe = input.CanManageLoaiXe;
             target.CanViewLoaiXe = input.CanViewLoaiXe;
             target.CanCreateLoaiXe = input.CanCreateLoaiXe;
             target.CanEditLoaiXe = input.CanEditLoaiXe;
             target.CanDeleteLoaiXe = input.CanDeleteLoaiXe;
 
-            target.CanManageHopDong = input.CanManageHopDong;
             target.CanViewHopDong = input.CanViewHopDong;
             target.CanCreateHopDong = input.CanCreateHopDong;
             target.CanEditHopDong = input.CanEditHopDong;
             target.CanDeleteHopDong = input.CanDeleteHopDong;
             target.CanPrintHopDong = input.CanPrintHopDong;
 
-            target.CanManageHoaDon = input.CanManageHoaDon;
             target.CanViewHoaDon = input.CanViewHoaDon;
             target.CanCreateHoaDon = input.CanCreateHoaDon;
             target.CanEditHoaDon = input.CanEditHoaDon;
             target.CanDeleteHoaDon = input.CanDeleteHoaDon;
             target.CanPrintHoaDon = input.CanPrintHoaDon;
 
-            target.CanManageUser = input.CanManageUser;
             target.CanViewUser = input.CanViewUser;
             target.CanCreateUser = input.CanCreateUser;
             target.CanEditUser = input.CanEditUser;
@@ -414,17 +417,60 @@ namespace bikey.Controllers
             target.CanViewThongKe = input.CanViewThongKe;
             target.CanExportBaoCao = input.CanExportBaoCao;
 
-            target.CanManageCart = input.CanManageCart;
-            target.CanViewCart = input.CanViewCart;
-            target.CanCheckout = input.CanCheckout;
             target.CanDatCho = input.CanDatCho;
             target.CanViewDatCho = input.CanViewDatCho;
 
-            target.CanManageHinhAnhXe = input.CanManageHinhAnhXe;
             target.CanViewHinhAnhXe = input.CanViewHinhAnhXe;
             target.CanUploadHinhAnhXe = input.CanUploadHinhAnhXe;
             target.CanEditHinhAnhXe = input.CanEditHinhAnhXe;
             target.CanDeleteHinhAnhXe = input.CanDeleteHinhAnhXe;
+        }
+
+        private static void EnforceViewPermissionLogic(PhanQuyen permission)
+        {
+            if (!permission.CanViewXe)
+            {
+                permission.CanCreateXe = false;
+                permission.CanEditXe = false;
+                permission.CanDeleteXe = false;
+            }
+
+            if (!permission.CanViewLoaiXe)
+            {
+                permission.CanCreateLoaiXe = false;
+                permission.CanEditLoaiXe = false;
+                permission.CanDeleteLoaiXe = false;
+            }
+
+            if (!permission.CanViewHopDong)
+            {
+                permission.CanCreateHopDong = false;
+                permission.CanEditHopDong = false;
+                permission.CanDeleteHopDong = false;
+                permission.CanPrintHopDong = false;
+            }
+
+            if (!permission.CanViewHoaDon)
+            {
+                permission.CanCreateHoaDon = false;
+                permission.CanEditHoaDon = false;
+                permission.CanDeleteHoaDon = false;
+                permission.CanPrintHoaDon = false;
+            }
+
+            if (!permission.CanViewUser)
+            {
+                permission.CanCreateUser = false;
+                permission.CanEditUser = false;
+                permission.CanDeleteUser = false;
+            }
+
+            if (!permission.CanViewHinhAnhXe)
+            {
+                permission.CanUploadHinhAnhXe = false;
+                permission.CanEditHinhAnhXe = false;
+                permission.CanDeleteHinhAnhXe = false;
+            }
         }
 
         private static PermissionSetInput GetDefaultPermissionsByRole(string role)
@@ -433,29 +479,24 @@ namespace bikey.Controllers
             {
                 return new PermissionSetInput
                 {
-                    CanManageXe = true,
                     CanViewXe = true,
                     CanCreateXe = true,
                     CanEditXe = true,
                     CanDeleteXe = true,
-                    CanManageLoaiXe = true,
                     CanViewLoaiXe = true,
                     CanCreateLoaiXe = true,
                     CanEditLoaiXe = true,
                     CanDeleteLoaiXe = true,
-                    CanManageHopDong = true,
                     CanViewHopDong = true,
                     CanCreateHopDong = true,
                     CanEditHopDong = true,
                     CanDeleteHopDong = true,
                     CanPrintHopDong = true,
-                    CanManageHoaDon = true,
                     CanViewHoaDon = true,
                     CanCreateHoaDon = true,
                     CanEditHoaDon = true,
                     CanDeleteHoaDon = true,
                     CanPrintHoaDon = true,
-                    CanManageUser = true,
                     CanViewUser = true,
                     CanCreateUser = true,
                     CanEditUser = true,
@@ -463,12 +504,8 @@ namespace bikey.Controllers
                     CanViewBaoCao = true,
                     CanViewThongKe = true,
                     CanExportBaoCao = true,
-                    CanManageCart = true,
-                    CanViewCart = true,
-                    CanCheckout = true,
                     CanDatCho = true,
                     CanViewDatCho = true,
-                    CanManageHinhAnhXe = true,
                     CanViewHinhAnhXe = true,
                     CanUploadHinhAnhXe = true,
                     CanEditHinhAnhXe = true,
@@ -480,29 +517,24 @@ namespace bikey.Controllers
             {
                 return new PermissionSetInput
                 {
-                    CanManageXe = true,
                     CanViewXe = true,
                     CanCreateXe = true,
                     CanEditXe = true,
-                    CanDeleteXe = true,
-                    CanManageLoaiXe = true,
+                    CanDeleteXe = false,
                     CanViewLoaiXe = true,
                     CanCreateLoaiXe = true,
                     CanEditLoaiXe = true,
                     CanDeleteLoaiXe = false,
-                    CanManageHopDong = true,
                     CanViewHopDong = true,
                     CanCreateHopDong = true,
                     CanEditHopDong = true,
                     CanDeleteHopDong = false,
                     CanPrintHopDong = true,
-                    CanManageHoaDon = true,
                     CanViewHoaDon = true,
                     CanCreateHoaDon = true,
                     CanEditHoaDon = true,
                     CanDeleteHoaDon = false,
                     CanPrintHoaDon = true,
-                    CanManageUser = false,
                     CanViewUser = false,
                     CanCreateUser = false,
                     CanEditUser = false,
@@ -510,32 +542,15 @@ namespace bikey.Controllers
                     CanViewBaoCao = true,
                     CanViewThongKe = true,
                     CanExportBaoCao = true,
-                    CanManageCart = true,
-                    CanViewCart = true,
-                    CanCheckout = true,
                     CanDatCho = true,
                     CanViewDatCho = true,
-                    CanManageHinhAnhXe = true,
                     CanViewHinhAnhXe = true,
                     CanUploadHinhAnhXe = true,
                     CanEditHinhAnhXe = true,
-                    CanDeleteHinhAnhXe = true
+                    CanDeleteHinhAnhXe = false
                 };
             }
-
             return new PermissionSetInput();
-        }
-
-        private static void ApplyRestrictedPermissions(string role, PhanQuyen permission)
-        {
-            if (!string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
-            {
-                permission.CanManageUser = false;
-                permission.CanViewUser = false;
-                permission.CanCreateUser = false;
-                permission.CanEditUser = false;
-                permission.CanDeleteUser = false;
-            }
         }
     }
 }

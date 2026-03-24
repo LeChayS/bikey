@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using bikey.Repository;
 
@@ -11,9 +12,11 @@ using bikey.Repository;
 namespace bikey.Migrations
 {
     [DbContext(typeof(BikeyDbContext))]
-    partial class BikeyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260324101629_AddIsSystemAccountToNguoiDung")]
+    partial class AddIsSystemAccountToNguoiDung
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -411,6 +414,9 @@ namespace bikey.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("CanCheckout")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("CanCreateHoaDon")
                         .HasColumnType("bit");
 
@@ -468,6 +474,27 @@ namespace bikey.Migrations
                     b.Property<bool>("CanExportBaoCao")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("CanManageCart")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CanManageHinhAnhXe")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CanManageHoaDon")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CanManageHopDong")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CanManageLoaiXe")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CanManageUser")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CanManageXe")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("CanPrintHoaDon")
                         .HasColumnType("bit");
 
@@ -478,6 +505,9 @@ namespace bikey.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("CanViewBaoCao")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CanViewCart")
                         .HasColumnType("bit");
 
                     b.Property<bool>("CanViewDatCho")
