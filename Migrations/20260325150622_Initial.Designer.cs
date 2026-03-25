@@ -12,8 +12,8 @@ using bikey.Repository;
 namespace bikey.Migrations
 {
     [DbContext(typeof(BikeyDbContext))]
-    [Migration("20260324101629_AddIsSystemAccountToNguoiDung")]
-    partial class AddIsSystemAccountToNguoiDung
+    [Migration("20260325150622_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -396,12 +396,7 @@ namespace bikey.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<int?>("VaiTroMaVaiTro")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("VaiTroMaVaiTro");
 
                     b.ToTable("NguoiDung");
                 });
@@ -413,15 +408,6 @@ namespace bikey.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("CanCheckout")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanCreateHoaDon")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanCreateHopDong")
-                        .HasColumnType("bit");
 
                     b.Property<bool>("CanCreateLoaiXe")
                         .HasColumnType("bit");
@@ -435,15 +421,6 @@ namespace bikey.Migrations
                     b.Property<bool>("CanDatCho")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("CanDeleteHinhAnhXe")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanDeleteHoaDon")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanDeleteHopDong")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("CanDeleteLoaiXe")
                         .HasColumnType("bit");
 
@@ -451,15 +428,6 @@ namespace bikey.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("CanDeleteXe")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanEditHinhAnhXe")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanEditHoaDon")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanEditHopDong")
                         .HasColumnType("bit");
 
                     b.Property<bool>("CanEditLoaiXe")
@@ -474,46 +442,22 @@ namespace bikey.Migrations
                     b.Property<bool>("CanExportBaoCao")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("CanManageCart")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanManageHinhAnhXe")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanManageHoaDon")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanManageHopDong")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanManageLoaiXe")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanManageUser")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanManageXe")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("CanPrintHoaDon")
                         .HasColumnType("bit");
 
                     b.Property<bool>("CanPrintHopDong")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("CanUploadHinhAnhXe")
+                    b.Property<bool>("CanProcessBooking")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CanReturnVehicle")
                         .HasColumnType("bit");
 
                     b.Property<bool>("CanViewBaoCao")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("CanViewCart")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("CanViewDatCho")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanViewHinhAnhXe")
                         .HasColumnType("bit");
 
                     b.Property<bool>("CanViewHoaDon")
@@ -543,28 +487,6 @@ namespace bikey.Migrations
                         .IsUnique();
 
                     b.ToTable("PhanQuyen");
-                });
-
-            modelBuilder.Entity("bikey.Models.VaiTro", b =>
-                {
-                    b.Property<int>("MaVaiTro")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaVaiTro"));
-
-                    b.Property<string>("MoTa")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("TenVaiTro")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("MaVaiTro");
-
-                    b.ToTable("VaiTro");
                 });
 
             modelBuilder.Entity("bikey.Models.Xe", b =>
@@ -711,13 +633,6 @@ namespace bikey.Migrations
                     b.Navigation("NguoiTao");
                 });
 
-            modelBuilder.Entity("bikey.Models.NguoiDung", b =>
-                {
-                    b.HasOne("bikey.Models.VaiTro", null)
-                        .WithMany("Users")
-                        .HasForeignKey("VaiTroMaVaiTro");
-                });
-
             modelBuilder.Entity("bikey.Models.PhanQuyen", b =>
                 {
                     b.HasOne("bikey.Models.NguoiDung", "User")
@@ -759,11 +674,6 @@ namespace bikey.Migrations
                     b.Navigation("HopDongNguoiTao");
 
                     b.Navigation("UserPermission");
-                });
-
-            modelBuilder.Entity("bikey.Models.VaiTro", b =>
-                {
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("bikey.Models.Xe", b =>
