@@ -55,11 +55,13 @@ namespace bikey.Services
             };
             _context.HinhAnhXe.Add(mainImage);
 
-            // Save other images
+            // Save other images (enforce max 10 total including main)
+            const int maxTotalImages = 10;
             if (hinhAnhKhac != null)
             {
                 int order = 2;
-                foreach (var file in hinhAnhKhac)
+                var filesToAdd = hinhAnhKhac.Take(maxTotalImages - 1);
+                foreach (var file in filesToAdd)
                 {
                     var imagePath = await SaveImageAsync(file);
                     var otherImage = new HinhAnhXe
@@ -161,11 +163,13 @@ namespace bikey.Services
                 }
             }
 
-            // Add new other images
+            // Add new other images (enforce max 10 total)
+            const int maxTotalImages = 10;
             if (hinhAnhKhac != null)
             {
                 int maxOrder = xeToUpdate.HinhAnhXes.Any() ? xeToUpdate.HinhAnhXes.Max(h => h.ThuTu) : 0;
-                foreach (var file in hinhAnhKhac)
+                var filesToAdd = hinhAnhKhac.Take(Math.Max(0, maxTotalImages - xeToUpdate.HinhAnhXes.Count));
+                foreach (var file in filesToAdd)
                 {
                     var imagePath = await SaveImageAsync(file);
                     var otherImage = new HinhAnhXe
@@ -178,7 +182,7 @@ namespace bikey.Services
                     xeToUpdate.HinhAnhXes.Add(otherImage);
                 }
             }
-            
+
             // Ensure there is a main image
             if (xeToUpdate.HinhAnhXes.Any() && !xeToUpdate.HinhAnhXes.Any(h => h.LaAnhChinh))
             {

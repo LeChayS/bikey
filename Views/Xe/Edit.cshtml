@@ -131,7 +131,7 @@
                             <span class="required">*</span>
                         </label>
                         <div class="input-group">
-                            <input asp-for="GiaThue" class="form-control" placeholder="Ví dụ: 150000" />
+                            <input asp-for="GiaThue" asp-format="{0:0}" class="form-control" placeholder="Ví dụ: 150000" />
                             <span class="input-group-text">VNĐ/ngày</span>
                         </div>
                         <span asp-validation-for="GiaThue" class="text-danger small"></span>
@@ -141,7 +141,7 @@
                     <div class="mb-4">
                         <label asp-for="GiaTriXe" class="form-label">Giá trị xe</label>
                         <div class="input-group">
-                            <input asp-for="GiaTriXe" class="form-control" placeholder="Ví dụ: 25000000" />
+                            <input asp-for="GiaTriXe" asp-format="{0:0}" class="form-control" placeholder="Ví dụ: 25000000" />
                             <span class="input-group-text">VNĐ</span>
                         </div>
                         <span asp-validation-for="GiaTriXe" class="text-danger small"></span>
@@ -250,6 +250,7 @@
 
                         <div class="new-image-preview-grid" id="newImagePreviewGrid"></div>
 
+                        <div class="text-muted small mt-2" id="remainingSlots"></div>
                         <div class="upload-stats" id="uploadStats" style="display:none;">
                             <i class="bi bi-info-circle"></i>
                             <span id="statsText">Chưa có hình ảnh mới nào được chọn</span>

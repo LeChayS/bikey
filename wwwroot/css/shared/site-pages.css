@@ -116,6 +116,17 @@
     overflow: hidden;
     background: #fff;
     box-shadow: 0 8px 18px rgba(13, 58, 128, 0.08);
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.bike-detail-thumb--active {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+}
+
+.bike-detail-thumb:hover {
+    border-color: rgba(13, 110, 253, 0.5);
 }
 
 .bike-detail-thumb__image {

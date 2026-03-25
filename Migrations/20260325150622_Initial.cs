@@ -27,17 +27,25 @@ namespace bikey.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "VaiTro",
+                name: "NguoiDung",
                 columns: table => new
                 {
-                    MaVaiTro = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TenVaiTro = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    MoTa = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true)
+                    Ten = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    MatKhau = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    VaiTro = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    SoDienThoai = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    Avatar = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    DiaChi = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    IsSystemAccount = table.Column<bool>(type: "bit", nullable: false),
+                    NgayTao = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_VaiTro", x => x.MaVaiTro);
+                    table.PrimaryKey("PK_NguoiDung", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -69,53 +77,44 @@ namespace bikey.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "NguoiDung",
+                name: "PhanQuyen",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Ten = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    MatKhau = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    VaiTro = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    SoDienThoai = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    Avatar = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    DiaChi = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    NgayTao = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    VaiTroMaVaiTro = table.Column<int>(type: "int", nullable: true)
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    CanViewXe = table.Column<bool>(type: "bit", nullable: false),
+                    CanCreateXe = table.Column<bool>(type: "bit", nullable: false),
+                    CanEditXe = table.Column<bool>(type: "bit", nullable: false),
+                    CanDeleteXe = table.Column<bool>(type: "bit", nullable: false),
+                    CanViewLoaiXe = table.Column<bool>(type: "bit", nullable: false),
+                    CanCreateLoaiXe = table.Column<bool>(type: "bit", nullable: false),
+                    CanEditLoaiXe = table.Column<bool>(type: "bit", nullable: false),
+                    CanDeleteLoaiXe = table.Column<bool>(type: "bit", nullable: false),
+                    CanViewHopDong = table.Column<bool>(type: "bit", nullable: false),
+                    CanProcessBooking = table.Column<bool>(type: "bit", nullable: false),
+                    CanReturnVehicle = table.Column<bool>(type: "bit", nullable: false),
+                    CanPrintHopDong = table.Column<bool>(type: "bit", nullable: false),
+                    CanViewHoaDon = table.Column<bool>(type: "bit", nullable: false),
+                    CanPrintHoaDon = table.Column<bool>(type: "bit", nullable: false),
+                    CanViewUser = table.Column<bool>(type: "bit", nullable: false),
+                    CanCreateUser = table.Column<bool>(type: "bit", nullable: false),
+                    CanEditUser = table.Column<bool>(type: "bit", nullable: false),
+                    CanDeleteUser = table.Column<bool>(type: "bit", nullable: false),
+                    CanViewBaoCao = table.Column<bool>(type: "bit", nullable: false),
+                    CanViewThongKe = table.Column<bool>(type: "bit", nullable: false),
+                    CanExportBaoCao = table.Column<bool>(type: "bit", nullable: false),
+                    CanDatCho = table.Column<bool>(type: "bit", nullable: false),
+                    CanViewDatCho = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_NguoiDung", x => x.Id);
+                    table.PrimaryKey("PK_PhanQuyen", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_NguoiDung_VaiTro_VaiTroMaVaiTro",
-                        column: x => x.VaiTroMaVaiTro,
-                        principalTable: "VaiTro",
-                        principalColumn: "MaVaiTro");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "HinhAnhXe",
-                columns: table => new
-                {
-                    MaHinhAnh = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MaXe = table.Column<int>(type: "int", nullable: false),
-                    TenFile = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    MoTa = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    ThuTu = table.Column<int>(type: "int", nullable: false),
-                    LaAnhChinh = table.Column<bool>(type: "bit", nullable: false),
-                    NgayThem = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_HinhAnhXe", x => x.MaHinhAnh);
-                    table.ForeignKey(
-                        name: "FK_HinhAnhXe_Xe_MaXe",
-                        column: x => x.MaXe,
-                        principalTable: "Xe",
-                        principalColumn: "MaXe",
+                        name: "FK_PhanQuyen_NguoiDung_UserId",
+                        column: x => x.UserId,
+                        principalTable: "NguoiDung",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -155,58 +154,26 @@ namespace bikey.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PhanQuyen",
+                name: "HinhAnhXe",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    MaHinhAnh = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    CanManageXe = table.Column<bool>(type: "bit", nullable: false),
-                    CanViewXe = table.Column<bool>(type: "bit", nullable: false),
-                    CanCreateXe = table.Column<bool>(type: "bit", nullable: false),
-                    CanEditXe = table.Column<bool>(type: "bit", nullable: false),
-                    CanDeleteXe = table.Column<bool>(type: "bit", nullable: false),
-                    CanManageLoaiXe = table.Column<bool>(type: "bit", nullable: false),
-                    CanViewLoaiXe = table.Column<bool>(type: "bit", nullable: false),
-                    CanCreateLoaiXe = table.Column<bool>(type: "bit", nullable: false),
-                    CanEditLoaiXe = table.Column<bool>(type: "bit", nullable: false),
-                    CanDeleteLoaiXe = table.Column<bool>(type: "bit", nullable: false),
-                    CanManageHopDong = table.Column<bool>(type: "bit", nullable: false),
-                    CanViewHopDong = table.Column<bool>(type: "bit", nullable: false),
-                    CanCreateHopDong = table.Column<bool>(type: "bit", nullable: false),
-                    CanEditHopDong = table.Column<bool>(type: "bit", nullable: false),
-                    CanDeleteHopDong = table.Column<bool>(type: "bit", nullable: false),
-                    CanPrintHopDong = table.Column<bool>(type: "bit", nullable: false),
-                    CanManageHoaDon = table.Column<bool>(type: "bit", nullable: false),
-                    CanViewHoaDon = table.Column<bool>(type: "bit", nullable: false),
-                    CanCreateHoaDon = table.Column<bool>(type: "bit", nullable: false),
-                    CanEditHoaDon = table.Column<bool>(type: "bit", nullable: false),
-                    CanDeleteHoaDon = table.Column<bool>(type: "bit", nullable: false),
-                    CanPrintHoaDon = table.Column<bool>(type: "bit", nullable: false),
-                    CanManageUser = table.Column<bool>(type: "bit", nullable: false),
-                    CanViewUser = table.Column<bool>(type: "bit", nullable: false),
-                    CanCreateUser = table.Column<bool>(type: "bit", nullable: false),
-                    CanEditUser = table.Column<bool>(type: "bit", nullable: false),
-                    CanDeleteUser = table.Column<bool>(type: "bit", nullable: false),
-                    CanViewBaoCao = table.Column<bool>(type: "bit", nullable: false),
-                    CanViewThongKe = table.Column<bool>(type: "bit", nullable: false),
-                    CanExportBaoCao = table.Column<bool>(type: "bit", nullable: false),
-                    CanDatCho = table.Column<bool>(type: "bit", nullable: false),
-                    CanViewDatCho = table.Column<bool>(type: "bit", nullable: false),
-                    CanManageHinhAnhXe = table.Column<bool>(type: "bit", nullable: false),
-                    CanViewHinhAnhXe = table.Column<bool>(type: "bit", nullable: false),
-                    CanUploadHinhAnhXe = table.Column<bool>(type: "bit", nullable: false),
-                    CanEditHinhAnhXe = table.Column<bool>(type: "bit", nullable: false),
-                    CanDeleteHinhAnhXe = table.Column<bool>(type: "bit", nullable: false)
+                    MaXe = table.Column<int>(type: "int", nullable: false),
+                    TenFile = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    MoTa = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    ThuTu = table.Column<int>(type: "int", nullable: false),
+                    LaAnhChinh = table.Column<bool>(type: "bit", nullable: false),
+                    NgayThem = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PhanQuyen", x => x.Id);
+                    table.PrimaryKey("PK_HinhAnhXe", x => x.MaHinhAnh);
                     table.ForeignKey(
-                        name: "FK_PhanQuyen_NguoiDung_UserId",
-                        column: x => x.UserId,
-                        principalTable: "NguoiDung",
-                        principalColumn: "Id",
+                        name: "FK_HinhAnhXe_Xe_MaXe",
+                        column: x => x.MaXe,
+                        principalTable: "Xe",
+                        principalColumn: "MaXe",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -381,11 +348,6 @@ namespace bikey.Migrations
                 column: "MaNguoiTao");
 
             migrationBuilder.CreateIndex(
-                name: "IX_NguoiDung_VaiTroMaVaiTro",
-                table: "NguoiDung",
-                column: "VaiTroMaVaiTro");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_PhanQuyen_UserId",
                 table: "PhanQuyen",
                 column: "UserId",
@@ -423,9 +385,6 @@ namespace bikey.Migrations
 
             migrationBuilder.DropTable(
                 name: "Xe");
-
-            migrationBuilder.DropTable(
-                name: "VaiTro");
 
             migrationBuilder.DropTable(
                 name: "LoaiXe");
