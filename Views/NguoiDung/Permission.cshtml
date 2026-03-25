@@ -2,7 +2,6 @@
 @{
     ViewData["Title"] = "Quản lý quyền người dùng";
     Layout = "_AdminLayout";
-    var isAdminAccount = string.Equals(Model.UserRole, "Admin", StringComparison.OrdinalIgnoreCase);
 }
 @section Styles {
     <link rel="stylesheet" href="/css/nguoidung/permission.css" asp-append-version="true" />
@@ -32,7 +31,7 @@
             if (!section) return;
             const btn = section.querySelector(".btn-toggle-all");
             if (!btn) return;
-            const checkboxes = section.querySelectorAll("input[type='checkbox']");
+            const checkboxes = section.querySelectorAll("input[type='checkbox']:not(:disabled)");
             const allChecked = [...checkboxes].every(cb => cb.checked);
             btn.textContent = allChecked ? "Bỏ chọn tất cả" : "Chọn tất cả";
         });
@@ -42,7 +41,7 @@
             const btn = e.target.closest(".btn-toggle-all");
             if (!btn) return;
             const section = btn.closest(".permission-section");
-            const checkboxes = section.querySelectorAll("input[type='checkbox']");
+            const checkboxes = section.querySelectorAll("input[type='checkbox']:not(:disabled)");
             const allChecked = [...checkboxes].every(cb => cb.checked);
             checkboxes.forEach(cb => {
                 cb.checked = !allChecked;
@@ -71,26 +70,16 @@
     </div>
 
     <div class="container-fluid">
-        @if (!isAdminAccount)
-        {
-            <div class="alert alert-warning mb-3" role="alert">
-                Tài khoản không phải Admin sẽ không được cấp quyền truy cập mục quản lý người dùng.
-            </div>
-        }
-
         <form asp-action="Permission" method="post">
             @Html.AntiForgeryToken()
             <input type="hidden" asp-for="UserId" />
 
             @foreach (var group in PermissionGroupMetadata.All)
             {
-                var isUserManagementGroup = group.Items.Any(item => item.PropertyName.StartsWith("CanViewUser") || item.PropertyName.StartsWith("CanCreateUser") || item.PropertyName.StartsWith("CanEditUser") || item.PropertyName.StartsWith("CanDeleteUser"));
-                var disableGroup = isUserManagementGroup && !isAdminAccount;
-
                 <div class="permission-section">
                     <div class="section-header">
                         <h5><i class="bi @group.Icon"></i> @group.Title</h5>
-                        <button type="button" class="btn-toggle-all" @(disableGroup ? "disabled" : null)>Chọn tất cả</button>
+                        <button type="button" class="btn-toggle-all">Chọn tất cả</button>
                     </div>
                     <div class="checkbox-group">
                         @foreach (var item in group.Items)
@@ -99,8 +88,7 @@
                             var isChecked = (bool?)Model.Permissions.GetType().GetProperty(item.PropertyName)?.GetValue(Model.Permissions) ?? false;
 
                             <div class="checkbox-item">
-                                <input type="hidden" name="Permissions.@item.PropertyName" value="false" />
-                                <input type="checkbox" id="@checkboxId" name="Permissions.@item.PropertyName" value="true" @(isChecked ? "checked" : null) @(disableGroup ? "disabled" : null) />
+                                <input type="checkbox" id="@checkboxId" name="Permissions.@item.PropertyName" value="true" @(isChecked ? "checked" : null) />
                                 <label for="@checkboxId">@item.Label</label>
                             </div>
                         }

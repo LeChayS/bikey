@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace bikey.Models
@@ -76,11 +76,17 @@ namespace bikey.Models
 
         // Computed properties
         [NotMapped]
-        public int SoNgayThueTinhToan => NgayTraXeThucTe.HasValue
-            ? (NgayTraXeThucTe.Value - NgayNhanXe).Days
-            : (NgayTraXeDuKien - NgayNhanXe).Days;
+        public int SoNgayThueTinhToan =>
+            SoNgayThue > 0
+                ? SoNgayThue
+                : NgayTraXeThucTe.HasValue
+                    ? Math.Max(1, (NgayTraXeThucTe.Value.Date - NgayNhanXe.Date).Days)
+                    : Math.Max(1, (NgayTraXeDuKien.Date - NgayNhanXe.Date).Days);
 
         [NotMapped]
-        public decimal ThanhTienTinhToan => GiaThueNgay * SoNgayThueTinhToan;
+        public decimal ThanhTienTinhToan =>
+            ThanhTien > 0
+                ? ThanhTien
+                : GiaThueNgay * SoNgayThueTinhToan;
     }
 }

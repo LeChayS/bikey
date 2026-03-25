@@ -1,0 +1,212 @@
+@page "/Admin"
+@model bikey.Pages.Admin.IndexModel
+@{
+    Layout = "_AdminLayout";
+    ViewBag.Title = "Admin Dashboard";
+
+    string ClassXe(string t) => t switch
+    {
+        "Sẵn sàng" => "status-ready",
+        "Đang thuê" => "status-renting",
+        "Bảo trì" => "status-maintenance",
+        "Hư hỏng" => "status-broken",
+        _ => "status-ready"
+    };
+
+    string ClassHd(string t) => t switch
+    {
+        "Hoàn thành" => "status-finished",
+        "Đang thuê" => "status-confirmed",
+        "Hủy" => "status-waiting",
+        _ => "status-waiting"
+    };
+}
+
+@section Styles {
+    <link href="~/css/components/stat-card.css" rel="stylesheet" asp-append-version="true">
+    <link href="~/css/pages/admin.css" rel="stylesheet" asp-append-version="true">
+}
+
+<div class="top-header">
+    <h1 class="mb-0"><i class="bi bi-speedometer2"></i> Dashboard</h1>
+</div>
+
+<div class="wrapper">
+    <div class="container-fluid">
+        <div class="row mb-4">
+            <div class="col-lg-4 col-md-6">
+                <stat-card label="Hợp đồng hoàn thành (tháng này)" value="@Model.Dashboard.HopDongHoanThanh"
+                    icon="bi-calendar-check" tone="blue">
+                    @if (Model.Dashboard.PhanTramHopDongVsKyTruoc != 0)
+                    {
+                        <div class="stat-change @(Model.Dashboard.PhanTramHopDongVsKyTruoc > 0 ? "positive" : "negative")">
+                            <i class="bi bi-arrow-@(Model.Dashboard.PhanTramHopDongVsKyTruoc > 0 ? "up" : "down")"></i>
+                            @Math.Abs(Model.Dashboard.PhanTramHopDongVsKyTruoc).ToString("F1")% so với tháng trước
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-muted small">Không đổi so với tháng trước</div>
+                    }
+                </stat-card>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <stat-card label="Doanh thu hôm nay" value="@($"{Model.Dashboard.DoanhThuHomNay:N0}đ")"
+                    icon="bi-cash-stack" tone="orange">
+                    @if (Model.Dashboard.PhanTramDoanhThuVsHomTruoc != 0)
+                    {
+                        <div
+                            class="stat-change @(Model.Dashboard.PhanTramDoanhThuVsHomTruoc > 0 ? "positive" : "negative")">
+                            <i class="bi bi-arrow-@(Model.Dashboard.PhanTramDoanhThuVsHomTruoc > 0 ? "up" : "down")"></i>
+                            @Math.Abs(Model.Dashboard.PhanTramDoanhThuVsHomTruoc).ToString("F1")% so với hôm qua
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-muted small">Không đổi so với hôm qua</div>
+                    }
+                </stat-card>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <stat-card label="Xe đang cho thuê" value="@Model.Dashboard.XeDangChoThue" icon="bi-bicycle"
+                    tone="green" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 col-md-6">
+                <stat-card label="Hợp đồng hoạt động" value="@Model.Dashboard.HopDongHoatDong"
+                    icon="bi-file-earmark-text" tone="purple" />
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <stat-card label="Khách hàng mới hôm nay" value="@Model.Dashboard.KhachHangMoiHomNay"
+                    icon="bi-person-plus" tone="red" />
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <stat-card label="Tổng số xe" value="@Model.Dashboard.TongSoXe" icon="bi-collection" tone="teal" />
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="title">
+            <p>Thao tác nhanh</p>
+        </div>
+        <div class="row g-0">
+            <div class="col-12 p-0">
+                <div class="row">
+                    <div class="chart-cart col-md-3">
+                        <a class="btn blue w-100" asp-page="/ThongKeBaoCao/Index">
+                            <i class="bi bi-bar-chart-line"></i><br>
+                            Xem thống kê chi tiết
+                        </a>
+                    </div>
+                    <div class="chart-cart col-md-3">
+                        <a class="btn red w-100" asp-action="Index" asp-controller="HopDong">
+                            <i class="bi bi-receipt"></i><br>
+                            Quản lý hợp đồng
+                        </a>
+                    </div>
+                    <div class="chart-cart col-md-3">
+                        <a class="btn green w-100" asp-action="Index" asp-controller="HoaDon">
+                            <i class="bi bi-receipt-cutoff"></i><br>
+                            Quản lý hóa đơn
+                        </a>
+                    </div>
+                    <div class="chart-cart col-md-3">
+                        <a class="btn orange w-100" asp-action="Index" asp-controller="Xe">
+                            <i class="bi bi-scooter"></i><br>
+                            Quản lý xe
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="title">
+            <p>Top xe được thuê nhiều nhất</p>
+            <small class="text-muted">(chỉ tính hợp đồng đã hoàn thành)</small>
+        </div>
+        <table class="table table-hover mb-0">
+            <thead class="table-primary">
+                <tr>
+                    <th>Xe</th>
+                    <th>Biển số</th>
+                    <th>Giá thuê/ngày</th>
+                    <th>Trạng thái</th>
+                    <th>Số lần</th>
+                    <th>Doanh thu</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Dashboard.TopXeThueNhieu.Count == 0)
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            <i class="bi bi-info-circle"></i> Chưa có dữ liệu xe được thuê
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var xe in Model.Dashboard.TopXeThueNhieu)
+                    {
+                        <tr>
+                            <td>@xe.TenXe</td>
+                            <td>@xe.BienSo</td>
+                            <td>@xe.GiaThueNgay.ToString("N0")đ</td>
+                            <td><span class="status-xe @ClassXe(xe.TrangThaiXe)">@xe.TrangThaiXe</span></td>
+                            <td><strong>@xe.SoLanThue</strong></td>
+                            <td class="text-danger fw-bold">@xe.DoanhThu.ToString("N0")đ</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="container-fluid">
+        <div class="title">
+            <p>Hợp đồng gần đây</p>
+            <a class="btn btn-sm btn-outline-primary float-end" asp-action="Index" asp-controller="HopDong">
+                <i class="bi bi-arrow-right"></i> Xem tất cả
+            </a>
+        </div>
+        <table class="table table-hover mb-0">
+            <thead class="table-primary">
+                <tr>
+                    <th>Khách hàng</th>
+                    <th>Xe</th>
+                    <th>Trạng thái</th>
+                    <th>Ngày</th>
+                    <th>Tổng tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Dashboard.HopDongGanDay.Count == 0)
+                {
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">
+                            <i class="bi bi-info-circle"></i> Chưa có hợp đồng
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var hd in Model.Dashboard.HopDongGanDay)
+                    {
+                        <tr>
+                            <td>@hd.TenKhach</td>
+                            <td>@hd.TenXe</td>
+                            <td><span class="status-hopdong @ClassHd(hd.TrangThai)">@hd.TrangThai</span></td>
+                            <td>@(hd.NgayHienThi?.ToString("dd/MM/yyyy") ?? "—")</td>
+                            <td>@hd.TongTien.ToString("N0")đ</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

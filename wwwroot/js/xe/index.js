@@ -1,45 +1,17 @@
-﻿// Hiển thị thông báo TempData nếu có
-@if (TempData["Success"] != null) {
-    <text>
-        toastr.success('@TempData["Success"]');
-    </text>
-}
-@if (TempData["Error"] != null) {
-    <text>
-        toastr.error('@TempData["Error"]');
-    </text>
-}
-
 // Biến để lưu timeout cho debounce
 let filterTimeout;
 
-// Biến để lưu ID xe hiện tại trong modal
-let currentXeId = null;
-
 $(document).ready(function () {
     // Prevent any accidental clicks on disabled buttons
-    $('.btn-disabled').on('click', function (e) {
+    $(document).on('click', '.btn-disabled', function (e) {
         e.preventDefault();
         e.stopPropagation();
         return false;
     });
 
-    // Close modal when clicking outside
-    $(document).on('click', '.custom-modal-overlay', function (e) {
-        if (e.target === this) {
-            closeCustomModal();
-        }
-    });
-
-    // Close modal with Escape key
-    $(document).on('keydown', function (e) {
-        if (e.key === 'Escape' && $('.custom-modal-overlay').hasClass('show')) {
-            closeCustomModal();
-        }
-    });
-
     // Thiết lập event listeners cho lọc real-time
     setupFilterEvents();
+    setupDeleteEvents();
 
     // Kiểm tra trạng thái filter ban đầu và hiển thị/ẩn button xóa lọc
     checkFilterStatus();
@@ -61,13 +33,77 @@ function setupFilterEvents() {
     });
 
     // Nút lọc
-    $('#filterBtn').on('click', function () {
-        filterXe();
-    });
+    // $('#filterBtn').on('click', function () {
+    //     filterXe();
+    // });
 
     // Nút xóa lọc
     $('#clearFilterBtn').on('click', function () {
         clearFilters();
+    });
+}
+
+function setupDeleteEvents() {
+    const setText = (id, value) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.textContent = value || '-';
+    };
+
+    $(document).on('click', '.delete-xe-btn', function () {
+        const $btn = $(this);
+        const xeId = $btn.data('id');
+
+        setText('deleteXeMaXe', $btn.data('ma-xe'));
+        setText('deleteXeTenXe', $btn.data('ten-xe'));
+        setText('deleteXeBienSo', $btn.data('bien-so'));
+        setText('deleteXeHangXe', $btn.data('hang-xe'));
+        setText('deleteXeDongXe', $btn.data('dong-xe'));
+        setText('deleteXeLoaiXe', $btn.data('loai-xe'));
+        setText('deleteXeGiaThue', $btn.data('gia-thue'));
+        setText('deleteXeTrangThai', $btn.data('trang-thai'));
+
+        const confirmBtn = document.getElementById('confirmDeleteXeBtn');
+        if (confirmBtn) {
+            confirmBtn.setAttribute('data-delete-url', `/Xe/Delete/${xeId}`);
+        }
+
+        const historyBadge = document.getElementById('deleteXeHistoryBadge');
+        if (historyBadge) {
+            historyBadge.style.display = 'none';
+        }
+
+        fetch(`/Xe/CheckXeContractHistory?xeId=${encodeURIComponent(xeId)}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (!data || data.success !== true) return;
+                if (historyBadge) {
+                    historyBadge.style.display = data.hasContracts ? 'inline-flex' : 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Error checking contract history:', error);
+                if (historyBadge) {
+                    historyBadge.style.display = 'none';
+                }
+            });
+
+        const deleteModal = document.getElementById('deleteXe');
+        if (deleteModal && window.bootstrap) {
+            bootstrap.Modal.getOrCreateInstance(deleteModal).show();
+        }
+    });
+
+    $('#confirmDeleteXeBtn').on('click', function () {
+        const deleteUrl = this.getAttribute('data-delete-url');
+        if (deleteUrl) {
+            window.location.href = deleteUrl;
+        }
     });
 }
 
@@ -78,7 +114,8 @@ function filterXe() {
     const loaiXe = $('#loaiXe').val();
     const hangXe = $('#hangXe').val();
     const trangThai = $('#trangThai').val();
-    const showDeleted = @(ViewBag.ShowDeleted == true ? "true" : "false");
+    // showDeleted lấy từ query string để JS chạy độc lập với Razor
+    const showDeleted = new URLSearchParams(window.location.search).get('showDeleted') === 'true';
 
     // Kiểm tra xem có filter nào được áp dụng không
     const hasFilters = searchString || loaiXe || hangXe || trangThai;
@@ -95,7 +132,7 @@ function filterXe() {
 
     // Gọi AJAX để lọc
     $.ajax({
-        url: '@Url.Action("FilterXe", "Xe")',
+        url: '/Xe/FilterXe',
         type: 'GET',
         data: {
             searchString: searchString,
@@ -166,94 +203,83 @@ function updateUrl(searchString, loaiXe, hangXe, trangThai, showDeleted) {
 
 // Hiển thị modal chi tiết xe
 function showXeDetails(xeId) {
-    const modal = document.getElementById('xeDetailsModal');
-    const loading = document.getElementById('xeDetailsLoading');
-    const content = document.getElementById('xeDetailsContent');
+    const modalEl = document.getElementById('detailXe');
+    if (modalEl && window.bootstrap) {
+        bootstrap.Modal.getOrCreateInstance(modalEl).show();
+    }
 
-    // Lưu ID xe hiện tại
-    currentXeId = xeId;
-
-    // Hiển thị modal và loading
-    modal.classList.add('show');
-    loading.style.display = 'block';
-    content.style.display = 'none';
-
-    // Ẩn phần lịch sử hợp đồng
-    document.getElementById('xeContractHistory').style.display = 'none';
-
-    // Gọi API để lấy dữ liệu xe
-    fetch(`/Xe/GetXeDetails/${xeId}`)
-        .then(response => response.json())
+    fetch(`/Xe/GetXeDetails?xeId=${encodeURIComponent(xeId)}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
                 populateXeDetails(data.xe);
-                loading.style.display = 'none';
-                content.style.display = 'block';
-
-                // Load lịch sử hợp đồng
-                loadXeContractHistory(xeId);
             } else {
                 toastr.error(data.message || 'Có lỗi xảy ra khi tải thông tin xe');
-                closeXeDetailsModal();
             }
         })
         .catch(error => {
             console.error('Error:', error);
             toastr.error('Có lỗi xảy ra khi tải thông tin xe');
-            closeXeDetailsModal();
         });
 }
 
 // Đóng modal chi tiết xe
 function closeXeDetailsModal() {
-    const modal = document.getElementById('xeDetailsModal');
-    modal.classList.remove('show');
+    const modalEl = document.getElementById('detailXe');
+    if (!modalEl || !window.bootstrap) return;
+    bootstrap.Modal.getOrCreateInstance(modalEl).hide();
 }
 
 // Điền dữ liệu vào modal
 function populateXeDetails(xe) {
-    // Cập nhật tiêu đề
-    document.getElementById('modalTitle').textContent = `Chi tiết xe - ${xe.tenXe}`;
+    const setText = (id, value) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.textContent = value ?? '-';
+    };
 
-    // Cập nhật hình ảnh
+    const resolveXeImageSrc = (tenFile) => {
+        if (!tenFile) return null;
+        if (tenFile.startsWith('http://') || tenFile.startsWith('https://')) return tenFile;
+        if (tenFile.startsWith('/')) return tenFile;
+        if (tenFile.toLowerCase().startsWith('images/')) return `/${tenFile}`;
+        // Fallback nếu TenFile chỉ là tên file
+        return `/images/xe/${tenFile}`;
+    };
+
+    // Hình ảnh chính
     const imageContainer = document.getElementById('xeImageContainer');
-    if (xe.hinhAnhHienThi) {
-        imageContainer.innerHTML = `<img src="/images/xe/${xe.hinhAnhHienThi}" class="xe-details-main-image" alt="${xe.tenXe}" />`;
-    } else {
-        imageContainer.innerHTML = `<div class="xe-details-image-placeholder"><i class="bi bi-image"></i></div>`;
+    if (imageContainer) {
+        const imgSrc = resolveXeImageSrc(xe.hinhAnhHienThi);
+        imageContainer.innerHTML = imgSrc
+            ? `<img src="${imgSrc}" class="xe-details-main-image" alt="${xe.tenXe || ''}" />`
+            : `<div class="xe-details-image-placeholder"><i class="bi bi-image"></i></div>`;
     }
 
-    // Cập nhật thông tin cơ bản
-    document.getElementById('xeMaXe').textContent = `#XE${xe.maXe.toString().padStart(3, '0')}`;
-    document.getElementById('xeTenXe').textContent = xe.tenXe || '-';
-    document.getElementById('xeBienSo').textContent = xe.bienSoXe || '-';
-    document.getElementById('xeHangXe').textContent = xe.hangXe || '-';
-    document.getElementById('xeDongXe').textContent = xe.dongXe || '-';
-    document.getElementById('xeLoaiXe').textContent = xe.loaiXe || '-';
+    // Thông tin cơ bản
+    setText('xeMaXe', `#XE${String(xe.maXe).padStart(3, '0')}`);
+    setText('xeTenXe', xe.tenXe || '-');
+    setText('xeBienSo', xe.bienSoXe || '-');
+    setText('xeHangXe', xe.hangXe || '-');
+    setText('xeDongXe', xe.dongXe || '-');
+    setText('xeLoaiXe', xe.loaiXe || '-');
 
-    // Cập nhật thông tin tài chính
-    document.getElementById('xeGiaThue').textContent = xe.giaThue ? `${xe.giaThue.toLocaleString('vi-VN')}đ` : '-';
-    document.getElementById('xeGiaTriXe').textContent = xe.giaTriXe ? `${xe.giaTriXe.toLocaleString('vi-VN')}đ` : '-';
-    document.getElementById('xeTongChiPhi').textContent = xe.tongChiPhi ? `${xe.tongChiPhi.toLocaleString('vi-VN')}đ` : '-';
-    document.getElementById('xeChiPhiSuaChua').textContent = xe.chiPhiSuaChua ? `${xe.chiPhiSuaChua.toLocaleString('vi-VN')}đ` : '-';
+    // Thông tin tài chính
+    setText('xeGiaThue', xe.giaThue ? `${Number(xe.giaThue).toLocaleString('vi-VN')}đ` : '-');
+    setText('xeGiaTriXe', xe.giaTriXe ? `${Number(xe.giaTriXe).toLocaleString('vi-VN')}đ` : '-');
+    setText('xeTongChiPhi', xe.tongChiPhi ? `${Number(xe.tongChiPhi).toLocaleString('vi-VN')}đ` : '-');
+    setText('xeChiPhiSuaChua', xe.chiPhiSuaChua ? `${Number(xe.chiPhiSuaChua).toLocaleString('vi-VN')}đ` : '-');
 
-    // Cập nhật trạng thái
+    // Trạng thái
     const statusContainer = document.getElementById('xeTrangThaiContainer');
-    const statusClass = getStatusClass(xe.trangThai);
-    statusContainer.innerHTML = `<span class="xe-details-status ${statusClass}">${xe.trangThai}</span>`;
-
-    // Cập nhật thống kê
-    document.getElementById('xeSoHopDong').textContent = xe.soHopDong || 0;
-    document.getElementById('xeSoHinhAnh').textContent = xe.soHinhAnh || 0;
-
-    // Cập nhật thông tin sự cố (nếu có)
-    const suCoCard = document.getElementById('xeSuCoCard');
-    if (xe.ngayGapSuCo || xe.moTaThietHai) {
-        document.getElementById('xeNgaySuCo').textContent = xe.ngayGapSuCo ? new Date(xe.ngayGapSuCo).toLocaleDateString('vi-VN') : '-';
-        document.getElementById('xeMoTaThietHai').textContent = xe.moTaThietHai || '-';
-        suCoCard.style.display = 'block';
-    } else {
-        suCoCard.style.display = 'none';
+    if (statusContainer) {
+        const statusClass = getStatusClass(xe.trangThai);
+        statusContainer.innerHTML = `<span class="xe-details-status ${statusClass}">${xe.trangThai}</span>`;
     }
 }
 
@@ -272,143 +298,14 @@ function getStatusClass(trangThai) {
 
 // Đóng modal khi click bên ngoài
 document.addEventListener('click', function (e) {
-    const modal = document.getElementById('xeDetailsModal');
-    if (e.target === modal) {
-        closeXeDetailsModal();
-    }
+    const modalEl = document.getElementById('detailXe');
+    if (modalEl && e.target === modalEl) closeXeDetailsModal();
 });
 
 // Đóng modal khi nhấn ESC
 document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
-        const modal = document.getElementById('xeDetailsModal');
-        if (modal.classList.contains('show')) {
-            closeXeDetailsModal();
-        }
+        closeXeDetailsModal();
     }
 });
-
-// Load lịch sử hợp đồng
-function loadXeContractHistory(xeId) {
-    fetch(`/Xe/GetXeLichSuHopDong/${xeId}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                populateContractHistory(data.thongKe, data.lichSuHopDong);
-                document.getElementById('xeContractHistory').style.display = 'block';
-            } else {
-                console.error('Error loading contract history:', data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-}
-
-// Điền dữ liệu lịch sử hợp đồng
-function populateContractHistory(thongKe, lichSuHopDong) {
-    // Cập nhật thống kê
-    document.getElementById('xeTongHopDong').textContent = thongKe.tongHopDong;
-    document.getElementById('xeDaHoanThanh').textContent = thongKe.daHoanThanh;
-    document.getElementById('xeDangThue').textContent = thongKe.dangThue;
-    document.getElementById('xeTongDoanhThu').textContent = thongKe.tongDoanhThu.toLocaleString('vi-VN') + 'đ';
-
-    // Tạo bảng lịch sử hợp đồng
-    const tableContainer = document.getElementById('xeContractTable');
-
-    if (lichSuHopDong.length === 0) {
-        tableContainer.innerHTML = `
-                    <div class="xe-details-contract-empty">
-                        <i class="bi bi-inbox"></i>
-                        <h5>Không có hợp đồng nào</h5>
-                        <p>Chưa có hợp đồng nào được tạo cho xe này.</p>
-                    </div>
-                `;
-        return;
-    }
-
-    let tableHTML = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Mã HĐ</th>
-                            <th>Khách hàng</th>
-                            <th>Số điện thoại</th>
-                            <th>Ngày nhận</th>
-                            <th>Ngày trả</th>
-                            <th>Số ngày</th>
-                            <th>Thành tiền</th>
-                            <th>Trạng thái</th>
-                            <th>Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-
-    lichSuHopDong.forEach(hopDong => {
-        const ngayNhan = new Date(hopDong.ngayNhanXe);
-        const ngayTra = hopDong.ngayTraXeThucTe ? new Date(hopDong.ngayTraXeThucTe) : null;
-        const soNgay = ngayTra ?
-            Math.ceil((ngayTra - ngayNhan) / (1000 * 60 * 60 * 24)) + 1 :
-            Math.ceil((new Date() - ngayNhan) / (1000 * 60 * 60 * 24)) + 1;
-
-        const trangThai = ngayTra ? 'hoan-thanh' : 'dang-thue';
-        const trangThaiText = ngayTra ? 'Đã hoàn thành' : 'Đang thuê';
-
-        // Kiểm tra xem thời gian có phải là 00:00 không (thời gian mặc định)
-        const isDefaultTime = (date) => {
-            return date.getHours() === 0 && date.getMinutes() === 0;
-        };
-
-        const formatDateTime = (date) => {
-            const dateStr = date.toLocaleDateString('vi-VN');
-            const timeStr = isDefaultTime(date) ? '' : date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
-            return timeStr ? `${dateStr} ${timeStr}` : dateStr;
-        };
-
-        tableHTML += `
-                    <tr>
-                        <td><strong>#HD${hopDong.maHopDong.toString().padStart(3, '0')}</strong></td>
-                        <td>
-                            <strong>${hopDong.hoTenKhach}</strong>
-                            ${hopDong.soCCCD ? `<br><small class="text-muted">CCCD: ${hopDong.soCCCD}</small>` : ''}
-                        </td>
-                        <td>${hopDong.soDienThoai}</td>
-                        <td>${formatDateTime(ngayNhan)}</td>
-                        <td>${ngayTra ? formatDateTime(ngayTra) : '<span class="text-muted">Chưa trả</span>'}</td>
-                        <td>${soNgay} ngày</td>
-                        <td class="text-danger"><strong>${hopDong.thanhTienTinhToan.toLocaleString('vi-VN')}đ</strong></td>
-                        <td><span class="xe-details-contract-status ${trangThai}">${trangThaiText}</span></td>
-                        <td>
-                            <div class="xe-details-contract-actions">
-                                <a href="/QuanLyHopDong/ChiTiet/${hopDong.maHopDong}" class="btn btn-info btn-sm" title="Xem chi tiết">
-                                    <i class="bi bi-eye"></i>
-                                </a>
-                                ${hopDong.coHoaDon ? `<a href="/QuanLyHoaDon/ChiTiet/${hopDong.maHoaDon}" class="btn btn-success btn-sm" title="Xem hóa đơn"><i class="bi bi-receipt"></i></a>` : ''}
-                            </div>
-                        </td>
-                    </tr>
-                `;
-    });
-
-    tableHTML += `
-                    </tbody>
-                </table>
-            `;
-
-    tableContainer.innerHTML = tableHTML;
-}
-
-// Chuyển đến trang lịch sử hợp đồng
-function viewContractHistory() {
-    if (currentXeId) {
-        // Đóng modal trước
-        closeXeDetailsModal();
-
-        // Chuyển đến trang lịch sử hợp đồng
-        window.location.href = `/Xe/LichSuHopDong/${currentXeId}`;
-    } else {
-        toastr.error('Không tìm thấy thông tin xe');
-    }
-}
 

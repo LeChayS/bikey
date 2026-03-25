@@ -1,0 +1,38 @@
+@page
+@model bikey.Pages.Xe.DaXoa.IndexModel
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Xe đã xóa";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/xedaxoa.css" asp-append-version="true" />
+}
+
+
+<div class="top-header">
+    <h1><i class="bi bi-trash2"></i> Xe đã xóa</h1>
+    <div>
+        <a asp-action="Index" asp-controller="Xe" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Quay lại quản lý xe
+        </a>
+    </div>
+</div>
+
+<div class="wrapper">
+    @if (TempData["Success"] is string successMsg)
+    {
+        <div class="alert alert-success mt-3">
+            @successMsg
+        </div>
+    }
+
+    <div class="container-fluid">
+
+        <div class="card-body">
+            <partial name="_XeTablePartial" model="new XeTablePartialModel { Items = Model.XeDaXoa, Variant = XeTableVariant.DaXoa }" />
+        </div>
+    </div>
+
+</div>

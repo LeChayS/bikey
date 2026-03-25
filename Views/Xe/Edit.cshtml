@@ -12,7 +12,7 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    <script src="/js/xe/edit.js"></script>
+    <script src="/js/xe/edit.js" asp-append-version="true"></script>
 }
 
 <!-- Header -->
@@ -32,16 +32,34 @@
 
 <div class="wrapper">
     <div class="container-fluid">
-
-        @* <div class="info-badge">
-            <i class="bi bi-info-circle"></i> Mã xe: #XE012
-        </div> *@
-
         <!-- Form Body -->
         <form asp-action="Edit" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
             <input type="hidden" asp-for="MaXe" />
-            <!-- Removed hidden field for HinhAnhXe as it's no longer needed -->
+            @{
+                string? ResolveImageSrc(string? tenFile)
+                {
+                    if (string.IsNullOrWhiteSpace(tenFile)) return null;
+                    if (tenFile.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+                        tenFile.StartsWith("https://", StringComparison.OrdinalIgnoreCase) ||
+                        tenFile.StartsWith("/"))
+                    {
+                        return tenFile;
+                    }
+                    if (tenFile.StartsWith("images/", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return "/" + tenFile;
+                    }
+                    return "/images/xe/" + tenFile;
+                }
+
+                var allImages = (Model.HinhAnhXes ?? Enumerable.Empty<bikey.Models.HinhAnhXe>())
+                    .OrderBy(x => x.ThuTu)
+                    .ThenBy(x => x.MaHinhAnh)
+                    .ToList();
+                var mainImage = allImages.FirstOrDefault(x => x.LaAnhChinh);
+                var hasSecondaryImage = allImages.Any(x => !x.LaAnhChinh);
+            }
 
             <div class="vehicle-grid">
                 <!-- Cột trái -->
@@ -51,7 +69,7 @@
                         <label asp-for="MaXe" class="form-label">
                             Mã xe
                         </label>
-                        <input class="form-control" value="#XE012" readonly/>
+                        <input class="form-control" value="#XE@(Model.MaXe.ToString("D3"))" readonly />
                     </div>
 
                     <!-- Tên xe -->
@@ -119,6 +137,16 @@
                         <span asp-validation-for="GiaThue" class="text-danger small"></span>
                     </div>
 
+                    <!-- Giá trị xe -->
+                    <div class="mb-4">
+                        <label asp-for="GiaTriXe" class="form-label">Giá trị xe</label>
+                        <div class="input-group">
+                            <input asp-for="GiaTriXe" class="form-control" placeholder="Ví dụ: 25000000" />
+                            <span class="input-group-text">VNĐ</span>
+                        </div>
+                        <span asp-validation-for="GiaTriXe" class="text-danger small"></span>
+                    </div>
+
                     <!-- Trạng thái -->
                     <div class="mb-4">
                         <label asp-for="TrangThai" class="form-label">
@@ -142,121 +170,89 @@
                         <div class="image-preview-container" onclick="document.getElementById('hinhAnh').click()">
                             <input type="file" name="hinhAnh" id="hinhAnh" accept="image/*" style="display:none" onchange="previewMainImage(event)" />
                             <div id="preview-content">
-                                @* @if (!string.IsNullOrEmpty(Model.HinhAnhHienThi))
+                                @if (mainImage != null && !string.IsNullOrWhiteSpace(mainImage.TenFile))
                                 {
-                                    <img src="~/images/xe/@Model.HinhAnhHienThi" alt="@Model.TenXe" /> *@
+                                    <img src="@ResolveImageSrc(mainImage.TenFile)" alt="@Model.TenXe" />
                                     <span class="current-image-badge">Ảnh hiện tại</span>
-                                @* }
+                                }
                                 else
-                                { *@
+                                {
                                     <div>
                                         <i class="bi bi-cloud-upload" style="font-size:60px;color:#ddd;"></i>
-                                        <p class="mb-0">Click để chọn ảnh</p>
+                                        <p class="mb-0">Click để chọn ảnh chính mới</p>
                                     </div>
-                                @* } *@
+                                }
                             </div>
                         </div>
-                        <small class="text-muted">Click vào ảnh để thay đổi</small>
+                        <small class="text-muted">Click vào vùng ảnh để thay thế ảnh chính</small>
                     </div>
 
                     <!-- Image Management Section -->
                     <div class="image-management-section">
                         <label class="form-label">
                             Quản lý hình ảnh xe
-                            <span class="badge bg-info">10 ảnh</span>
+                            <span class="badge bg-info">@allImages.Count ảnh</span>
                         </label>
 
                         <!-- Existing Images -->
-                        @* @if (Model.HinhAnhXes != null && Model.HinhAnhXes.Any())
-                        { *@
+                        @if (allImages.Any())
+                        {
                             <div class="existing-images-grid">
-                                @* @foreach (var hinh in Model.HinhAnhXes)
-                                { *@
-                                    <div class="image-item main-image">
-                                        @* @if (hinh.LaAnhChinh)
-                                        { *@
+                                @foreach (var hinh in allImages)
+                                {
+                                    <div class="image-item @(hinh.LaAnhChinh ? "main-image" : "")" data-image-id="@hinh.MaHinhAnh">
+                                        @if (hinh.LaAnhChinh)
+                                        {
                                             <div class="main-badge">
                                                 <i class="bi bi-star-fill"></i> Chính
                                             </div>
-                                        @* } *@
-                                        <div class="image-order">#3</div>
-
-                                        @* <img src="~/images/xe/@hinh.TenFile" alt="@hinh.MoTa" /> *@
-                                        <div style="background:black; height:100px;"></div>
+                                        }
+                                        <div class="image-order">#@hinh.ThuTu</div>
+                                        <input type="checkbox" class="remove-image-checkbox" name="removeImageIds" value="@hinh.MaHinhAnh" hidden />
+                                        <img src="@ResolveImageSrc(hinh.TenFile)" alt="@Model.TenXe" />
                                         <div class="image-info">
-                                            <input type="text" class="description-input"
-                                                placeholder="Mô tả hình ảnh..."/>
-
                                             <div class="image-actions">
+                                                <button type="button"
+                                                        class="btn btn-outline-danger btn-sm"
+                                                        onclick="toggleRemoveImage(this)"
+                                                        data-is-main="@(hinh.LaAnhChinh ? "true" : "false")"
+                                                        data-can-remove-main="@(hasSecondaryImage ? "true" : "false")"
+                                                        title="@(hinh.LaAnhChinh && !hasSecondaryImage ? "Không thể xóa ảnh chính khi chưa có ảnh phụ" : "Xóa ảnh")">
+                                                    <i class="bi bi-trash"></i> Xóa ảnh
+                                                </button>
                                             </div>
-
                                             <div class="mt-1">
                                                 <small class="text-muted">
-                                                    <i class="bi bi-calendar3"></i> 12/12/1212
+                                                    <i class="bi bi-calendar3"></i> @hinh.NgayThem.ToString("dd/MM/yyyy")
                                                 </small>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div class="image-item">
-                                        <div class="image-order">#1</div>
-
-                                        @* <img src="~/images/xe/@hinh.TenFile" alt="@hinh.MoTa" /> *@
-
-                                        <div class="image-info">
-                                            <input type="text" class="description-input"
-                                                placeholder="Mô tả hình ảnh..."/>
-
-                                            <div class="image-actions">
-                                                @* @if (!hinh.LaAnhChinh)
-                                                { *@
-                                                    <button type="button" class="btn btn-success btn-sm"
-                                                        title="Đặt làm ảnh chính">
-                                                        <i class="bi bi-star"></i>
-                                                    </button>
-                                                @* }
-
-                                                @if (!hinh.LaAnhChinh)
-                                                { *@
-                                                    <button type="button" class="btn btn-danger btn-sm"
-                                                        title="Xóa ảnh">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                @* } *@
-                                            </div>
-
-                                            <div class="mt-1">
-                                                <small class="text-muted">
-                                                    <i class="bi bi-calendar3"></i> 12/12/1212
-                                                </small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @* } *@
+                                }
                             </div>
-                        @* }
+                        }
                         else
-                        { *@
+                        {
                             <div class="no-images-message">
                                 <i class="bi bi-images" style="font-size: 48px; color: #ddd;"></i>
                                 <p>Chưa có hình ảnh nào được thêm vào xe này</p>
                             </div>
-                        @* } *@
+                        }
 
                         <!-- Add New Images -->
-                        <div class="multi-image-upload" id="multiImageUpload">
+                        <div class="multi-image-upload" id="multiImageUpload" onclick="document.getElementById('hinhAnhKhac').click()">
                             <input type="file" name="hinhAnhKhac" id="hinhAnhKhac" accept="image/*" multiple
                                 style="display:none" onchange="previewMultipleImages(event)" />
                             <i class="bi bi-plus-circle" style="font-size: 48px; color: #ddd;"></i>
-                            <p class="mb-2 mt-2"><strong>Thêm hình ảnh mới</strong></p>
-                            <p class="text-muted mb-0">Kéo thả hoặc click để chọn nhiều hình ảnh</p>
+                            <p class="mb-2 mt-2"><strong>Thêm ảnh phụ mới</strong></p>
+                            <p class="text-muted mb-0">Click để chọn nhiều hình ảnh</p>
                         </div>
 
                         <div class="new-image-preview-grid" id="newImagePreviewGrid"></div>
 
-                        <div class="upload-stats" id="uploadStats" >
+                        <div class="upload-stats" id="uploadStats" style="display:none;">
                             <i class="bi bi-info-circle"></i>
-                            <span id="statsText">Chưa có hình ảnh nào được chọn</span>
+                            <span id="statsText">Chưa có hình ảnh mới nào được chọn</span>
                         </div>
                     </div>
                 </div>

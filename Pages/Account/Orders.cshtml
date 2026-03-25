@@ -48,6 +48,15 @@
                             <div class="order-meta">
                                 <span class="status-pill @order.StatusCssClass">@order.TrangThai</span>
                                 <strong>@order.TongTien</strong>
+                                @{
+                                    var detailPage = order.TrangThai switch
+                                    {
+                                        "Chờ xác nhận" => "/History/OrderDetail",
+                                        "Hủy" => "/History/OrderDetail",
+                                        _ => "/History/ContractDetail"
+                                    };
+                                }
+                                <a asp-page="@detailPage" asp-route-id="@order.MaDatCho" class="btn btn-sm btn-outline-primary mt-2">Xem chi tiết</a>
                             </div>
                         </article>
                     }

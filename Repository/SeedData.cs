@@ -130,6 +130,7 @@ namespace bikey.Repository
                             VaiTro = "Admin",
                             SoDienThoai = "0987654321",
                             IsActive = true,
+                            IsSystemAccount = true,
                             NgayTao = DateTime.Now,
                         },
                         new NguoiDung
@@ -160,119 +161,69 @@ namespace bikey.Repository
                         {
                             UserId = 1,
 
-                            CanManageXe = true,
                             CanViewXe = true,
                             CanCreateXe = true,
                             CanEditXe = true,
                             CanDeleteXe = true,
 
-                            CanManageLoaiXe = true,
                             CanViewLoaiXe = true,
                             CanCreateLoaiXe = true,
                             CanEditLoaiXe = true,
                             CanDeleteLoaiXe = true,
 
-                            CanManageHopDong = true,
                             CanViewHopDong = true,
-                            CanCreateHopDong = true,
-                            CanEditHopDong = true,
-                            CanDeleteHopDong = true,
+                            CanProcessBooking = true,
+                            CanReturnVehicle = true,
                             CanPrintHopDong = true,
 
-                            CanManageHoaDon = true,
                             CanViewHoaDon = true,
-                            CanCreateHoaDon = true,
-                            CanEditHoaDon = true,
-                            CanDeleteHoaDon = true,
                             CanPrintHoaDon = true,
 
-                            CanManageUser = true,
                             CanViewUser = true,
                             CanCreateUser = true,
                             CanEditUser = true,
                             CanDeleteUser = true,
 
-                            CanManageBanner = true,
-                            CanViewBanner = true,
-                            CanCreateBanner = true,
-                            CanEditBanner = true,
-                            CanDeleteBanner = true,
-
                             CanViewBaoCao = true,
                             CanViewThongKe = true,
                             CanExportBaoCao = true,
 
                             CanDatCho = true,
-                            CanViewDatCho = true,
-
-                            CanManageCart = true,
-                            CanViewCart = true,
-                            CanCheckout = true,
-
-                            CanManageHinhAnhXe = true,
-                            CanViewHinhAnhXe = true,
-                            CanUploadHinhAnhXe = true,
-                            CanEditHinhAnhXe = true,
-                            CanDeleteHinhAnhXe = true,
+                            CanViewDatCho = true
                         },
                         new PhanQuyen
                         {
                             UserId = 3,
 
-                            CanManageXe = true,
                             CanViewXe = true,
                             CanCreateXe = true,
                             CanEditXe = true,
                             CanDeleteXe = true,
 
-                            CanManageLoaiXe = true,
                             CanViewLoaiXe = true,
                             CanCreateLoaiXe = true,
                             CanEditLoaiXe = true,
                             CanDeleteLoaiXe = false,
 
-                            CanManageHopDong = true,
                             CanViewHopDong = true,
-                            CanCreateHopDong = true,
-                            CanEditHopDong = true,
-                            CanDeleteHopDong = false,
+                            CanProcessBooking = true,
+                            CanReturnVehicle = true,
                             CanPrintHopDong = true,
 
-                            CanManageHoaDon = true,
                             CanViewHoaDon = true,
-                            CanCreateHoaDon = true,
-                            CanEditHoaDon = true,
-                            CanDeleteHoaDon = false,
                             CanPrintHoaDon = true,
 
-                            CanManageUser = true,
                             CanViewUser = true,
                             CanCreateUser = true,
                             CanEditUser = true,
                             CanDeleteUser = false,
-
-                            CanManageBanner = true,
-                            CanViewBanner = true,
-                            CanCreateBanner = true,
-                            CanEditBanner = true,
-                            CanDeleteBanner = true,
 
                             CanViewBaoCao = true,
                             CanViewThongKe = true,
                             CanExportBaoCao = true,
 
                             CanDatCho = true,
-                            CanViewDatCho = true,
-
-                            CanManageCart = true,
-                            CanViewCart = true,
-                            CanCheckout = true,
-
-                            CanManageHinhAnhXe = true,
-                            CanViewHinhAnhXe = true,
-                            CanUploadHinhAnhXe = true,
-                            CanEditHinhAnhXe = true,
-                            CanDeleteHinhAnhXe = true,
+                            CanViewDatCho = true
                         }
                     ); context.SaveChanges();
                 }

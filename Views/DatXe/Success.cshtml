@@ -1,47 +1,186 @@
 @model DatCho
 
 @{
-    ViewData["Title"] = "Dat Xe Thanh Cong";
+    ViewData["Title"] = "Đặt xe thành công";
+    var xe = Model.Xe;
+    var maDon = $"DC{Model.MaDatCho:D6}";
+    var tenFile = xe?.HinhAnhHienThi;
+    string? imgSrc = null;
+    if (!string.IsNullOrEmpty(tenFile))
+    {
+        if (tenFile.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+            tenFile.StartsWith("https://", StringComparison.OrdinalIgnoreCase) ||
+            tenFile.StartsWith("/"))
+        {
+            imgSrc = tenFile;
+        }
+        else if (tenFile.StartsWith("images/", StringComparison.OrdinalIgnoreCase))
+        {
+            imgSrc = "/" + tenFile;
+        }
+        else
+        {
+            imgSrc = "/images/xe/" + tenFile;
+        }
+    }
+
+    var trangThaiDon = Model.TrangThai ?? "—";
+    var statusPillClass = trangThaiDon.Contains("Chờ", StringComparison.OrdinalIgnoreCase)
+        ? "pending"
+        : trangThaiDon.Contains("Hủy", StringComparison.OrdinalIgnoreCase)
+            ? "danger"
+            : "success";
 }
 
-<section class="account-page py-5">
+@section Styles {
+    <link rel="stylesheet" href="~/css/datxe/success.css" asp-append-version="true" />
+}
+
+<section class="booking-confirm-page booking-success-page">
     <div class="container">
-        <div class="account-panel">
-            <div class="account-panel__header">
-                <h1>Đặt xe thành công</h1>
-                <p>@TempData["BookingSuccessMessage"]</p>
-            </div>
+        <div class="booking-confirm-shell">
+            <header class="booking-success-hero">
+                <div class="booking-success-hero__icon" aria-hidden="true">
+                    <i class="bi bi-check-circle-fill"></i>
+                </div>
+                <h1>Đặt xe thành công!</h1>
+                <p>@(TempData["BookingSuccessMessage"] as string ?? $"Đơn đặt {maDon} đã được tạo.")</p>
+            </header>
 
-            <div class="booking-summary-grid mt-4">
-                <div class="profile-item">
-                    <span>Mã đơn đặt xe</span>
-                    <strong>#@Model.MaDatCho</strong>
+            <div class="booking-confirm-body">
+                <div class="booking-success-info alert alert-info border-0" role="status">
+                    <strong class="d-block mb-2">Thông tin quan trọng</strong>
+                    <ul class="mb-0 ps-3 small">
+                        <li>Đơn đặt của bạn đang ở trạng thái chờ xác nhận.</li>
+                        <li>Nhân viên sẽ liên hệ hoặc cập nhật trạng thái qua mục đơn hàng của bạn.</li>
+                        <li>Vui lòng giữ điện thoại thông suốt để được hỗ trợ giao nhận xe.</li>
+                    </ul>
                 </div>
-                <div class="profile-item">
-                    <span>Trạng thái</span>
-                    <strong>@Model.TrangThai</strong>
-                </div>
-                <div class="profile-item">
-                    <span>Tên xe</span>
-                    <strong>@Model.Xe?.TenXe</strong>
-                </div>
-                <div class="profile-item">
-                    <span>Khách hàng</span>
-                    <strong>@Model.HoTen</strong>
-                </div>
-                <div class="profile-item">
-                    <span>Thời gian dự kiến</span>
-                    <strong>@Model.NgayNhanXe.ToString("dd/MM/yyyy") - @Model.NgayTraXe.ToString("dd/MM/yyyy")</strong>
-                </div>
-                <div class="profile-item">
-                    <span>Tổng tiền dự kiến</span>
-                    <strong>@Model.TongTienDuKien.ToString("N0") VNĐ</strong>
-                </div>
-            </div>
 
-            <div class="account-panel-footer mt-4">
-                <a asp-page="/Account/Orders" class="btn btn-outline-primary">Xem lịch sử đơn hàng</a>
-                <a asp-controller="TrangChu" asp-action="DanhSachXe" class="btn btn-primary">Tiếp tục đặt xe</a>
+                <section class="booking-section" aria-labelledby="booking-success-order-heading">
+                    <h2 class="booking-section_title" id="booking-success-order-heading">
+                        <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
+                        Thông tin đơn đặt
+                    </h2>
+                    <div class="booking-order-kv-grid">
+                        <div class="booking-order-kv">
+                            <span class="booking-order-kv__label">Mã đơn đặt</span>
+                            <span class="booking-order-kv__value">@maDon</span>
+                        </div>
+                        <div class="booking-order-kv">
+                            <span class="booking-order-kv__label">Ngày tạo</span>
+                            <span class="booking-order-kv__value">@Model.NgayDat.ToString("dd/MM/yyyy HH:mm")</span>
+                        </div>
+                        <div class="booking-order-kv">
+                            <span class="booking-order-kv__label">Khách hàng</span>
+                            <span class="booking-order-kv__value">@(Model.HoTen ?? "—")</span>
+                        </div>
+                        <div class="booking-order-kv">
+                            <span class="booking-order-kv__label">Trạng thái</span>
+                            <span class="booking-order-kv__value">
+                                <span class="status-pill @statusPillClass">@trangThaiDon</span>
+                            </span>
+                        </div>
+                        <div class="booking-order-kv">
+                            <span class="booking-order-kv__label">Số điện thoại</span>
+                            <span class="booking-order-kv__value">@(Model.SoDienThoai ?? "—")</span>
+                        </div>
+                    </div>
+                </section>
+
+                @if (xe != null)
+                {
+                    <section class="booking-section" aria-labelledby="booking-success-vehicle-heading">
+                        <h2 class="booking-section_title" id="booking-success-vehicle-heading">
+                            <i class="bi bi-scooter" aria-hidden="true"></i>
+                            Thông tin xe thuê
+                        </h2>
+                        <div class="booking-vehicle-success-card">
+                            <div class="booking-vehicle-success-card__top">
+                                <h3 class="booking-vehicle-success-card__name">
+                                    @xe.TenXe<span class="booking-vehicle-success-card__plate"> — @xe.BienSoXe</span>
+                                </h3>
+                            </div>
+
+                            <div class="booking-vehicle-success-card__body">
+                                <div class="booking-vehicle-success-card__media">
+                                    @if (!string.IsNullOrEmpty(imgSrc))
+                                    {
+                                        <img src="@imgSrc" alt="@xe.TenXe" class="booking-vehicle-success-card__img" />
+                                    }
+                                    else
+                                    {
+                                        <div class="booking-vehicle-success-card__placeholder" aria-hidden="true">
+                                            <i class="bi bi-scooter"></i>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="booking-vehicle-success-card__details">
+                                    <div class="booking-vehicle-detail-kv">
+                                        <span class="booking-vehicle-detail-kv__label">Hãng xe</span>
+                                        <span class="booking-vehicle-detail-kv__value">@xe.HangXe</span>
+                                    </div>
+                                    <div class="booking-vehicle-detail-kv">
+                                        <span class="booking-vehicle-detail-kv__label">Dòng xe</span>
+                                        <span class="booking-vehicle-detail-kv__value">@xe.DongXe</span>
+                                    </div>
+                                    <div class="booking-vehicle-detail-kv">
+                                        <span class="booking-vehicle-detail-kv__label">Loại xe</span>
+                                        <span class="booking-vehicle-detail-kv__value">@(xe.LoaiXe?.TenLoaiXe ?? "—")</span>
+                                    </div>
+                                </div>
+                                <div class="booking-vehicle-success-card__dates">
+                                    <div class="booking-vehicle-detail-kv">
+                                        <span class="booking-vehicle-detail-kv__label">Từ</span>
+                                        <span class="booking-vehicle-detail-kv__value">@Model.NgayNhanXe.ToString("dd/MM/yyyy")</span>
+                                    </div>
+                                    <div class="booking-vehicle-detail-kv">
+                                        <span class="booking-vehicle-detail-kv__label">Đến</span>
+                                        <span class="booking-vehicle-detail-kv__value">@Model.NgayTraXe.ToString("dd/MM/yyyy")</span>
+                                    </div>
+                                    <div class="booking-vehicle-detail-kv">
+                                        <span class="booking-vehicle-detail-kv__label">Số ngày</span>
+                                        <span class="booking-vehicle-detail-kv__value">@Model.SoNgayThue ngày</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="booking-vehicle-success-stats">
+                                <div class="booking-vehicle-success-stat">
+                                    <span>Giá/ngày</span>
+                                    <strong>@xe.GiaThue.ToString("N0")đ</strong>
+                                </div>
+                                <div class="booking-vehicle-success-stat">
+                                    <span>Số ngày</span>
+                                    <strong>@Model.SoNgayThue ngày</strong>
+                                </div>
+                                <div class="booking-vehicle-success-stat">
+                                    <span>Thành tiền</span>
+                                    <strong>@Model.TongTienDuKien.ToString("N0")đ</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                }
+
+                <div class="booking-success-total">
+                    <div>
+                        <span class="booking-success-total__label">Tổng tiền dự kiến</span>
+                        <strong class="booking-success-total__amount">@Model.TongTienDuKien.ToString("N0")đ</strong>
+                    </div>
+                    <p class="booking-success-total__note">Tiền cọc và các khoản phí sẽ được thỏa thuận khi giao xe.</p>
+                </div>
+
+                <div class="booking-success-actions">
+                    <a asp-controller="TrangChu" asp-action="Index" class="btn btn-success booking-success-actions__home">
+                        <i class="bi bi-house-door" aria-hidden="true"></i>
+                        Về trang chủ
+                    </a>
+                    <a asp-page="/Account/Orders" class="btn booking-success-actions__orders">
+                        <i class="bi bi-eye" aria-hidden="true"></i>
+                        Xem đơn của tôi
+                    </a>
+                </div>
             </div>
         </div>
     </div>

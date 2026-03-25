@@ -4,110 +4,198 @@
     ViewData["Title"] = "Dat Xe";
 }
 
-<section class="account-page py-5">
+@section Styles {
+    <link rel="stylesheet" href="~/css/datxe/create.css" asp-append-version="true" />
+}
+
+<section class="booking-confirm-page">
     <div class="container">
-        <div class="account-panel">
-            <div class="account-panel__header">
-                <h1>Điền thông tin để đặt xe</h1>
-                <p>Vui lòng điền thông tin cá nhân của bạn để hoàn tất thủ tục đặt xe</p>
+        <div class="booking-confirm-shell">
+            <header class="booking-confirm-hero">
+                <div class="booking-confirm-hero__icon" aria-hidden="true">
+                    <i class="bi bi-clipboard-check"></i>
+                </div>
+                <h1>Xác nhận đặt chỗ</h1>
+                <p>Hoàn tất thông tin để gửi yêu cầu đặt xe</p>
+            </header>
+
+            <div class="booking-confirm-body">
+                <form asp-controller="DatXe" asp-action="Create" method="post" class="account-form" id="bookingForm">
+                    @Html.AntiForgeryToken()
+                    <input asp-for="MaXe" type="hidden" />
+                    <input asp-for="GiaThueNgay" type="hidden" />
+                    <input asp-for="TenXe" type="hidden" />
+                    <input asp-for="BienSoXe" type="hidden" />
+                    <input asp-for="HangXe" type="hidden" />
+                    <input asp-for="DongXe" type="hidden" />
+                    <input asp-for="TrangThaiXe" type="hidden" />
+
+                    <div class="booking-confirm-layout">
+                        <div class="booking-confirm-main">
+                            <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+                            <section class="booking-section" aria-labelledby="booking-customer-heading">
+                                <h2 class="booking-section__title" id="booking-customer-heading">
+                                    <i class="bi bi-person-vcard" aria-hidden="true"></i>
+                                    Thông tin khách hàng
+                                </h2>
+                                <div class="booking-confirm-form-grid">
+                                    <div class="booking-field">
+                                        <label asp-for="HoTenKhachHang" class="form-label"></label>
+                                        <input asp-for="HoTenKhachHang" class="form-control form-control-lg" />
+                                        <span asp-validation-for="HoTenKhachHang" class="text-danger"></span>
+                                    </div>
+                                    <div class="booking-field">
+                                        <label asp-for="SoDienThoai" class="form-label"></label>
+                                        <input asp-for="SoDienThoai" class="form-control form-control-lg" inputmode="numeric" maxlength="10" pattern="\d{10}" />
+                                        <span asp-validation-for="SoDienThoai" class="text-danger"></span>
+                                    </div>
+                                    <div class="booking-field">
+                                        <label asp-for="CanCuoc" class="form-label"></label>
+                                        <input asp-for="CanCuoc" class="form-control form-control-lg" inputmode="numeric" autocomplete="off" />
+                                        <span asp-validation-for="CanCuoc" class="text-danger"></span>
+                                    </div>
+                                    <div class="booking-field">
+                                        <label asp-for="Email" class="form-label"></label>
+                                        <input asp-for="Email" class="form-control form-control-lg" type="email" autocomplete="email" />
+                                        <span asp-validation-for="Email" class="text-danger"></span>
+                                    </div>
+                                    <div class="booking-field booking-field--full">
+                                        <label asp-for="DiaChi" class="form-label"></label>
+                                        <input asp-for="DiaChi" class="form-control form-control-lg" />
+                                        <span asp-validation-for="DiaChi" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="booking-section" aria-labelledby="booking-order-heading">
+                                <h2 class="booking-section__title" id="booking-order-heading">
+                                    <i class="bi bi-list-ul" aria-hidden="true"></i>
+                                    Thông tin xe thuê
+                                </h2>
+                                <div class="booking-vehicle-detail-stack">
+                                    <div class="booking-vehicle-detail-card booking-vehicle-detail-card--media">
+                                        <div class="booking-vehicle-detail-media" aria-hidden="true">
+                                            @if (!string.IsNullOrWhiteSpace(Model.HinhAnhXe))
+                                            {
+                                                <img src="@Model.HinhAnhXe" alt="@Model.TenXe" class="img-fluid rounded" style="max-height: 200px; object-fit: cover;" />
+                                            }
+                                            else
+                                            {
+                                                <i class="bi bi-scooter"></i>
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <div class="booking-vehicle-detail-card">
+                                        <div class="booking-vehicle-detail-card__header">
+                                            <span class="booking-vehicle-detail-card__icon booking-vehicle-detail-card__icon--info" aria-hidden="true"><i class="bi bi-info-circle"></i></span>
+                                            <h3 class="booking-vehicle-detail-card__title">Thông tin cơ bản</h3>
+                                        </div>
+                                        <div class="booking-vehicle-detail-kv-grid">
+                                            <div class="booking-vehicle-detail-kv">
+                                                <span class="booking-vehicle-detail-kv__label">Mã xe</span>
+                                                <span class="booking-vehicle-detail-kv__value">#XE@(Model.MaXe.ToString("D3"))</span>
+                                            </div>
+                                            <div class="booking-vehicle-detail-kv">
+                                                <span class="booking-vehicle-detail-kv__label">Tên xe</span>
+                                                <span class="booking-vehicle-detail-kv__value">@Model.TenXe</span>
+                                            </div>
+                                            <div class="booking-vehicle-detail-kv">
+                                                <span class="booking-vehicle-detail-kv__label">Biển số</span>
+                                                <span class="booking-vehicle-detail-kv__value">@Model.BienSoXe</span>
+                                            </div>
+                                            <div class="booking-vehicle-detail-kv">
+                                                <span class="booking-vehicle-detail-kv__label">Hãng xe</span>
+                                                <span class="booking-vehicle-detail-kv__value">@Model.HangXe</span>
+                                            </div>
+                                            <div class="booking-vehicle-detail-kv">
+                                                <span class="booking-vehicle-detail-kv__label">Dòng xe</span>
+                                                <span class="booking-vehicle-detail-kv__value">@Model.DongXe</span>
+                                            </div>
+                                            <div class="booking-vehicle-detail-kv">
+                                                <span class="booking-vehicle-detail-kv__label">Loại xe</span>
+                                                <span class="booking-vehicle-detail-kv__value">@Model.TenLoaiXe</span>
+                                            </div>
+                                            <div class="booking-vehicle-detail-kv">
+                                                <span class="booking-vehicle-detail-kv__label">Giá thuê/ngày</span>
+                                                <span class="booking-vehicle-detail-kv__value" id="giaThueDisplay">@Model.GiaThueNgay.ToString("N0") VNĐ</span>
+                                            </div>
+                                            <div class="booking-vehicle-detail-kv">
+                                                <span class="booking-vehicle-detail-kv__label">Giá trị xe</span>
+                                                <span class="booking-vehicle-detail-kv__value">@Model.GiaTriXe.ToString("N0") VNĐ</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="booking-section" aria-labelledby="booking-order-detail-heading">
+                                <h2 class="booking-section__title" id="booking-order-detail-heading">
+                                    <i class="bi bi-journal-text" aria-hidden="true"></i>
+                                    Thông tin đơn
+                                </h2>
+                                <div class="booking-vehicle-detail-card booking-vehicle-detail-card--plain">
+                                    <div class="booking-vehicle-detail-date-grid">
+                                        <div class="booking-date-wrap">
+                                            <label asp-for="NgayNhanDuKien" class="form-label booking-date-label"></label>
+                                            <input asp-for="NgayNhanDuKien" class="form-control form-control-lg booking-date-input" />
+                                            <span asp-validation-for="NgayNhanDuKien" class="text-danger d-block small"></span>
+                                        </div>
+                                        <div class="booking-date-wrap">
+                                            <label asp-for="NgayTraDuKien" class="form-label booking-date-label"></label>
+                                            <input asp-for="NgayTraDuKien" class="form-control form-control-lg booking-date-input" />
+                                            <span asp-validation-for="NgayTraDuKien" class="text-danger d-block small"></span>
+                                        </div>
+                                    </div>
+                                    <p class="booking-vehicle-detail-range" id="bookingDateRangeText" aria-live="polite"></p>
+                                    <div class="booking-order-note mt-3">
+                                        <label asp-for="GhiChu" class="form-label"></label>
+                                        <textarea asp-for="GhiChu" class="form-control booking-note-input" rows="4" placeholder="Thêm yêu cầu giao xe, giờ nhận xe hoặc ghi chú khác nếu cần"></textarea>
+                                        <span asp-validation-for="GhiChu" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+
+                        <aside class="booking-confirm-aside">
+                            <div class="booking-summary-panel">
+                                <h3 class="booking-summary-panel__title">
+                                    <i class="bi bi-receipt" aria-hidden="true"></i>
+                                    Tóm tắt đơn hàng
+                                </h3>
+                                <div class="booking-summary-rows">
+                                    <div class="booking-summary-row">
+                                        <span>Thời gian thuê</span>
+                                        <span id="bookingSoNgaySummary">—</span>
+                                    </div>
+                                    <div class="booking-summary-row">
+                                        <span>Giá thuê/ngày</span>
+                                        <span id="bookingGiaNgaySidebar">@Model.GiaThueNgay.ToString("N0") đ</span>
+                                    </div>
+                                </div>
+                                <div class="booking-summary-total">
+                                    <span>Tổng cộng</span>
+                                    <strong id="tongTienDisplay">@Model.TongTienDuKien.ToString("N0") VNĐ</strong>
+                                </div>
+                                <div class="booking-summary-actions">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-check2-circle" aria-hidden="true"></i>
+                                        Xác nhận đặt chỗ
+                                    </button>
+                                    <a asp-controller="TrangChu" asp-action="DanhSachXe" class="btn btn-outline-secondary">
+                                        <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                                        Quay lại danh sách xe
+                                    </a>
+                                </div>
+                                <p class="booking-summary-footnote">
+                                    Giá hiển thị là tạm tính theo số ngày và giá ngày hiện tại; nhân viên sẽ xác nhận lại trước khi duyệt đơn.
+                                </p>
+                            </div>
+                        </aside>
+                    </div>
+                </form>
             </div>
-
-            <form asp-action="Create" method="post" class="account-form mt-4" id="bookingForm">
-                @Html.AntiForgeryToken()
-                <input asp-for="MaXe" type="hidden" />
-                <input asp-for="GiaThueNgay" type="hidden" />
-                <input asp-for="TenXe" type="hidden" />
-                <input asp-for="BienSoXe" type="hidden" />
-                <input asp-for="HangXe" type="hidden" />
-                <input asp-for="DongXe" type="hidden" />
-                <input asp-for="TrangThaiXe" type="hidden" />
-
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-                <div class="booking-summary-card">
-                    <h2>Thông tin của xe</h2>
-                    <div class="booking-summary-grid">
-                        <div class="profile-item">
-                            <span>Tên xe</span>
-                            <strong>@Model.TenXe</strong>
-                        </div>
-                        <div class="profile-item">
-                            <span>Biển số</span>
-                            <strong>@Model.BienSoXe</strong>
-                        </div>
-                        <div class="profile-item">
-                            <span>Hãng xe</span>
-                            <strong>@Model.HangXe</strong>
-                        </div>
-                        <div class="profile-item">
-                            <span>Dòng xe</span>
-                            <strong>@Model.DongXe</strong>
-                        </div>
-                        <div class="profile-item">
-                            <span>Trạng thái</span>
-                            <strong>@Model.TrangThaiXe</strong>
-                        </div>
-                        <div class="profile-item">
-                            <span>Giá thuê/ngày</span>
-                            <strong id="giaThueDisplay">@Model.GiaThueNgay.ToString("N0") VNĐ</strong>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="account-form-grid mt-4">
-                    <div>
-                        <label for="HoTenKhachHang" class="form-label">@Html.DisplayNameFor(model => model.HoTenKhachHang)</label>
-                        <input asp-for="HoTenKhachHang" class="form-control form-control-lg" />
-                        <span asp-validation-for="HoTenKhachHang" class="text-danger"></span>
-                    </div>
-
-                    <div>
-                        <label for="SoDienThoai" class="form-label">@Html.DisplayNameFor(model => model.SoDienThoai)</label>
-                        <input asp-for="SoDienThoai" class="form-control form-control-lg" />
-                        <span asp-validation-for="SoDienThoai" class="text-danger"></span>
-                    </div>
-
-                    <div>
-                        <label for="DiaChi" class="form-label">@Html.DisplayNameFor(model => model.DiaChi)</label>
-                        <input asp-for="DiaChi" class="form-control form-control-lg" />
-                        <span asp-validation-for="DiaChi" class="text-danger"></span>
-                    </div>
-
-                    <div>
-                        <label for="CanCuoc" class="form-label">@Html.DisplayNameFor(model => model.CanCuoc)</label>
-                        <input asp-for="CanCuoc" class="form-control form-control-lg" />
-                        <span asp-validation-for="CanCuoc" class="text-danger"></span>
-                    </div>
-
-                    <div>
-                        <label for="NgayNhanDuKien" class="form-label">@Html.DisplayNameFor(model => model.NgayNhanDuKien)</label>
-                        <input asp-for="NgayNhanDuKien" class="form-control form-control-lg booking-date-input" />
-                        <span asp-validation-for="NgayNhanDuKien" class="text-danger"></span>
-                    </div>
-
-                    <div>
-                        <label for="NgayTraDuKien" class="form-label">@Html.DisplayNameFor(model => model.NgayTraDuKien)</label>
-                        <input asp-for="NgayTraDuKien" class="form-control form-control-lg booking-date-input" />
-                        <span asp-validation-for="NgayTraDuKien" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div class="mt-3">
-                    <label for="GhiChu" class="form-label">@Html.DisplayNameFor(model => model.GhiChu)</label>
-                    <textarea asp-for="GhiChu" class="form-control booking-note-input" rows="4" placeholder="Thêm yêu cầu giao xe, giờ nhận xe hoặc ghi chú khác nếu cần"></textarea>
-                    <span asp-validation-for="GhiChu" class="text-danger"></span>
-                </div>
-
-                <div class="booking-total-card mt-4">
-                    <span>Tổng tiền dự kiến</span>
-                    <strong id="tongTienDisplay">@Model.TongTienDuKien.ToString("N0") VNĐ</strong>
-                </div>
-
-                <div class="account-panel-footer mt-4">
-                    <a asp-controller="TrangChu" asp-action="DanhSachXe" class="btn btn-outline-secondary">Quay lại</a>
-                    <button type="submit" class="btn btn-primary">Xác nhận</button>
-                </div>
-            </form>
         </div>
     </div>
 </section>
@@ -118,26 +206,69 @@
         (() => {
             const ngayNhanInput = document.getElementById("NgayNhanDuKien");
             const ngayTraInput = document.getElementById("NgayTraDuKien");
-            const giaThue = Number(document.getElementById("GiaThueNgay").value || 0);
+            const parseDecimalValue = (raw) => {
+                if (!raw) return 0;
+                const normalized = String(raw)
+                    .trim()
+                    .replace(/\s/g, "")
+                    .replace(/\./g, "")
+                    .replace(",", ".");
+                const parsed = Number.parseFloat(normalized);
+                return Number.isFinite(parsed) ? parsed : 0;
+            };
+
+            const giaThue = parseDecimalValue(document.getElementById("GiaThueNgay")?.value);
             const tongTienDisplay = document.getElementById("tongTienDisplay");
+            const bookingDateRangeText = document.getElementById("bookingDateRangeText");
+            const bookingSoNgaySummary = document.getElementById("bookingSoNgaySummary");
+            const giaThueDisplay = document.getElementById("giaThueDisplay");
+            const bookingGiaNgaySidebar = document.getElementById("bookingGiaNgaySidebar");
+
+            const formatMoneyVndLabel = (n) => `${n.toLocaleString("vi-VN")} VNĐ`;
 
             const updateTongTien = () => {
                 const ngayNhan = new Date(ngayNhanInput.value);
                 const ngayTra = new Date(ngayTraInput.value);
 
                 if (Number.isNaN(ngayNhan.getTime()) || Number.isNaN(ngayTra.getTime())) {
-                    tongTienDisplay.textContent = "0 VND";
+                    tongTienDisplay.textContent = "0 VNĐ";
+                    if (bookingDateRangeText) bookingDateRangeText.innerHTML = '<i class="bi bi-calendar3" aria-hidden="true"></i> Chọn ngày nhận và ngày trả';
+                    if (bookingSoNgaySummary) bookingSoNgaySummary.textContent = "—";
                     return;
                 }
 
                 const millisecondsPerDay = 24 * 60 * 60 * 1000;
                 const soNgay = Math.max(0, Math.round((ngayTra - ngayNhan) / millisecondsPerDay));
                 const tongTien = soNgay * giaThue;
-                tongTienDisplay.textContent = `${tongTien.toLocaleString("vi-VN")} VND`;
+                const tongStr = formatMoneyVndLabel(tongTien);
+
+                tongTienDisplay.textContent = tongStr;
+
+                if (bookingDateRangeText) {
+                    const a = ngayNhan.toLocaleDateString("vi-VN");
+                    const b = ngayTra.toLocaleDateString("vi-VN");
+                    bookingDateRangeText.innerHTML =
+                        soNgay > 0
+                            ? `<i class="bi bi-calendar3" aria-hidden="true"></i> ${a} - ${b} (${soNgay} ngày)`
+                            : `<i class="bi bi-calendar3" aria-hidden="true"></i> ${a} - ${b}`;
+                }
+
+                if (bookingSoNgaySummary) {
+                    bookingSoNgaySummary.textContent = soNgay > 0 ? `${soNgay} ngày` : "—";
+                }
             };
+
+            if (giaThueDisplay) {
+                giaThueDisplay.textContent = `${giaThue.toLocaleString("vi-VN")} VNĐ`;
+            }
+            if (bookingGiaNgaySidebar) {
+                bookingGiaNgaySidebar.textContent = `${giaThue.toLocaleString("vi-VN")} đ`;
+            }
 
             ngayNhanInput?.addEventListener("change", updateTongTien);
             ngayTraInput?.addEventListener("change", updateTongTien);
+            ngayNhanInput?.addEventListener("input", updateTongTien);
+            ngayTraInput?.addEventListener("input", updateTongTien);
             updateTongTien();
         })();
     </script>

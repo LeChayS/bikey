@@ -1,8 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using bikey.Repository;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using bikey.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
@@ -15,9 +14,12 @@ namespace bikey.Pages.Account
     {
         private readonly BikeyDbContext _context;
 
-        public ProfileModel(BikeyDbContext context)
+        private readonly IUserService _userService;
+
+        public ProfileModel(BikeyDbContext context, IUserService userService)
         {
             _context = context;
+            _userService = userService;
         }
 
         [BindProperty]
@@ -28,7 +30,7 @@ namespace bikey.Pages.Account
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var user = await FindCurrentUserAsync();
+            var user = await _userService.FindCurrentUserAsync(User);
 
             if (user is not null)
             {
@@ -47,11 +49,11 @@ namespace bikey.Pages.Account
                 return Page();
             }
 
-            var user = await FindCurrentUserAsync();
+            var user = await _userService.FindCurrentUserAsync(User);
 
             if (user is null)
             {
-                ModelState.AddModelError(string.Empty, "Khong tim thay tai khoan de cap nhat thong tin.");
+                ModelState.AddModelError(string.Empty, "Không tìm thấy tài khoản để cập nhật thông tin.");
                 return Page();
             }
 
@@ -62,7 +64,7 @@ namespace bikey.Pages.Account
 
             if (duplicateEmail)
             {
-                ModelState.AddModelError(nameof(Input.Email), "Email nay da duoc su dung.");
+                ModelState.AddModelError(nameof(Input.Email), "Email này đã được sử dụng.");
                 return Page();
             }
 
@@ -71,7 +73,7 @@ namespace bikey.Pages.Account
 
             if (duplicatePhone)
             {
-                ModelState.AddModelError(nameof(Input.SoDienThoai), "So dien thoai nay da duoc su dung.");
+                ModelState.AddModelError(nameof(Input.SoDienThoai), "Số điện thoại này đã được sử dụng.");
                 return Page();
             }
 
@@ -81,28 +83,10 @@ namespace bikey.Pages.Account
             user.DiaChi = Input.DiaChi.Trim();
 
             await _context.SaveChangesAsync();
-            await RefreshSignInAsync(user);
+            await _userService.RefreshSignInAsync(user, HttpContext);
 
             StatusMessage = "Cập nhật thông tin thành công.";
             return RedirectToPage();
-        }
-
-        private async Task<Models.NguoiDung?> FindCurrentUserAsync()
-        {
-            if (int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId))
-            {
-                return await _context.NguoiDung.FirstOrDefaultAsync(item => item.Id == userId);
-            }
-
-            var email = User.FindFirstValue(ClaimTypes.Email);
-            if (!string.IsNullOrWhiteSpace(email))
-            {
-                var normalizedEmail = email.Trim().ToLowerInvariant();
-                return await _context.NguoiDung.FirstOrDefaultAsync(item =>
-                    item.Email != null && item.Email.ToLower() == normalizedEmail);
-            }
-
-            return null;
         }
 
         private InputModel BuildInputFromClaims()
@@ -127,44 +111,6 @@ namespace bikey.Pages.Account
             };
         }
 
-        private async Task RefreshSignInAsync(Models.NguoiDung user)
-        {
-            var claims = new List<Claim>
-            {
-                new(ClaimTypes.Name, user.Ten ?? user.Email ?? "Khach hang"),
-                new(ClaimTypes.MobilePhone, user.SoDienThoai ?? string.Empty)
-            };
-
-            claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
-
-            if (!string.IsNullOrWhiteSpace(user.Email))
-            {
-                claims.Add(new Claim(ClaimTypes.Email, user.Email));
-            }
-
-            if (!string.IsNullOrWhiteSpace(user.DiaChi))
-            {
-                claims.Add(new Claim(ClaimTypes.StreetAddress, user.DiaChi));
-            }
-
-            if (!string.IsNullOrWhiteSpace(user.VaiTro))
-            {
-                claims.Add(new Claim(ClaimTypes.Role, user.VaiTro));
-            }
-
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(identity);
-
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                principal,
-                new AuthenticationProperties
-                {
-                    IsPersistent = true,
-                    ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
-                });
-        }
-
         public class InputModel
         {
             [Required(ErrorMessage = "Vui lòng nhập họ và tên")]
@@ -173,13 +119,14 @@ namespace bikey.Pages.Account
 
             [Required(ErrorMessage = "Vui lòng nhập số điện thoại")]
             [Display(Name = "Số điện thoại")]
+            [RegularExpression(@"^\d{10}$", ErrorMessage = "Số điện thoại phải có đúng 10 chữ số.")]
             public string SoDienThoai { get; set; } = string.Empty;
 
             [Required(ErrorMessage = "Vui lòng nhập email")]
             [EmailAddress(ErrorMessage = "Email không hợp lệ")]
             public string Email { get; set; } = string.Empty;
 
-            [Required(ErrorMessage = "Vui lòng nhập địa chỉ")]
+            // [Required(ErrorMessage = "Vui lòng nhập địa chỉ")]
             [Display(Name = "Địa chỉ")]
             public string DiaChi { get; set; } = string.Empty;
         }

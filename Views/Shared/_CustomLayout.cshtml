@@ -4,12 +4,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Bikey</title>
-    <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" /> <!--Link icon-->
-    @* <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" /> *@
-    @* <link rel="stylesheet" href="~/bikey.styles.css" asp-append-version="true" />  *@
     <link rel="stylesheet" href="~/css/shared/customlayout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/shared/site-pages.css" asp-append-version="true" />
     @RenderSection("Styles", required: false)
 </head>
 <body>
@@ -33,10 +31,10 @@
                         <a class="nav-link" asp-controller="TrangChu" asp-action="Index"><i class="bi bi-house-door"></i> Trang chủ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="TrangChu" asp-action="GioiThieu">Giới thiệu</a>
+                        <a class="nav-link" asp-controller="TrangChu" asp-action="DanhSachXe">Danh sách xe</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="TrangChu" asp-action="DanhSachXe">Danh sách xe</a>
+                        <a class="nav-link" asp-controller="TrangChu" asp-action="GioiThieu">Giới thiệu</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="TrangChu" asp-action="ChiNhanh">Chi nhánh</a>
@@ -63,7 +61,7 @@
                                     <li><a class="dropdown-item" asp-page="/Account/Orders">Lịch sử đơn hàng</a></li>
                                     @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
                                     {
-                                        <li><a class="dropdown-item" asp-controller="QuanLyDatCho" asp-action="Index">Quan ly dat cho</a></li>
+                                        <li><a class="dropdown-item" asp-page="/Admin/Index">Admin panel</a></li>
                                     }
                                     <li><hr class="dropdown-divider" /></li>
                                     <li>

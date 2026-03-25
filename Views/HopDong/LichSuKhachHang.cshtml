@@ -2,28 +2,28 @@
 @{
     ViewData["Title"] = "Lịch Sử Khách Hàng";
     Layout = "_AdminLayout";
+    var hopDongs = Model?.ToList() ?? new List<bikey.Models.HopDong>();
+    var hasSearched = ViewBag.HasSearched as bool? == true;
+    var first = hopDongs.FirstOrDefault();
+    var tenKhach = first != null
+        ? (first.HoTenKhach ?? first.KhachHang?.Ten ?? "—")
+        : "—";
+    var tongHd = hopDongs.Count;
+    var daHoanThanh = hopDongs.Count(h => h.TrangThai == "Hoàn thành");
+    var tongChiTieu = hopDongs.Where(h => h.TrangThai == "Hoàn thành").Sum(h => h.TongTien);
 }
 
 @section Styles{
     <link rel="stylesheet" href="~/css/hopdong/lichsukhachhang.css" asp-append-version="true"/>
 }
 
-@* @section Scripts {
+@section Scripts {
     <script>
-        $(document).ready(function() {
-            // Focus vào ô tìm kiếm
-            $('input[name="soDienThoai"]').focus();
-
-            // Animation cho timeline
-            $('.timeline-item').each(function(index) {
-                $(this).delay(index * 100).animate({
-                    opacity: 1,
-                    marginLeft: 0
-                }, 500);
-            });
+        $(function () {
+            $('input[name="soDienThoai"]').trigger('focus');
         });
     </script>
-} *@
+}
 
 <div class="container-header">
     <div class="top-header">
@@ -52,132 +52,121 @@
                 </button>
             </div>
 
-            <p class="search-hint">Nhập số điện thoại khách hàng để xem lịch sử Thuê xe của Khách hàng.</p>
+            <p class="search-hint">Nhập số điện thoại khách hàng để xem lịch sử thuê xe.</p>
         </form>
     </div>
 </div>
 
 <div class="wrapper">
-
     <div class="container-fluid">
-
-        <!-- Results -->
-        @* @if (Model != null && Model.Any())
-        { *@
-            <!-- Customer Info -->
+        @if (hasSearched && hopDongs.Count == 0)
+        {
+            <div class="no-history">
+                <i class="bi bi-inbox" style="font-size: 60px;"></i>
+                <h4 class="mt-3">Không tìm thấy lịch sử</h4>
+                <p>Khách hàng với số điện thoại này chưa có hợp đồng nào.</p>
+            </div>
+        }
+        else if (hopDongs.Count > 0)
+        {
             <div class="customer-info">
                 <div class="customer_title">
-                    <h3>tên khách hàng</h3>
-                    <p class="mb-0">số điện thoại</nav></p>
+                    <h3>@tenKhach</h3>
+                    <p class="mb-0">@ViewBag.SoDienThoai</p>
                 </div>
 
                 <div class="customer-stats">
                     <div class="stat-item">
-                        <div class="stat-value">6</div>
+                        <div class="stat-value">@tongHd</div>
                         <div class="stat-label">Tổng hợp đồng</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-value">10</div>
+                        <div class="stat-value">@daHoanThanh</div>
                         <div class="stat-label">Đã hoàn thành</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-value">1,000,000đ</div>
-                        <div class="stat-label">Tổng chi tiêu</div>
+                        <div class="stat-value">@tongChiTieu.ToString("N0")đ</div>
+                        <div class="stat-label">Tổng chi tiêu (hoàn thành)</div>
                     </div>
                 </div>
             </div>
 
-            <!-- History Timeline -->
             <h3 class="mb-4">Lịch Sử Thuê Xe</h3>
             <div class="timeline">
-                @* @foreach (var hopDong in Model)
-                { *@
+                @foreach (var hopDong in hopDongs)
+                {
+                    var statusClass = hopDong.TrangThai switch
+                    {
+                        "Đang thuê" => "status-active",
+                        "Hoàn thành" => "status-completed",
+                        "Hủy" => "status-cancelled",
+                        _ => "status-active"
+                    };
+                    var chiTietDau = hopDong.ChiTietHopDong?.FirstOrDefault();
                     <div class="timeline-item">
                         <div class="timeline-marker"></div>
                         <div class="timeline-content">
                             <div class="contract-header">
-                                <span class="contract-code">HD000011</span>
-                                <span class="contract-status status-completed">
-                                    Hoàn thành
-                                </span>
+                                <span class="contract-code">HD@(hopDong.MaHopDong.ToString("D6"))</span>
+                                <span class="contract-status @statusClass">@hopDong.TrangThai</span>
                             </div>
 
-                            @* @if (hopDong.ChiTietHopDong?.Any() != true)
-                            { *@
+                            @if (chiTietDau == null)
+                            {
                                 <div class="alert alert-warning alert-sm mb-3">
                                     <p><i class="bi bi-exclamation-triangle"></i> Hợp đồng này thiếu thông tin chi tiết xe thuê</p>
                                 </div>
-                            @* } *@
+                            }
 
                             <div class="contract-details">
                                 <div class="detail-item">
                                     <span class="detail-label">Xe</span>
                                     <span class="detail-value">
-                                        @* @if (hopDong.ChiTietHopDong?.Any() == true)
-                                        { *@
-                                            @* var chiTietDau = hopDong.ChiTietHopDong.First();
-                                            @((chiTietDau.Xe?.TenXe ?? "Không xác định") + " (" + (chiTietDau.Xe?.BienSoXe ?? "N/A") + ")") *@
-                                            Tên xe (biển số xe)
-                                        @* }
+                                        @if (chiTietDau != null)
+                                        {
+                                            @($"{chiTietDau.Xe?.TenXe ?? "Không xác định"} ({chiTietDau.Xe?.BienSoXe ?? "N/A"})")
+                                        }
                                         else
-                                        { *@
-                                            Chưa có thông tin xe
-                                        @* } *@
+                                        {
+                                            <text>Chưa có thông tin xe</text>
+                                        }
                                     </span>
                                 </div>
                                 <div class="detail-item">
                                     <span class="detail-label">Ngày tạo HĐ</span>
-                                    <span class="detail-value">19/03/02026</span>
+                                    <span class="detail-value">@hopDong.NgayTao.ToString("dd/MM/yyyy")</span>
                                 </div>
                                 <div class="detail-item">
                                     <span class="detail-label">Thời gian thuê</span>
                                     <span class="detail-value">
-                                        20/03/2026 - 30/03/2026
+                                        @hopDong.NgayNhanXe.ToString("dd/MM/yyyy") — @hopDong.NgayTraXeDuKien.ToString("dd/MM/yyyy")
                                     </span>
                                 </div>
                                 <div class="detail-item">
                                     <span class="detail-label">Số ngày</span>
                                     <span class="detail-value">
-                                        @* @if (hopDong.ChiTietHopDong?.Any() == true)
-                                        { *@
-                                            @* var soNgay = hopDong.ChiTietHopDong.First().SoNgayThue;
-                                            @(soNgay + " ngày") *@
-                                            10
-                                        @* }
-                                        else
-                                        { *@
-                                            Chưa xác định
-                                        @* } *@
+                                        @(hopDong.SoNgayThue > 0 ? $"{hopDong.SoNgayThue} ngày" : "Chưa xác định")
                                     </span>
                                 </div>
                             </div>
 
-                            @* @if (!string.IsNullOrEmpty(hopDong.GhiChu))
-                            { *@
+                            @if (!string.IsNullOrWhiteSpace(hopDong.GhiChu))
+                            {
                                 <div class="mb-4">
-                                    <p class="text-muted font-size-12px">Ghi chú: đây là Ghi chú của hợp đồng</p>
+                                    <p class="text-muted font-size-12px">Ghi chú: @hopDong.GhiChu</p>
                                 </div>
-                            @* } *@
+                            }
 
                             <div class="contract-total">
-                                Tổng tiền: 200,000đ
-                                <a asp-action="ChiTiet" class="btn btn-sm btn-outline-primary">
+                                Tổng tiền: @hopDong.TongTien.ToString("N0")đ
+                                <a asp-action="ChiTiet" asp-route-id="@hopDong.MaHopDong" class="btn btn-sm btn-outline-primary">
                                     <i class="bi bi-eye"></i> Xem chi tiết
                                 </a>
                             </div>
                         </div>
                     </div>
-                @* } *@
+                }
             </div>
-        @* } *@
-        @* else if (ViewBag.SoDienThoai != null)
-        { *@
-            <div class="no-history">
-                <i class="bi bi-inbox" style="font-size: 60px;"></i>
-                <h4 class="mt-3">Không tìm thấy lịch sử</h4>
-                <p>Khách hàng với số điện thoại này chưa có hợp đồng nào</p>
-            </div>
-        @* } *@
+        }
     </div>
-
 </div>

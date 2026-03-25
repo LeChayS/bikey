@@ -1,0 +1,214 @@
+@{
+    ViewData["Title"] = "Tin tức";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/trangchu/index.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/trangchu/danhsachxe.css" asp-append-version="true" />
+}
+
+<section class="home-hero">
+    <div class="container">
+        <div class="text-center">
+            <h1>Tin tức & Sự kiện</h1>
+            <p class="lead mt-3">
+                Cập nhật những tin tức mới nhất về dịch vụ cho thuê xe và khuyến mãi hấp dẫn từ Bikey
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <article class="card shadow-sm border-0 mb-4">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <div class="bg-primary d-flex align-items-center justify-content-center text-white" style="height: 100%; min-height: 200px;">
+                                <i class="bi bi-newspaper display-1"></i>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <span class="badge bg-primary">Khuyến mãi</span>
+                                    <small class="text-muted">20/03/2026</small>
+                                </div>
+                                <h3 class="card-title">Khuyến mãi đặc biệt - Giảm 20% cho khách hàng mới</h3>
+                                <p class="card-text">
+                                    Chào mừng mùa hè, Bikey triên khai chương trình khuyến mãi hấp dẫn dành cho khách hàng mới.
+                                    Giảm ngay 20% cho đơn thuê xe đầu tiên, áp dụng cho tất cả các dòng xe.
+                                </p>
+                                <a href="#" class="btn btn-outline-primary">Đọc thêm <i class="bi bi-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="card shadow-sm border-0 mb-4">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <div class="bg-success d-flex align-items-center justify-content-center text-white" style="height: 100%; min-height: 200px;">
+                                <i class="bi bi-scooter display-1"></i>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <span class="badge bg-success">Sản phẩm mới</span>
+                                    <small class="text-muted">15/03/2026</small>
+                                </div>
+                                <h3 class="card-title">Ra mắt dòng xe cao cấp Honda SH 2026</h3>
+                                <p class="card-text">
+                                    Bikey vừa bổ sung thêm 10 chiếc Honda SH 2026 hoàn toàn mới vào đội xe.
+                                    Với thiết kế sang trọng, hiện đại, phù hợp cho khách hàng có nhu cầu cao cấp.
+                                </p>
+                                <a href="#" class="btn btn-outline-success">Đọc thêm <i class="bi bi-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="card shadow-sm border-0 mb-4">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <div class="bg-info d-flex align-items-center justify-content-center text-white" style="height: 100%; min-height: 200px;">
+                                <i class="bi bi-award display-1"></i>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <span class="badge bg-info">Thành tích</span>
+                                    <small class="text-muted">10/03/2026</small>
+                                </div>
+                                <h3 class="card-title">Bikey nhận giải thưởng "Dịch vụ xuất sắc 2025"</h3>
+                                <p class="card-text">
+                                    Chúng tôi tự hào thông báo Bikey đã được vinh danh với giải thưởng "Dịch vụ cho thuê xe xuất sắc 2025"
+                                    do Hiệp hội Du lịch TP.HCM trao tặng.
+                                </p>
+                                <a href="#" class="btn btn-outline-info">Đọc thêm <i class="bi bi-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="card shadow-sm border-0 mb-4">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <div class="bg-warning d-flex align-items-center justify-content-center text-white" style="height: 100%; min-height: 200px;">
+                                <i class="bi bi-geo-alt display-1"></i>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <span class="badge bg-warning text-dark">Mở rộng</span>
+                                    <small class="text-muted">05/03/2026</small>
+                                </div>
+                                <h3 class="card-title">Khai trương chi nhánh mới tại Quận 7</h3>
+                                <p class="card-text">
+                                    Để phục vụ tốt hơn khách hàng khu vực phía Nam, Bikey chính thức khai trương chi nhánh thứ 5
+                                    tại Quận 7 với quy mô lớn và đội xe đa dạng.
+                                </p>
+                                <a href="#" class="btn btn-outline-warning">Đọc thêm <i class="bi bi-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">
+                            <i class="bi bi-fire text-danger"></i> Tin nổi bật
+                        </h4>
+                        <div class="list-group list-group-flush">
+                            <a href="#" class="list-group-item list-group-item-action border-0 px-0">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">Mẹo thuê xe tiết kiệm</h6>
+                                    <small class="text-muted">2 ngày trước</small>
+                                </div>
+                                <p class="mb-1 small">Hướng dẫn cách thuê xe tiết kiệm nhất cho chuyến đi dài ngày</p>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action border-0 px-0">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">Chăm sóc xe thuê</h6>
+                                    <small class="text-muted">5 ngày trước</small>
+                                </div>
+                                <p class="mb-1 small">Những lưu ý khi sử dụng xe thuê để tránh phí phạt</p>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action border-0 px-0">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">Thủ tục thuê xe</h6>
+                                    <small class="text-muted">1 tuần trước</small>
+                                </div>
+                                <p class="mb-1 small">Hướng dẫn thủ tục thuê xe nhanh chóng, đơn giản</p>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action border-0 px-0">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">Khuyến mãi tháng 3</h6>
+                                    <small class="text-muted">2 tuần trước</small>
+                                </div>
+                                <p class="mb-1 small">Tổng hợp các chương trình khuyến mãi trong tháng</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm border-0 mb-4 bg-primary text-white">
+                    <div class="card-body">
+                        <h4 class="card-title mb-3">
+                            <i class="bi bi-bell"></i> Đăng ký nhận tin
+                        </h4>
+                        <p class="small">
+                            Đăng ký để nhận thông tin khuyến mãi và tin tức mới nhất từ Bikey
+                        </p>
+                        <form>
+                            <div class="mb-3">
+                                <input type="email" class="form-control" placeholder="Email của bạn" />
+                            </div>
+                            <button type="submit" class="btn btn-light w-100">Đăng ký</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">
+                            <i class="bi bi-tags text-primary"></i> Danh mục
+                        </h4>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a href="#" class="badge bg-light text-dark text-decoration-none">Khuyến mãi</a>
+                            <a href="#" class="badge bg-light text-dark text-decoration-none">Sản phẩm mới</a>
+                            <a href="#" class="badge bg-light text-dark text-decoration-none">Hướng dẫn</a>
+                            <a href="#" class="badge bg-light text-dark text-decoration-none">Tin tức</a>
+                            <a href="#" class="badge bg-light text-dark text-decoration-none">Sự kiện</a>
+                            <a href="#" class="badge bg-light text-dark text-decoration-none">Mẹo vặt</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nav aria-label="Pagination" class="mt-5">
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</section>

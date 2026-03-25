@@ -1,0 +1,24 @@
+/* Thanh lọc (Xe / Hợp đồng / Hóa đơn): ô nhập chia đều phần còn lại, nút Lọc & Làm mới tối đa 170px */
+.filter-section .filter-bar {
+    --filter-action-max: 170px;
+}
+
+.filter-section .filter-bar > .filter-bar-field {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.filter-section .filter-bar > .filter-bar-field.col {
+    max-width: none;
+}
+
+.filter-section .filter-bar > .filter-bar-action {
+    flex: 0 0 auto;
+    max-width: var(--filter-action-max);
+}
+
+.filter-section .filter-bar > .filter-bar-action .btn,
+.filter-section .filter-bar > .filter-bar-action a.btn {
+    width: 100%;
+    max-width: var(--filter-action-max);
+}

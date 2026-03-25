@@ -4,6 +4,11 @@
     ViewData["Title"] = "Trang Chu";
 }
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/trangchu/danhsachxe.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/trangchu/index.css" asp-append-version="true" />
+}
+
 <section class="home-hero" id="gioi-thieu">
     <div class="container">
         <div class="row align-items-center g-4">
@@ -40,7 +45,16 @@
                 <div class="col-md-6 col-xl-4" id="@xe.Slug">
                     <article class="bike-card bike-card--catalog">
                         <div class="bike-thumbnail">
-                            <i class="bi @xe.BieuTuong"></i>
+                            @if (!string.IsNullOrWhiteSpace(xe.HinhAnh))
+                            {
+                                <img src="@xe.HinhAnh" alt="@xe.TenXe" class="bike-thumbnail__image" loading="lazy" />
+                            }
+                            else
+                            {
+                                <div class="bike-thumbnail__placeholder">
+                                    <i class="bi @xe.BieuTuong"></i>
+                                </div>
+                            }
                         </div>
                         <div class="bike-info">
                             <div class="bike-meta">
@@ -52,7 +66,7 @@
                                 <div class="bike-price">@xe.GiaTheoNgay</div>
                                 <div class="bike-actions">
                                     <a asp-controller="DatXe" asp-action="Create" asp-route-maXe="@xe.MaXe" class="btn btn-primary">Đặt xe</a>
-                                    <a asp-controller="Detail" asp-action="Detail" asp-route-slug="@xe.Slug" class="btn btn-outline-primary">Xem chi tiết</a>
+                                    <a asp-controller="TrangChu" asp-action="ChiTietXe" asp-route-slug="@xe.Slug" class="btn btn-outline-primary">Xem chi tiết</a>
                                 </div>
                             </div>
                         </div>

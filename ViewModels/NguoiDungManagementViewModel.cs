@@ -10,8 +10,6 @@ namespace bikey.ViewModels
         public CreateNguoiDungInput CreateUser { get; init; } = new();
 
         public EditNguoiDungInput EditUser { get; init; } = new();
-
-        public RolePermissionMatrixViewModel RolePermissions { get; init; } = new();
     }
 
     public class CreateNguoiDungInput
@@ -38,7 +36,7 @@ namespace bikey.ViewModels
         public string XacNhanMatKhau { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Vui lòng chọn quyền.")]
-        public string VaiTro { get; set; } = "Khách hàng";
+        public string VaiTro { get; set; } = "User";
     }
 
     public class EditNguoiDungInput
@@ -68,18 +66,9 @@ namespace bikey.ViewModels
         public string? XacNhanMatKhauMoi { get; set; }
 
         [Required(ErrorMessage = "Vui lòng chọn quyền.")]
-        public string VaiTro { get; set; } = "Khách hàng";
+        public string VaiTro { get; set; } = "User";
 
         public bool IsActive { get; set; } = true;
-    }
-
-    public class RolePermissionMatrixViewModel
-    {
-        public PermissionSetInput Admin { get; set; } = new();
-
-        public PermissionSetInput Staff { get; set; } = new();
-
-        public PermissionSetInput KhachHang { get; set; } = new();
     }
 
     public class UserPermissionEditorViewModel
@@ -97,60 +86,35 @@ namespace bikey.ViewModels
 
     public class PermissionSetInput
     {
-        public bool CanManageXe { get; set; }
         public bool CanViewXe { get; set; }
         public bool CanCreateXe { get; set; }
         public bool CanEditXe { get; set; }
         public bool CanDeleteXe { get; set; }
 
-        public bool CanManageLoaiXe { get; set; }
         public bool CanViewLoaiXe { get; set; }
         public bool CanCreateLoaiXe { get; set; }
         public bool CanEditLoaiXe { get; set; }
         public bool CanDeleteLoaiXe { get; set; }
 
-        public bool CanManageHopDong { get; set; }
         public bool CanViewHopDong { get; set; }
-        public bool CanCreateHopDong { get; set; }
-        public bool CanEditHopDong { get; set; }
-        public bool CanDeleteHopDong { get; set; }
+        public bool CanProcessBooking { get; set; }
+        public bool CanReturnVehicle { get; set; }
         public bool CanPrintHopDong { get; set; }
 
-        public bool CanManageHoaDon { get; set; }
         public bool CanViewHoaDon { get; set; }
-        public bool CanCreateHoaDon { get; set; }
-        public bool CanEditHoaDon { get; set; }
-        public bool CanDeleteHoaDon { get; set; }
         public bool CanPrintHoaDon { get; set; }
 
-        public bool CanManageUser { get; set; }
         public bool CanViewUser { get; set; }
         public bool CanCreateUser { get; set; }
         public bool CanEditUser { get; set; }
         public bool CanDeleteUser { get; set; }
 
-        public bool CanManageBanner { get; set; }
-        public bool CanViewBanner { get; set; }
-        public bool CanCreateBanner { get; set; }
-        public bool CanEditBanner { get; set; }
-        public bool CanDeleteBanner { get; set; }
-
         public bool CanViewBaoCao { get; set; }
         public bool CanViewThongKe { get; set; }
         public bool CanExportBaoCao { get; set; }
 
-        public bool CanManageCart { get; set; }
-        public bool CanViewCart { get; set; }
-        public bool CanCheckout { get; set; }
-
         public bool CanDatCho { get; set; }
         public bool CanViewDatCho { get; set; }
-
-        public bool CanManageHinhAnhXe { get; set; }
-        public bool CanViewHinhAnhXe { get; set; }
-        public bool CanUploadHinhAnhXe { get; set; }
-        public bool CanEditHinhAnhXe { get; set; }
-        public bool CanDeleteHinhAnhXe { get; set; }
     }
 
     public class PermissionGroupMetadata
@@ -194,9 +158,8 @@ namespace bikey.ViewModels
                 Items =
                 [
                     new PermissionItemMetadata("CanViewHopDong", "Xem"),
-                    new PermissionItemMetadata("CanCreateHopDong", "Tạo hợp đồng mới"),
-                    new PermissionItemMetadata("CanEditHopDong", "Sửa thông tin hợp đồng"),
-                    new PermissionItemMetadata("CanDeleteHopDong", "Xóa hợp đồng"),
+                    new PermissionItemMetadata("CanProcessBooking", "Xử lý đơn đặt chỗ"),
+                    new PermissionItemMetadata("CanReturnVehicle", "Trả xe"),
                     new PermissionItemMetadata("CanPrintHopDong", "In hợp đồng")
                 ]
             },
@@ -207,22 +170,7 @@ namespace bikey.ViewModels
                 Items =
                 [
                     new PermissionItemMetadata("CanViewHoaDon", "Xem"),
-                    new PermissionItemMetadata("CanCreateHoaDon", "Tạo hóa đơn mới"),
-                    new PermissionItemMetadata("CanEditHoaDon", "Sửa thông tin hóa đơn"),
-                    new PermissionItemMetadata("CanDeleteHoaDon", "Xóa hóa đơn"),
                     new PermissionItemMetadata("CanPrintHoaDon", "In hóa đơn")
-                ]
-            },
-            new PermissionGroupMetadata
-            {
-                Title = "Quản lý banner",
-                Icon = "bi-badge-ad",
-                Items =
-                [
-                    new PermissionItemMetadata("CanViewBanner", "Xem"),
-                    new PermissionItemMetadata("CanCreateBanner", "Tạo banner mới"),
-                    new PermissionItemMetadata("CanEditBanner", "Sửa thông tin banner"),
-                    new PermissionItemMetadata("CanDeleteBanner", "Xóa banner")
                 ]
             },
             new PermissionGroupMetadata
@@ -246,18 +194,6 @@ namespace bikey.ViewModels
                     new PermissionItemMetadata("CanViewBaoCao", "Xem báo cáo"),
                     new PermissionItemMetadata("CanViewThongKe", "Xem thống kê"),
                     new PermissionItemMetadata("CanExportBaoCao", "In báo cáo")
-                ]
-            },
-            new PermissionGroupMetadata
-            {
-                Title = "Quản lý hình ảnh xe",
-                Icon = "bi-images",
-                Items =
-                [
-                    new PermissionItemMetadata("CanViewHinhAnhXe", "Xem"),
-                    new PermissionItemMetadata("CanUploadHinhAnhXe", "Thêm hình ảnh"),
-                    new PermissionItemMetadata("CanEditHinhAnhXe", "Sửa hình ảnh"),
-                    new PermissionItemMetadata("CanDeleteHinhAnhXe", "Xóa hình ảnh")
                 ]
             }
         ];

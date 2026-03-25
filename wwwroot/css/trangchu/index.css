@@ -1,0 +1,178 @@
+/* TrangChu/Index — hero + dải thông tin */
+
+.home-hero {
+    background: #0d6efd;
+    color: #fff;
+    padding: 4.5rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.home-hero::before,
+.home-hero::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.home-hero::before {
+    width: 340px;
+    height: 340px;
+    right: -100px;
+    top: -80px;
+}
+
+.home-hero::after {
+    width: 220px;
+    height: 220px;
+    left: -90px;
+    bottom: -70px;
+}
+
+.home-hero h1 {
+    font-size: clamp(2.3rem, 5vw, 4rem);
+    line-height: 1.08;
+    font-weight: 800;
+    margin: 1rem 0 1.25rem;
+}
+
+.hero-copy {
+    max-width: 620px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.05rem;
+    margin-bottom: 1.8rem;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.hero-actions .btn-primary {
+    background: #fff;
+    color: var(--primary-blue-dark);
+    border-color: #fff;
+}
+
+.hero-actions .btn-outline-light:hover {
+    color: var(--primary-blue-dark);
+}
+
+.hero-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.hero-stat {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 20px;
+    padding: 1rem 1.1rem;
+    backdrop-filter: blur(4px);
+}
+
+.hero-stat strong {
+    display: block;
+    font-size: 1.4rem;
+    margin-bottom: 0.25rem;
+}
+
+.hero-highlight-card {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 28px;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 20px 40px rgba(5, 32, 79, 0.22);
+}
+
+.hero-highlight-card__icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.16);
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.hero-highlight-card h2 {
+    font-size: 1.55rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+}
+
+.hero-feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 1.2rem 0 0;
+}
+
+.hero-feature-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-bottom: 0.75rem;
+}
+
+.hero-feature-list li::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.14);
+}
+
+.info-strip {
+    background: linear-gradient(180deg, rgba(13, 110, 253, 0.03) 0%, rgba(13, 110, 253, 0.08) 100%);
+}
+
+.info-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 1.6rem;
+    text-align: center;
+    height: 100%;
+    box-shadow: 0 12px 24px rgba(13, 58, 128, 0.07);
+}
+
+.info-card i {
+    font-size: 2rem;
+    color: var(--primary-blue);
+}
+
+.info-card h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 1rem 0 0.6rem;
+}
+
+.info-card p {
+    color: var(--text-muted);
+    margin-bottom: 0;
+}
+
+@media (max-width: 991.98px) {
+    .hero-stats {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .home-hero {
+        padding: 3.5rem 0;
+    }
+
+    .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

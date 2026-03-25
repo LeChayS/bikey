@@ -36,6 +36,7 @@ namespace bikey.Models
         public string VaiTro { get; set; } = "User"; // User, Staff, Admin
         [Display(Name = "Số điện thoại")]
         [Phone(ErrorMessage = "Số điện thoại không hợp lệ")]
+        [RegularExpression(@"^\d{10}$", ErrorMessage = "Số điện thoại phải có đúng 10 chữ số.")]
         [StringLength(20)]
         public string? SoDienThoai { get; set; }
 
@@ -49,6 +50,9 @@ namespace bikey.Models
 
         [Display(Name = "Trạng thái")]
         public bool IsActive { get; set; } = true;
+
+        [Display(Name = "Tài khoản hệ thống")]
+        public bool IsSystemAccount { get; set; } = false;
 
         [Display(Name = "Ngày tạo")]
         public DateTime NgayTao { get; set; } = DateTime.Now;

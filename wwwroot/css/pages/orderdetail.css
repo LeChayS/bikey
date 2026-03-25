@@ -1,0 +1,201 @@
+/* Color Palette - Maximum 3 main colors */
+:root {
+    --primary: #2563eb;
+    --secondary: #6b7280;
+    --white: #ffffff;
+    --light-gray: #f9fafb;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --success: #059669;
+    --warning: #d97706;
+    --danger: #dc2626;
+}
+
+.wrapper {
+    padding: 0px 60px;
+    margin-bottom: 30px;
+    margin-top: 30px;
+}
+
+.container-header {
+    background: linear-gradient(135deg, #4f7cff, #2b59ff);
+    padding: 30px 60px;
+    margin-bottom: 30px;
+    border-radius: 30px;
+}
+
+.container-fluid {
+    background-color: white;
+    padding: 20px 30px;
+    border-radius: 30px;
+    margin-bottom: 30px;
+}
+
+.contract-header {
+    color: white;
+    text-align: center;
+}
+
+.contract-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+}
+
+.contract-status {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 9999px;
+    margin-top: 0.75rem;
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+}
+
+/* contract body */
+.container-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 22px;
+}
+
+.info-section {
+    margin-bottom: 2rem;
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--primary);
+}
+
+/* body */
+.title {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--navy);
+    margin-bottom: 16px;
+}
+
+.title i {
+    font-size: 1.1rem;
+    opacity: 0.85;
+}
+
+.info-body{
+    padding: 18px 20px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+}
+
+.info-line {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+}
+
+.info-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.info-value {
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: var(--text-main);
+    line-height: 1.35;
+    word-break: break-word;
+}
+
+/* customer info */
+.body-grid-cus {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+/* vehicle info */
+.info-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.info-name{
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin: 0;
+    letter-spacing: -0.01em;
+    line-height: 1.35;
+}
+
+.info-plate{
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.body-grid-veh {
+    display: grid;
+    grid-template-columns: minmax(0, 200px) minmax(350px, max-content) minmax(153px, max-content);
+    gap: 1rem 1rem;
+    align-items: start;
+    justify-content: start;
+}
+
+.info-media {
+    border-radius: 12px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #eef4fc 0%, #e2ebf8 100%);
+    border: 1px solid var(--border);
+    aspect-ratio: 1;
+    max-width: 160px;
+}
+
+.media-placeholder {
+    width: 100%;
+    height: 100%;
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(23, 50, 92, 0.35);
+    font-size: 2.5rem;
+}
+
+.info-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* order info */
+.info-row {
+    /* display: flex; */
+    justify-content: space-between;
+    padding: 16px 0;
+    border-bottom: 1px dashed #eee;
+}

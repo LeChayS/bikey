@@ -1,0 +1,122 @@
+.stat-card {
+    background: white;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: top;
+}
+
+.stat-card--center {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.stat-card--no-icon {
+    gap: 4px;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+}
+
+.stat-card.blue {
+    background: rgb(158, 198, 243, 0.3);
+}
+
+.stat-card.orange {
+    background: rgb(250, 206, 104, 0.3);
+}
+
+.stat-card.green {
+    background: rgb(199, 234, 187, 0.3);
+}
+
+.stat-card.purple {
+    background: rgb(203, 157, 240, 0.3);
+}
+
+.stat-card.red {
+    background: rgb(250, 104, 104, 0.3);
+}
+
+.stat-card.teal {
+    background: rgb(153, 246, 228, 0.3);
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.stat-icon i {
+    font-size: 25px;
+    color: black;
+}
+
+.stat-icon.blue {
+    background: rgb(158, 198, 243, 0.3);
+}
+
+.stat-icon.orange {
+    background: rgb(250, 206, 104, 0.3);
+}
+
+.stat-icon.green {
+    background: rgb(199, 234, 187, 0.3);
+}
+
+.stat-icon.purple {
+    background: rgb(203, 157, 240, 0.3);
+}
+
+.stat-icon.red {
+    background: rgb(250, 104, 104, 0.3);
+}
+
+.stat-icon.teal {
+    background: rgb(153, 246, 228, 0.3);
+}
+
+.stat-value {
+    font-size: 32px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    color: #666;
+    font-size: 14px;
+}
+
+.stat-change {
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+.stat-change.positive {
+    color: #28a745;
+}
+
+.stat-change.negative {
+    color: #dc3545;
+}
+
+/* Hiệu ứng đặc biệt cho card Đơn chờ xử lý */
+a .stat-card:hover {
+    border-color: #ff6b35 !important;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+}

@@ -39,8 +39,9 @@ namespace bikey.Pages.Account
                 .OrderByDescending(datCho => datCho.NgayDat)
                 .Select(datCho => new OrderHistoryItem
                 {
+                    MaDatCho = datCho.MaDatCho,
                     MaDon = $"DC-{datCho.MaDatCho:D5}",
-                    TenXe = datCho.Xe != null ? datCho.Xe.TenXe : "Xe khong ton tai",
+                    TenXe = datCho.Xe != null ? datCho.Xe.TenXe : "Xe không tồn tại",
                     ThoiGianThue = $"{(datCho.NgayTraXe - datCho.NgayNhanXe).Days} ngay",
                     TongTien = $"{(datCho.Xe != null ? datCho.Xe.GiaThue * (datCho.NgayTraXe - datCho.NgayNhanXe).Days : 0):N0} VND",
                     TrangThai = datCho.TrangThai,
@@ -52,19 +53,19 @@ namespace bikey.Pages.Account
                 .ToListAsync();
         }
 
-        private static string MapStatusCssClass(string status)
+        private static string MapStatusCssClass(string trangThai) => trangThai switch
         {
-            return status switch
-            {
-                "Đang giữ chỗ" => "success",
-                "Hủy" => "danger",
-                "Đã xử lý" => "success",
-                _ => "pending"
-            };
-        }
+            "Đã xử lý" => "success",
+            "Chờ xác nhận" => "warning",
+            "Hủy" => "danger",
+            "Hoàn thành" => "info",
+            _ => "warning"
+        };
 
         public class OrderHistoryItem
         {
+            public int MaDatCho { get; set; }
+
             public string MaDon { get; set; } = string.Empty;
 
             public string TenXe { get; set; } = string.Empty;

@@ -1,0 +1,188 @@
+@page "/ThongKeBaoCao"
+@model bikey.Pages.ThongKeBaoCao.IndexModel
+@using System.Text.Json
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Thống kê & báo cáo";
+    var jsonOpts = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+    var thongKeBoot = new
+    {
+        chartFilter = Model.Data.ChartFilter,
+        bieuDoDoanhThu = Model.Data.BieuDoDoanhThu,
+        bieuDoChiTieu = Model.Data.BieuDoChiTieu,
+        bieuDoThietHai = Model.Data.BieuDoThietHai,
+        topXeThueNhieu = Model.Data.TopXeThueNhieu,
+        bieuDoLoaiXe = Model.Data.BieuDoLoaiXe,
+        bieuDoHopDongTrangThai = Model.Data.BieuDoHopDongTrangThai
+    };
+    var thongKeJson = JsonSerializer.Serialize(thongKeBoot, jsonOpts);
+}
+
+@section Styles {
+    <link href="~/css/components/stat-card.css" rel="stylesheet" asp-append-version="true">
+    <link href="~/css/pages/thongkebaocao.css" rel="stylesheet" asp-append-version="true">
+}
+
+<div class="top-header">
+    <h1 class="mb-0"><i class="bi bi-bar-chart-line"></i> Thống Kê & Báo Cáo</h1>
+</div>
+
+<div class="wrapper">
+    <div class="container-fluid">
+        <div class="row mb-4">
+            <div class="col-lg-4 col-md-6">
+                <stat-card label="Doanh thu @Model.Data.PeriodLabel" value="@($"{Model.Data.DoanhThu:N0}đ")"
+                    icon="bi-cash-stack" tone="blue" label-id="doanhThuLabel" value-id="doanhThuValue" />
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <stat-card label="Đơn đặt @Model.Data.PeriodLabel" value="@Model.Data.TongDonDat"
+                    icon="bi-calendar-check" tone="orange" label-id="donDatLabel" value-id="donDatValue" />
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <stat-card label="Xe đang cho thuê" value="@Model.Data.XeDangChoThue" icon="bi-bicycle" tone="green"
+                    value-id="xeDangThueValue" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 col-md-6">
+                <stat-card label="Khách hàng mới @Model.Data.PeriodLabel" value="@Model.Data.KhachHangMoi"
+                    icon="bi-person-plus" tone="purple" label-id="khachHangMoiLabel" value-id="khachHangMoiValue" />
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <stat-card label="Tổng phí đền bù @Model.Data.PeriodLabel" value="@($"{Model.Data.TongThietHai:N0}đ")"
+                    icon="bi-exclamation-triangle" tone="red" label-id="tongThietHaiLabel"
+                    value-id="tongThietHaiValue" />
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <stat-card label="Doanh thu gốc @Model.Data.PeriodLabel" value="@($"{Model.Data.DoanhThuGoc:N0}đ")"
+                    icon="bi-currency-dollar" tone="teal" label-id="doanhThuGocLabel" value-id="doanhThuGocValue" />
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row g-4 align-items-end">
+            <div class="col-md-12">
+                <label class="form-label">Lọc dữ liệu theo:</label>
+                <select id="chartFilter" class="form-select">
+                    @if (Model.Data.ChartFilter == "today")
+                    {
+                        <option value="today" selected>Hôm nay</option>
+                    }
+                    else
+                    {
+                        <option value="today">Hôm nay</option>
+                    }
+
+                    @if (Model.Data.ChartFilter == "week")
+                    {
+                        <option value="week" selected>Tuần này</option>
+                    }
+                    else
+                    {
+                        <option value="week">Tuần này</option>
+                    }
+
+                    @if (Model.Data.ChartFilter == "month")
+                    {
+                        <option value="month" selected>Tháng này</option>
+                    }
+                    else
+                    {
+                        <option value="month">Tháng này</option>
+                    }
+
+                    @if (Model.Data.ChartFilter == "quarter")
+                    {
+                        <option value="quarter" selected>Quý này</option>
+                    }
+                    else
+                    {
+                        <option value="quarter">Quý này</option>
+                    }
+
+                    @if (Model.Data.ChartFilter == "year")
+                    {
+                        <option value="year" selected>Năm nay</option>
+                    }
+                    else
+                    {
+                        <option value="year">Năm nay</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-lg-6">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <p id="revenueTitle">Doanh thu theo ngày</p>
+                    <small class="text-muted">Đơn vị: VNĐ</small>
+                </div>
+                <div id="revenueChartContainer" style="width: 100%; height: auto;">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <p id="topVehiclesTitle">Top 5 xe được thuê nhiều nhất</p>
+                    <small class="text-muted">Số lần thuê</small>
+                </div>
+                <div id="topVehiclesChartContainer" style="width: 100%; height: auto;">
+                    <canvas id="topVehiclesChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-lg-6">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <p id="vehicleTypesTitle">Doanh thu theo loại xe</p>
+                    <small class="text-muted">Đơn vị: VNĐ</small>
+                </div>
+                <div id="vehicleTypesChartContainer" style="width: 100%; height: auto;">
+                    <canvas id="vehicleTypesChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <p id="contractStatusTitle">Thống kê hợp đồng theo trạng thái</p>
+                    <small class="text-muted">Số lượng hợp đồng</small>
+                </div>
+                <div id="contractStatusChartContainer" style="width: 100%; height: auto;">
+                    <canvas id="contractStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="chart-card chart-card--large">
+            <div class="chart-header">
+                <p id="profitBreakdownTitle">Cơ cấu lợi nhuận</p>
+                <small class="text-muted">Tiền thuê + tiền sửa chữa + phụ phí</small>
+            </div>
+            <div id="profitBreakdownChartContainer" style="width: 100%; height: auto;">
+                <canvas id="profitBreakdownChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/chart.js/dist/chart.umd.min.js" asp-append-version="true"></script>
+    <script>
+        window.__THONGKE = @Html.Raw(thongKeJson);
+    </script>
+    <script src="~/js/thongkebaocao/index.js" asp-append-version="true"></script>
+}

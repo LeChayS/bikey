@@ -1,6 +1,9 @@
+@using bikey.Models.ViewModels
+@model IEnumerable<bikey.Models.DatCho>
 @{
     Layout = "_AdminLayout";
     ViewData["Title"] = "Tìm Phiếu Đặt Chỗ";
+    var hasSearched = ViewBag.HasSearched == true;
 }
 
 @section Styles {
@@ -10,7 +13,6 @@
 
 @section Scripts {
     <script>
-        // Focus vào ô nhập số điện thoại
         $(document).ready(function () {
             $('input[name="soDienThoai"]').focus();
         });
@@ -30,10 +32,10 @@
     </div>
 
     <div class="search-card">
-        <form method="post" class="search-form">
+        <form method="get" asp-action="TimPhieuDatCho" class="search-form">
             <div class="search-input-wrapper">
                 <input type="tel" name="soDienThoai" class="form-control search-input" placeholder="Nhập số điện thoại"
-                    value="@ViewBag.SoDienThoai" pattern="[0-9]{10}" required />
+                    value="@ViewBag.SoDienThoai" pattern="[0-9]{10,11}" required />
 
                 <button type="submit" class="btn btn-search">
                     <span>Tìm kiếm</span>
@@ -47,34 +49,49 @@
 
 <div class="wrapper">
     <div class="container-fluid">
-
-        <!-- Kết quả tìm kiếm -->
-        @* @if (ViewBag.DanhSachPhieu != null)
-        { *@
         <div class="results-section">
             <h3 class="mb-3">Kết quả tìm kiếm</h3>
 
-            @* @if (((List<bikey.Models.DatCho>)ViewBag.DanhSachPhieu).Any())
+            @if (!hasSearched)
+            {
+                <div class="no-results">
+                    <i class="bi bi-search" style="font-size: 60px;"></i>
+                    <p class="mt-3">Nhập số điện thoại để bắt đầu tìm kiếm phiếu đặt chỗ.</p>
+                </div>
+            }
+            else if (Model.Any())
+            {
+                @foreach (var phieu in Model)
                 {
-                    @foreach (var phieu in (List<bikey.Models.DatCho>)ViewBag.DanhSachPhieu)
-                    { *@
+                    var vm = new OrderCardVM
+                    {
+                        Id = phieu.MaDatCho,
+                        OrderCode = $"Đơn #DC{phieu.MaDatCho:D6}",
+                        OrderDate = phieu.NgayDat,
+                        StatusText = phieu.TrangThai,
+                        CustomerName = string.IsNullOrWhiteSpace(phieu.HoTen) ? "Khách vãng lai" : phieu.HoTen,
+                        Phone = phieu.SoDienThoai ?? "—",
+                        Email = phieu.Email ?? "—",
+                        VehicleName = phieu.Xe?.TenXe ?? "—",
+                        Plate = phieu.Xe?.BienSoXe ?? "—",
+                        PricePerDay = phieu.Xe?.GiaThue ?? 0,
+                        TotalDays = phieu.SoNgayThue,
+                        FromDate = phieu.NgayNhanXe,
+                        ToDate = phieu.NgayTraXe,
+                        TotalPrice = phieu.TongTienDuKien,
+                        Note = phieu.GhiChu
+                    };
 
-                        @await Component.InvokeAsync("OrderCard");
-
-                    @* }
+                    @await Component.InvokeAsync("OrderCard", new { model = vm })
                 }
-                else
-                { *@
-            <div class="no-results">
-                <i class="bi bi-inbox" style="font-size: 60px;"></i>
-                <p class="mt-3">Không tìm thấy phiếu đặt chỗ nào với số điện thoại này</p>
-            </div>
-            @* } *@
+            }
+            else
+            {
+                <div class="no-results">
+                    <i class="bi bi-inbox" style="font-size: 60px;"></i>
+                    <p class="mt-3">Không tìm thấy phiếu đặt chỗ nào với số điện thoại này</p>
+                </div>
+            }
         </div>
-        @* } *@
     </div>
 </div>
-
-@await Html.PartialAsync("_OrderCardCreateModal")
-@await Html.PartialAsync("_OrderCardDenyModal")
-

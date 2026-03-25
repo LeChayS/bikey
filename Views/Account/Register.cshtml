@@ -34,7 +34,7 @@
 
                 <div class="mb-3">
                     <label for="SoDienThoai" class="form-label">@Html.DisplayNameFor(model => model.SoDienThoai)</label>
-                    <input asp-for="SoDienThoai" class="form-control form-control-lg" placeholder="Nhập số điện thoại" />
+                    <input asp-for="SoDienThoai" class="form-control form-control-lg" placeholder="Nhập số điện thoại" inputmode="numeric" maxlength="10" pattern="\d{10}" />
                     <span asp-validation-for="SoDienThoai" class="text-danger"></span>
                 </div>
 
