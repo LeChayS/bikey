@@ -1,22 +1,19 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace bikey.Models.ViewModels
 {
     public class OrderCardVM
     {
-        public string OrderCode { get; set; }
+        public string OrderCode { get; set; } = string.Empty;
         public DateTime OrderDate { get; set; }
-        public string StatusText { get; set; }
+        public string StatusText { get; set; } = string.Empty;
 
-        public string CustomerName { get; set; }
-        public string Phone { get; set; }
-        public string Email { get; set; }
+        public string CustomerName { get; set; } = string.Empty;
+        public string Phone { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
 
-        public string VehicleName { get; set; }
-        public string Plate { get; set; }
+        public string VehicleName { get; set; } = string.Empty;
+        public string Plate { get; set; } = string.Empty;
         public decimal PricePerDay { get; set; }
 
         public int TotalDays { get; set; }

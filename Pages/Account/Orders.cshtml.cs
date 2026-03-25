@@ -55,12 +55,11 @@ namespace bikey.Pages.Account
 
         private static string MapStatusCssClass(string trangThai) => trangThai switch
         {
-            "Chờ xác nhận" => "pending",
-            "Đang giữ chỗ" => "success",
-            "Hủy" => "danger",
             "Đã xử lý" => "success",
-            "Hoàn thành" => "completed",
-            _ => "pending"
+            "Chờ xác nhận" => "warning",
+            "Hủy" => "danger",
+            "Hoàn thành" => "info",
+            _ => "warning"
         };
 
         public class OrderHistoryItem

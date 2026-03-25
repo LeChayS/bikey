@@ -53,9 +53,7 @@
                                     {
                                         "Chờ xác nhận" => "/History/OrderDetail",
                                         "Hủy" => "/History/OrderDetail",
-                                        "Đã xử lý" => "/History/ContractDetail",
-                                        "Hoàn thành" => "/History/ContractDetail",
-                                        _ => "/History/OrderDetail"
+                                        _ => "/History/ContractDetail"
                                     };
                                 }
                                 <a asp-page="@detailPage" asp-route-id="@order.MaDatCho" class="btn btn-sm btn-outline-primary mt-2">Xem chi tiết</a>

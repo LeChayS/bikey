@@ -1,12 +1,9 @@
 using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
 using bikey.Repository;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using bikey.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 
 namespace bikey.Pages.Account
 {
@@ -15,9 +12,12 @@ namespace bikey.Pages.Account
     {
         private readonly BikeyDbContext _context;
 
-        public ChangePasswordModel(BikeyDbContext context)
+        private readonly IUserService _userService;
+
+        public ChangePasswordModel(BikeyDbContext context, IUserService userService)
         {
             _context = context;
+            _userService = userService;
         }
 
         [BindProperty]
@@ -37,7 +37,7 @@ namespace bikey.Pages.Account
                 return Page();
             }
 
-            var user = await FindCurrentUserAsync();
+            var user = await _userService.FindCurrentUserAsync(User);
 
             if (user is null)
             {
@@ -59,68 +59,12 @@ namespace bikey.Pages.Account
 
             user.MatKhau = Input.NewPassword;
             await _context.SaveChangesAsync();
-            await RefreshSignInAsync(user);
+            await _userService.RefreshSignInAsync(user, HttpContext);
 
             StatusMessage = "Đổi mật khẩu thành công.";
             ModelState.Clear();
             Input = new InputModel();
             return Page();
-        }
-
-        private async Task<Models.NguoiDung?> FindCurrentUserAsync()
-        {
-            if (int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId))
-            {
-                return await _context.NguoiDung.FirstOrDefaultAsync(item => item.Id == userId);
-            }
-
-            var email = User.FindFirstValue(ClaimTypes.Email);
-            if (!string.IsNullOrWhiteSpace(email))
-            {
-                var normalizedEmail = email.Trim().ToLowerInvariant();
-                return await _context.NguoiDung.FirstOrDefaultAsync(item =>
-                    item.Email != null && item.Email.ToLower() == normalizedEmail);
-            }
-
-            return null;
-        }
-
-        private async Task RefreshSignInAsync(Models.NguoiDung user)
-        {
-            var claims = new List<Claim>
-            {
-                new(ClaimTypes.Name, user.Ten ?? user.Email ?? "User"),
-                new(ClaimTypes.MobilePhone, user.SoDienThoai ?? string.Empty)
-            };
-
-            claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
-
-            if (!string.IsNullOrWhiteSpace(user.Email))
-            {
-                claims.Add(new Claim(ClaimTypes.Email, user.Email));
-            }
-
-            if (!string.IsNullOrWhiteSpace(user.DiaChi))
-            {
-                claims.Add(new Claim(ClaimTypes.StreetAddress, user.DiaChi));
-            }
-
-            if (!string.IsNullOrWhiteSpace(user.VaiTro))
-            {
-                claims.Add(new Claim(ClaimTypes.Role, user.VaiTro));
-            }
-
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(identity);
-
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                principal,
-                new AuthenticationProperties
-                {
-                    IsPersistent = true,
-                    ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
-                });
         }
 
         public class InputModel

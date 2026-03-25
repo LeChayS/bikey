@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using bikey.Models;
 using bikey.Repository;
+using bikey.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,10 +15,12 @@ namespace bikey.Controllers
         private const decimal DepositRate = 0.13m;
         private const decimal TimeFactor = 0.4m;
         private readonly BikeyDbContext _context;
+        private readonly IUserService _userService;
 
-        public HopDongController(BikeyDbContext context)
+        public HopDongController(BikeyDbContext context, IUserService userService)
         {
             _context = context;
+            _userService = userService;
         }
 
         [HttpGet]
@@ -65,7 +68,7 @@ namespace bikey.Controllers
             ViewBag.TuKhoa = tuKhoa;
             ViewBag.DonChoXuLy = await CountDatChoTrongHangDoiAsync();
             ViewBag.DonChoXuLyMoi = await _context.DatCho.CountAsync(item =>
-                (item.TrangThai == ChoXacNhan || item.TrangThai == DangGiuCho)
+                item.TrangThai == ChoXacNhan
                 && item.NgayDat.Date == DateTime.Today);
             ViewBag.TongDangThue = await allContracts.CountAsync(item => item.TrangThai == "Đang thuê");
             ViewBag.TongHoanThanh = await allContracts.CountAsync(item => item.TrangThai == "Hoàn thành");
@@ -76,13 +79,8 @@ namespace bikey.Controllers
         [HttpGet]
         public async Task<IActionResult> DonChoXuLy(string? searchString, DateTime? tuNgay, DateTime? denNgay)
         {
-            var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
-                ? parsedUserId
-                : 0;
-
-            var permission = userId > 0
-                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId)
-                : null;
+            var userId = _userService.GetUserIdFromClaims(User);
+            var permission = userId.HasValue ? await _userService.GetPermissionAsync(userId.Value) : null;
 
             if (permission?.CanProcessBooking != true)
             {
@@ -92,7 +90,7 @@ namespace bikey.Controllers
             var query = _context.DatCho
                 .AsNoTracking()
                 .Include(item => item.Xe)
-                .Where(item => item.TrangThai == ChoXacNhan || item.TrangThai == DangGiuCho)
+                .Where(item => item.TrangThai == ChoXacNhan)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(searchString))
@@ -273,13 +271,8 @@ namespace bikey.Controllers
         [HttpGet]
         public async Task<IActionResult> TraXe(int id)
         {
-            var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
-                ? parsedUserId
-                : 0;
-
-            var permission = userId > 0
-                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId)
-                : null;
+            var userId = _userService.GetUserIdFromClaims(User);
+            var permission = userId.HasValue ? await _userService.GetPermissionAsync(userId.Value) : null;
 
             if (permission?.CanReturnVehicle != true)
             {
@@ -325,13 +318,8 @@ namespace bikey.Controllers
             decimal chiPhiThietHai,
             string? ghiChu)
         {
-            var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
-                ? parsedUserId
-                : 0;
-
-            var permission = userId > 0
-                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId)
-                : null;
+            var userId = _userService.GetUserIdFromClaims(User);
+            var permission = userId.HasValue ? await _userService.GetPermissionAsync(userId.Value) : null;
 
             if (permission?.CanReturnVehicle != true)
             {
@@ -581,7 +569,7 @@ namespace bikey.Controllers
             return null;
         }
         private Task<int> CountDatChoTrongHangDoiAsync() =>
-            _context.DatCho.CountAsync(item => item.TrangThai == ChoXacNhan || item.TrangThai == DangGiuCho);
+            _context.DatCho.CountAsync(item => item.TrangThai == ChoXacNhan);
         private static string? NormalizeDigits(string? value)
         {
             if (string.IsNullOrWhiteSpace(value))
@@ -593,9 +581,7 @@ namespace bikey.Controllers
         }
         private int? GetCurrentUserId()
         {
-            return int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId)
-                ? userId
-                : null;
+            return _userService.GetUserIdFromClaims(User);
         }
         private async Task<int?> ResolveExistingUserIdAsync(int? userId)
         {

@@ -70,15 +70,13 @@ namespace bikey.Models
         public static class DatChoTrangThai
         {
             public const string ChoXacNhan = "Chờ xác nhận";
-            public const string DangGiuCho = "Đang giữ chỗ";
             public const string DaXuLy = "Đã xử lý";
             public const string HoanThanh = "Hoàn thành";
             public const string Huy = "Hủy";
 
-            /// <summary>Đơn vẫn nằm trong hàng đợi xử lý (duyệt giữ chỗ / tạo HĐ / hủy).</summary>
+            /// <summary>Đơn vẫn nằm trong hàng đợi xử lý (xác nhận / tạo HĐ / hủy).</summary>
             public static bool IsChoStaffQueue(string? trangThai) =>
-                string.Equals(trangThai, ChoXacNhan, StringComparison.OrdinalIgnoreCase)
-                || string.Equals(trangThai, DangGiuCho, StringComparison.OrdinalIgnoreCase);
+                string.Equals(trangThai, ChoXacNhan, StringComparison.OrdinalIgnoreCase);
         }
 
         // Tính số ngày thuê

@@ -1,4 +1,5 @@
 using bikey.Repository;
+using bikey.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.AccessDeniedPath = "/AccessDenied";
     });
 builder.Services.AddAuthorization();
+
+// Register UserService
+builder.Services.AddScoped<IUserService, UserService>();
 
 // Cấu hình Entity Framework với SQL Server - tối ưu performance
 builder.Services.AddDbContext<BikeyDbContext>(options =>

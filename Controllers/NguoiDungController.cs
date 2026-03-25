@@ -1,5 +1,6 @@
 using bikey.Models;
 using bikey.Repository;
+using bikey.Services;
 using bikey.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,26 +14,19 @@ namespace bikey.Controllers
     {
         private readonly BikeyDbContext _context;
 
-        public NguoiDungController(BikeyDbContext context)
+        private readonly IUserService _userService;
+
+        public NguoiDungController(BikeyDbContext context, IUserService userService)
         {
             _context = context;
+            _userService = userService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
-                ? parsedUserId
-                : 0;
-
-            var permission = userId > 0
-                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(item => item.UserId == userId)
-                : null;
-
-            var canManageUsers = permission?.CanViewUser == true || permission?.CanEditUser == true ||
-                                permission?.CanCreateUser == true || permission?.CanDeleteUser == true;
-
-            if (!canManageUsers)
+            var userId = _userService.GetUserIdFromClaims(User);
+            if (userId is null || !await _userService.HasManageUsersPermissionAsync(userId.Value))
             {
                 return Redirect("/AccessDenied");
             }
@@ -44,15 +38,8 @@ namespace bikey.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateNguoiDungInput input)
         {
-            var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
-                ? parsedUserId
-                : 0;
-
-            var userPermission = userId > 0
-                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(item => item.UserId == userId)
-                : null;
-
-            if (userPermission?.CanCreateUser != true)
+            var userId = _userService.GetUserIdFromClaims(User);
+            if (userId is null || !await _userService.HasCreateUserPermissionAsync(userId.Value))
             {
                 return Redirect("/AccessDenied");
             }
@@ -103,15 +90,10 @@ namespace bikey.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EditNguoiDungInput input)
         {
-            var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
-                ? parsedUserId
-                : 0;
+            var userId = _userService.GetUserIdFromClaims(User);
+            var permission = userId.HasValue ? await _userService.GetPermissionAsync(userId.Value) : null;
 
-            var userPermission = userId > 0
-                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(item => item.UserId == userId)
-                : null;
-
-            if (userPermission?.CanEditUser != true)
+            if (permission?.CanEditUser != true)
             {
                 return Redirect("/AccessDenied");
             }
@@ -154,7 +136,7 @@ namespace bikey.Controllers
                 user.MatKhau = input.MatKhauMoi;
             }
 
-            var permission = await EnsurePermissionEntityAsync(user.Id, user.VaiTro);
+            var userPermission = await EnsurePermissionEntityAsync(user.Id, user.VaiTro);
             await _context.SaveChangesAsync();
 
             TempData["UserManagementSuccess"] = "Cập nhật thông tin người dùng thành công.";
@@ -165,13 +147,8 @@ namespace bikey.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            var currentUserId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
-                ? parsedUserId
-                : 0;
-
-            var userPermission = currentUserId > 0
-                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(item => item.UserId == currentUserId)
-                : null;
+            var currentUserId = _userService.GetUserIdFromClaims(User);
+            var userPermission = currentUserId.HasValue ? await _userService.GetPermissionAsync(currentUserId.Value) : null;
 
             if (userPermission?.CanDeleteUser != true)
             {
@@ -206,13 +183,8 @@ namespace bikey.Controllers
         [HttpGet]
         public async Task<IActionResult> Permission(int id)
         {
-            var currentUserId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
-                ? parsedUserId
-                : 0;
-
-            var currentUserPermission = currentUserId > 0
-                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(item => item.UserId == currentUserId)
-                : null;
+            var currentUserId = _userService.GetUserIdFromClaims(User);
+            var currentUserPermission = currentUserId.HasValue ? await _userService.GetPermissionAsync(currentUserId.Value) : null;
 
             if (currentUserPermission?.CanEditUser != true)
             {
@@ -254,13 +226,8 @@ namespace bikey.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Permission(UserPermissionEditorViewModel model)
         {
-            var currentUserId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
-                ? parsedUserId
-                : 0;
-
-            var currentUserPermission = currentUserId > 0
-                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(item => item.UserId == currentUserId)
-                : null;
+            var currentUserId = _userService.GetUserIdFromClaims(User);
+            var currentUserPermission = currentUserId.HasValue ? await _userService.GetPermissionAsync(currentUserId.Value) : null;
 
             if (currentUserPermission?.CanEditUser != true)
             {

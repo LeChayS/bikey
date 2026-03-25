@@ -10,7 +10,7 @@
 
 
 
-<div class="wrapper">
+<div class="wrapper container">
     <div class="container-header">
         <div class="contract-header">
             <div class="contract-number">
@@ -19,6 +19,12 @@
             <div class="contract-status">
                 @Model.Contract.TrangThai
             </div>
+            @if (Model.Order?.TrangThai == "Đang giữ chỗ")
+            {
+                <div class="alert alert-info mt-3 mb-0">
+                    <i class="bi bi-info-circle"></i> Đơn đặt của bạn đã được duyệt. Vui lòng đến nhận xe đúng ngày.
+                </div>
+            }
             <p class="mb-0 mt-3">Ngày tạo: <strong>@Model.Contract.NgayTao.ToString("dd/MM/yyyy HH:mm")</strong></p>
         </div>
     </div>
@@ -207,7 +213,7 @@
                 </div>
                 <div class="financial-row">
                     <span>Phí đền bù:</span>
-                    <span>@Model.Contract.TongTienDuKien.ToString("N0")đ</span>
+                    <span>@Model.Contract.TongPhiDenBu.ToString("N0")đ</span>
                 </div>
                 <div class="financial-row financial-total">
                     <span>Tổng cộng:</span>
@@ -217,10 +223,9 @@
 
             @if (Model.Contract.DaCoHoaDon)
             {
-                <a asp-page="/History/InvoiceDetail" asp-route-id="@Model.Contract.MaHopDong"
-                    class="btn btn-success w-100 mb-2">
-                    <i class="bi bi-receipt"></i> Xem hóa đơn
-                </a>
+                <div class="alert alert-success mb-2">
+                    <i class="bi bi-receipt"></i> Đã có hóa đơn
+                </div>
             }
             <a asp-page="/Account/Orders" class="btn btn-outline-secondary w-100">
                 <i class="bi bi-arrow-left"></i> Quay lại danh sách

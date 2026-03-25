@@ -130,6 +130,9 @@ namespace bikey.Models
         public int SoXeThue => ChiTietHopDong.Count;
 
         [NotMapped]
+        public decimal TongPhiDenBu => ChiTietHopDong.Sum(ct => ct.PhiDenBu);
+
+        [NotMapped]
         public bool DaCoHoaDon => HoaDon != null;
     }
 }

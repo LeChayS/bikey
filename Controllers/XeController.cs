@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using bikey.Models;
 using bikey.Repository;
+using bikey.Services;
 using bikey.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -17,11 +18,13 @@ namespace bikey.Controllers
     {
         private readonly BikeyDbContext _context;
         private readonly IWebHostEnvironment _env;
+        private readonly IUserService _userService;
 
-        public XeController(BikeyDbContext context, IWebHostEnvironment env)
+        public XeController(BikeyDbContext context, IWebHostEnvironment env, IUserService userService)
         {
             _context = context;
             _env = env;
+            _userService = userService;
         }
 
         [HttpGet]
@@ -47,13 +50,8 @@ namespace bikey.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
-                ? parsedUserId
-                : 0;
-
-            var permission = userId > 0
-                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId)
-                : null;
+            var userId = _userService.GetUserIdFromClaims(User);
+            var permission = userId.HasValue ? await _userService.GetPermissionAsync(userId.Value) : null;
 
             if (permission?.CanCreateXe != true)
             {
@@ -68,13 +66,8 @@ namespace bikey.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Xe xe, IFormFile hinhAnh, IFormFile[]? hinhAnhKhac)
         {
-            var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
-                ? parsedUserId
-                : 0;
-
-            var permission = userId > 0
-                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId)
-                : null;
+            var userId = _userService.GetUserIdFromClaims(User);
+            var permission = userId.HasValue ? await _userService.GetPermissionAsync(userId.Value) : null;
 
             if (permission?.CanCreateXe != true)
             {
@@ -304,13 +297,8 @@ namespace bikey.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
-                ? parsedUserId
-                : 0;
-
-            var permission = userId > 0
-                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId)
-                : null;
+            var userId = _userService.GetUserIdFromClaims(User);
+            var permission = userId.HasValue ? await _userService.GetPermissionAsync(userId.Value) : null;
 
             if (permission?.CanEditXe != true)
             {
@@ -335,13 +323,8 @@ namespace bikey.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Xe model, IFormFile? hinhAnh, IFormFile[]? hinhAnhKhac, int[]? removeImageIds)
         {
-            var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
-                ? parsedUserId
-                : 0;
-
-            var permission = userId > 0
-                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId)
-                : null;
+            var userId = _userService.GetUserIdFromClaims(User);
+            var permission = userId.HasValue ? await _userService.GetPermissionAsync(userId.Value) : null;
 
             if (permission?.CanEditXe != true)
             {
@@ -481,13 +464,8 @@ namespace bikey.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
-                ? parsedUserId
-                : 0;
-
-            var permission = userId > 0
-                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId)
-                : null;
+            var userId = _userService.GetUserIdFromClaims(User);
+            var permission = userId.HasValue ? await _userService.GetPermissionAsync(userId.Value) : null;
 
             if (permission?.CanDeleteXe != true)
             {

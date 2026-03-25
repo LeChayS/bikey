@@ -17,7 +17,6 @@ namespace bikey.Repository
         public DbSet<Xe> Xe { get; set; }
         public DbSet<LoaiXe> LoaiXe { get; set; }
         public DbSet<NguoiDung> NguoiDung { get; set; }
-        public DbSet<VaiTro> VaiTro { get; set; }
         public DbSet<PhanQuyen> PhanQuyen { get; set; }
         public DbSet<DatCho> DatCho { get; set; }
         public DbSet<HopDong> HopDong { get; set; }
