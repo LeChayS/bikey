@@ -128,13 +128,9 @@ namespace bikey.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> XuLyDon(int id)
         {
-            var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
-                ? parsedUserId
-                : 0;
-
-            var permission = userId > 0
-                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId)
-                : null;
+            // Use consistent UserService pattern for user ID retrieval
+            var userId = _userService.GetUserIdFromClaims(User);
+            var permission = userId.HasValue ? await _userService.GetPermissionAsync(userId.Value) : null;
 
             if (permission?.CanProcessBooking != true)
             {
@@ -184,6 +180,15 @@ namespace bikey.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> HuyDon(int id)
         {
+            // Check authorization - verify user has permission to cancel bookings
+            var userId = _userService.GetUserIdFromClaims(User);
+            var permission = userId.HasValue ? await _userService.GetPermissionAsync(userId.Value) : null;
+
+            if (permission?.CanProcessBooking != true)
+            {
+                return Redirect("/AccessDenied");
+            }
+
             var datCho = await _context.DatCho.FirstOrDefaultAsync(item => item.MaDatCho == id);
             if (datCho is null)
             {
@@ -236,6 +241,17 @@ namespace bikey.Controllers
             {
                 ViewBag.HasSearched = false;
                 return View(Array.Empty<HopDong>());
+            }
+
+            // Check authorization - staff should only view customer history if they have permission
+            var userId = _userService.GetUserIdFromClaims(User);
+            var permission = userId.HasValue ? await _userService.GetPermissionAsync(userId.Value) : null;
+
+            // Only allow access if user has permission to view customer data
+            if (permission?.CanViewUser != true)
+            {
+                TempData["HopDongMessage"] = "Bạn không có quyền xem lịch sử khách hàng.";
+                return Redirect("/AccessDenied");
             }
 
             ViewBag.HasSearched = true;
@@ -417,6 +433,13 @@ namespace bikey.Controllers
                         // Tiền cọc sẽ được hoàn lại, nên số tiền ghi hóa đơn chỉ gồm:
                         // tiền thuê + phụ phí + phí đền bù.
                         var soTienHoaDon = Math.Max(0m, tongCong);
+                        
+                        // Ensure user ID is valid before creating/updating invoice
+                        var maNguoiTao = GetCurrentUserId();
+                        if (!maNguoiTao.HasValue)
+                        {
+                            throw new InvalidOperationException("Không thể xác định người dùng hiện tại. Vui lòng liên hệ quản trị viên.");
+                        }
 
                         if (hopDong.HoaDon is null)
                         {
@@ -428,7 +451,7 @@ namespace bikey.Controllers
                                 TrangThai = "Đã thanh toán",
                                 GhiChu = ghiChu,
                                 NgayTao = DateTime.Now,
-                                MaNguoiTao = GetCurrentUserId()
+                                MaNguoiTao = maNguoiTao.Value
                             };
                         }
                         else
@@ -438,7 +461,7 @@ namespace bikey.Controllers
                             hopDong.HoaDon.TrangThai = "Đã thanh toán";
                             hopDong.HoaDon.GhiChu = ghiChu;
                             hopDong.HoaDon.NgayTao = DateTime.Now;
-                            hopDong.HoaDon.MaNguoiTao = GetCurrentUserId();
+                            hopDong.HoaDon.MaNguoiTao = maNguoiTao.Value;
                         }
 
                         await _context.SaveChangesAsync();

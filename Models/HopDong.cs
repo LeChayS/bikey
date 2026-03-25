@@ -116,21 +116,21 @@ namespace bikey.Models
 
         // Computed properties
         [NotMapped]
-        public int SoNgayThue => ChiTietHopDong.Any()
+        public int SoNgayThue => ChiTietHopDong?.Any() == true
             ? ChiTietHopDong.Max(ct => ct.SoNgayThueTinhToan)
             : (NgayTraXeDuKien - NgayNhanXe).Days;
 
         [NotMapped]
-        public decimal TongTienXe => ChiTietHopDong.Sum(ct => ct.ThanhTienTinhToan);
+        public decimal TongTienXe => ChiTietHopDong?.Sum(ct => ct.ThanhTienTinhToan) ?? 0m;
 
         [NotMapped]
         public decimal TongTienDuKien => TongTienXe + PhuPhi;
 
         [NotMapped]
-        public int SoXeThue => ChiTietHopDong.Count;
+        public int SoXeThue => ChiTietHopDong?.Count ?? 0;
 
         [NotMapped]
-        public decimal TongPhiDenBu => ChiTietHopDong.Sum(ct => ct.PhiDenBu);
+        public decimal TongPhiDenBu => ChiTietHopDong?.Sum(ct => ct.PhiDenBu) ?? 0m;
 
         [NotMapped]
         public bool DaCoHoaDon => HoaDon != null;

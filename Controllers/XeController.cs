@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace bikey.Controllers
 {
+    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Admin,Staff")]
     public class XeController : Controller
     {
         private readonly BikeyDbContext _context;
