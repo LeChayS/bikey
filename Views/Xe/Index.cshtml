@@ -1,4 +1,4 @@
-@model IEnumerable<bikey.Models.Xe>
+@model bikey.ViewModels.XeIndexViewModel
 @{
     Layout = "_AdminLayout";
     ViewData["Title"] = "Quản lý xe";
@@ -35,28 +35,28 @@
             @* card 1 *@
             <div class="col-lg-3 col-md-6">
                 <stat-card label="Tổng số xe"
-                           value="@(ViewBag.TongSoXe ?? 0)"
+                           value="@Model.TongSoXe"
                            tone="blue"
                            align="center" />
             </div>
             @* card 2 *@
             <div class="col-lg-3 col-md-6">
                 <stat-card label="Xe sẵn sàng"
-                           value="@(ViewBag.XeSanSang ?? 0)"
+                           value="@Model.XeSanSang"
                            tone="red"
                            align="center" />
             </div>
             @* card 3 *@
             <div class="col-lg-3 col-md-6">
                 <stat-card label="Đang cho thuê"
-                           value="@(ViewBag.DangChoThue ?? 0)"
+                           value="@Model.DangChoThue"
                            tone="purple"
                            align="center" />
             </div>
             @* card 4 *@
             <div class="col-lg-3 col-md-6">
                 <stat-card label="Bảo trì"
-                           value="@(ViewBag.BaoTri ?? 0)"
+                           value="@Model.BaoTri"
                            tone="green"
                            align="center" />
             </div>
@@ -77,9 +77,9 @@
                     <label class="form-label">Loại xe</label>
                     <select id="loaiXe" class="form-select">
                         <option value="">Loại xe</option>
-                        @foreach (var item in (IEnumerable<SelectListItem>)ViewBag.LoaiXeList)
+                        @foreach (var item in Model.LoaiXeList)
                         {
-                            <option value="@item.Value">@item.Text</option>
+                            <option value="@item">@item</option>
                         }
                     </select>
                 </div>
@@ -87,9 +87,9 @@
                     <label class="form-label">Hãng xe</label>
                     <select id="hangXe" class="form-select">
                         <option value="">Hãng xe</option>
-                        @foreach (var item in (IEnumerable<SelectListItem>)ViewBag.HangXeList)
+                        @foreach (var item in Model.HangXeList)
                         {
-                            <option value="@item.Value">@item.Text</option>
+                            <option value="@item">@item</option>
                         }
                     </select>
                 </div>
@@ -97,9 +97,9 @@
                     <label class="form-label">Trạng thái</label>
                     <select id="trangThai" class="form-select">
                         <option value="">Trạng thái xe</option>
-                        @foreach (var item in (IEnumerable<SelectListItem>)ViewBag.TrangThaiList)
+                        @foreach (var item in Model.TrangThaiList)
                         {
-                            <option value="@item.Value">@item.Text</option>
+                            <option value="@item">@item</option>
                         }
                     </select>
                 </div>
@@ -114,7 +114,7 @@
 
         <!-- table -->
         <div class="card-body" id="xeTableContainer">
-            <partial name="_XeTablePartial" model="new XeTablePartialModel { Items = Model?.ToList() ?? new List<Xe>(), Variant = XeTableVariant.QuanLy }" />
+            <partial name="_XeTablePartial" model="new XeTablePartialModel { Items = Model.XeList, Variant = XeTableVariant.QuanLy }" />
         </div>
     </div>
 

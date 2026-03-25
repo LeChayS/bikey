@@ -1,5 +1,6 @@
 using bikey.Repository;
 using bikey.Services;
+using bikey.Common;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,8 +18,20 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 builder.Services.AddAuthorization();
 
+// AutoMapper setup
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
 // Register UserService
 builder.Services.AddScoped<IUserService, UserService>();
+
+// Register Domain Services
+builder.Services.AddScoped<IXeService, XeService>();
+builder.Services.AddScoped<IHopDongService, HopDongService>();
+builder.Services.AddScoped<IHoaDonService, HoaDonService>();
+builder.Services.AddScoped<ILoaiXeService, LoaiXeService>();
+builder.Services.AddScoped<INguoiDungService, NguoiDungService>();
+builder.Services.AddScoped<ITrangChuService, TrangChuService>();
+builder.Services.AddScoped<IDatXeService, DatXeService>();
 
 // Cấu hình Entity Framework với SQL Server - tối ưu performance
 builder.Services.AddDbContext<BikeyDbContext>(options =>

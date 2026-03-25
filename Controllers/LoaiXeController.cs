@@ -1,26 +1,22 @@
-using System;
-using System.Threading.Tasks;
-using bikey.Repository;
+using bikey.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace bikey.Controllers
 {
-    public class LoaiXeController : Controller
+    public class LoaiXeController : BaseController
     {
-        private readonly BikeyDbContext _context;
+        private readonly ILoaiXeService _loaiXeService;
 
-        public LoaiXeController(BikeyDbContext context)
+        public LoaiXeController(IUserService userService, ILoaiXeService loaiXeService)
+            : base(userService)
         {
-            _context = context;
+            _loaiXeService = loaiXeService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var loaiXeList = await _context.LoaiXe
-                .OrderByDescending(x => x.NgayTao)
-                .ToListAsync();
+            var loaiXeList = await _loaiXeService.GetAllAsync();
             return View(loaiXeList);
         }
 
@@ -28,18 +24,8 @@ namespace bikey.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(string TenLoaiXe)
         {
-            var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
-                ? parsedUserId
-                : 0;
-
-            var permission = userId > 0
-                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId)
-                : null;
-
-            if (permission?.CanCreateLoaiXe != true)
-            {
-                return Redirect("/AccessDenied");
-            }
+            var permissionCheck = await RequirePermissionAsync(p => p.CanCreateLoaiXe);
+            if (permissionCheck != null) return permissionCheck;
 
             TenLoaiXe = TenLoaiXe?.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(TenLoaiXe))
@@ -54,22 +40,13 @@ namespace bikey.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var tenLoaiXeNormalized = TenLoaiXe.ToLower();
-            var exists = await _context.LoaiXe.AnyAsync(x => x.TenLoaiXe.ToLower() == tenLoaiXeNormalized);
-            if (exists)
+            if (await _loaiXeService.ExistsAsync(TenLoaiXe))
             {
                 TempData["Error"] = "Loại xe này đã tồn tại.";
                 return RedirectToAction(nameof(Index));
             }
 
-            _context.LoaiXe.Add(new Models.LoaiXe
-            {
-                TenLoaiXe = TenLoaiXe,
-                NgayTao = DateTime.Now,
-                NgayCapNhat = null
-            });
-
-            await _context.SaveChangesAsync();
+            await _loaiXeService.CreateAsync(TenLoaiXe);
             TempData["Success"] = "Thêm loại xe thành công.";
             return RedirectToAction(nameof(Index));
         }
@@ -78,18 +55,8 @@ namespace bikey.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int MaLoaiXe, string TenLoaiXe)
         {
-            var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
-                ? parsedUserId
-                : 0;
-
-            var permission = userId > 0
-                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId)
-                : null;
-
-            if (permission?.CanEditLoaiXe != true)
-            {
-                return Redirect("/AccessDenied");
-            }
+            var permissionCheck = await RequirePermissionAsync(p => p.CanEditLoaiXe);
+            if (permissionCheck != null) return permissionCheck;
 
             TenLoaiXe = TenLoaiXe?.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(TenLoaiXe))
@@ -104,17 +71,16 @@ namespace bikey.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var loaiXe = await _context.LoaiXe.FirstOrDefaultAsync(x => x.MaLoaiXe == MaLoaiXe);
-            if (loaiXe is null)
+            try
+            {
+                await _loaiXeService.UpdateAsync(MaLoaiXe, TenLoaiXe);
+                TempData["Success"] = "Cập nhật loại xe thành công.";
+            }
+            catch (KeyNotFoundException)
             {
                 return NotFound();
             }
 
-            loaiXe.TenLoaiXe = TenLoaiXe;
-            loaiXe.NgayCapNhat = DateTime.Now;
-
-            await _context.SaveChangesAsync();
-            TempData["Success"] = "Cập nhật loại xe thành công.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -122,34 +88,22 @@ namespace bikey.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var parsedUserId)
-                ? parsedUserId
-                : 0;
+            var permissionCheck = await RequirePermissionAsync(p => p.CanDeleteLoaiXe);
+            if (permissionCheck != null) return permissionCheck;
 
-            var permission = userId > 0
-                ? await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId)
-                : null;
-
-            if (permission?.CanDeleteLoaiXe != true)
-            {
-                return Redirect("/AccessDenied");
-            }
-
-            var loaiXe = await _context.LoaiXe.FirstOrDefaultAsync(x => x.MaLoaiXe == id);
+            var loaiXe = await _loaiXeService.GetByIdAsync(id);
             if (loaiXe is null)
             {
                 return NotFound();
             }
 
-            var hasXe = await _context.Xe.AnyAsync(x => x.MaLoaiXe == id);
-            if (hasXe)
+            if (await _loaiXeService.HasVehiclesAsync(id))
             {
                 TempData["Error"] = "Không thể xóa loại xe này vì vẫn còn xe thuộc loại đó.";
                 return RedirectToAction(nameof(Index));
             }
 
-            _context.LoaiXe.Remove(loaiXe);
-            await _context.SaveChangesAsync();
+            await _loaiXeService.DeleteAsync(id);
 
             TempData["Success"] = "Xóa loại xe thành công.";
             return RedirectToAction(nameof(Index));

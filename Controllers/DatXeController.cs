@@ -1,38 +1,33 @@
-using System.Security.Claims;
+using bikey.Common;
 using bikey.Models;
-using bikey.Repository;
+using bikey.Services;
 using bikey.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace bikey.Controllers
 {
-    public class DatXeController : Controller
+    public class DatXeController : BaseController
     {
-        private readonly BikeyDbContext _context;
+        private readonly IDatXeService _datXeService;
 
-        public DatXeController(BikeyDbContext context)
+        public DatXeController(IUserService userService, IDatXeService datXeService)
+            : base(userService)
         {
-            _context = context;
+            _datXeService = datXeService;
         }
 
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> Create(int maXe)
         {
-            var xe = await _context.Xe
-                .AsNoTracking()
-                .Include(item => item.LoaiXe)
-                .Include(item => item.HinhAnhXes)
-                .FirstOrDefaultAsync(item => item.MaXe == maXe);
-
+            var xe = await _datXeService.GetXeForBookingAsync(maXe);
             if (xe is null)
             {
                 return NotFound();
             }
 
-            var model = BuildDatXeViewModel(xe);
+            var model = _datXeService.BuildDatXeViewModel(xe, User);
             return View(model);
         }
 
@@ -41,25 +36,20 @@ namespace bikey.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(DatXeViewModel model)
         {
-            var xe = await _context.Xe
-                .AsNoTracking()
-                .Include(item => item.LoaiXe)
-                .Include(item => item.HinhAnhXes)
-                .FirstOrDefaultAsync(item => item.MaXe == model.MaXe);
-
+            var xe = await _datXeService.GetXeForBookingAsync(model.MaXe);
             if (xe is null)
             {
                 return NotFound();
             }
 
-            PopulateVehicleInfo(model, xe);
+            _datXeService.PopulateVehicleInfo(model, xe);
 
             if (model.NgayTraDuKien <= model.NgayNhanDuKien)
             {
                 ModelState.AddModelError(nameof(model.NgayTraDuKien), "Ngày trả phải sau ngày nhận ít nhất 1 ngày.");
             }
 
-            if (!string.Equals(xe.TrangThai, "Sẵn sàng", StringComparison.OrdinalIgnoreCase))
+            if (xe.TrangThai != StatusConstants.XeStatus.SanSang)
             {
                 ModelState.AddModelError(string.Empty, "Xe này hiện chưa sẵn sàng để đặt.");
             }
@@ -85,8 +75,7 @@ namespace bikey.Controllers
                 NgayDat = DateTime.Now
             };
 
-            _context.DatCho.Add(datCho);
-            await _context.SaveChangesAsync();
+            await _datXeService.CreateDatChoAsync(datCho);
 
             TempData["BookingSuccessMessage"] = "Đơn đặt xe đã được tạo và chuyển sang màn hình chờ admin/nhân viên duyệt.";
             return RedirectToAction(nameof(Success), new { id = datCho.MaDatCho });
@@ -96,73 +85,13 @@ namespace bikey.Controllers
         [HttpGet]
         public async Task<IActionResult> Success(int id)
         {
-            var datCho = await _context.DatCho
-                .AsNoTracking()
-                .Include(item => item.Xe)
-                    .ThenInclude(x => x!.LoaiXe)
-                .Include(item => item.Xe)
-                    .ThenInclude(x => x!.HinhAnhXes)
-                .FirstOrDefaultAsync(item => item.MaDatCho == id);
-
+            var datCho = await _datXeService.GetDatChoByIdAsync(id);
             if (datCho is null)
             {
                 return NotFound();
             }
 
             return View(datCho);
-        }
-
-        private DatXeViewModel BuildDatXeViewModel(Xe xe)
-        {
-            var model = new DatXeViewModel
-            {
-                MaXe = xe.MaXe,
-                HoTenKhachHang = User.FindFirstValue(ClaimTypes.Name) ?? string.Empty,
-                SoDienThoai = User.FindFirstValue(ClaimTypes.MobilePhone) ?? string.Empty,
-                DiaChi = User.FindFirstValue(ClaimTypes.StreetAddress) ?? string.Empty,
-                Email = User.FindFirstValue(ClaimTypes.Email) ?? string.Empty
-            };
-
-            PopulateVehicleInfo(model, xe);
-            return model;
-        }
-
-        private static void PopulateVehicleInfo(DatXeViewModel model, Xe xe)
-        {
-            model.TenXe = xe.TenXe;
-            model.BienSoXe = xe.BienSoXe;
-            model.HangXe = xe.HangXe;
-            model.DongXe = xe.DongXe;
-            model.TrangThaiXe = xe.TrangThai;
-            model.GiaThueNgay = xe.GiaThue;
-            model.GiaTriXe = xe.GiaTriXe;
-            model.TenLoaiXe = xe.LoaiXe?.TenLoaiXe ?? "—";
-            model.HinhAnhXe = NormalizeImageUrl(xe.HinhAnhHienThi);
-            model.TongTienDuKien = model.SoNgayThue * xe.GiaThue;
-        }
-
-        private static string? NormalizeImageUrl(string? tenFile)
-        {
-            if (string.IsNullOrWhiteSpace(tenFile))
-            {
-                return null;
-            }
-
-            if (tenFile.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
-                tenFile.StartsWith("https://", StringComparison.OrdinalIgnoreCase) ||
-                tenFile.StartsWith("/", StringComparison.OrdinalIgnoreCase))
-            {
-                return tenFile;
-            }
-
-            return $"/{tenFile.TrimStart('~', '/')}";
-        }
-
-        private int? GetCurrentUserId()
-        {
-            return int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId)
-                ? userId
-                : null;
         }
     }
 }
