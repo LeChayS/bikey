@@ -530,6 +530,11 @@
     color: #842029;
 }
 
+.status-pill.warning {
+    background: #fff3cd;
+    color: #664d03;
+}
+
 @media (max-width: 991.98px) {
     .profile-grid,
     .booking-summary-grid,
