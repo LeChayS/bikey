@@ -1,35 +1,29 @@
+using bikey.Common;
 using bikey.Models;
-using bikey.Repository;
 using bikey.Services;
 using bikey.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 
 namespace bikey.Controllers
 {
     [Authorize]
-    public class NguoiDungController : Controller
+    public class NguoiDungController : BaseController
     {
-        private readonly BikeyDbContext _context;
+        private readonly INguoiDungService _nguoiDungService;
 
-        private readonly IUserService _userService;
-
-        public NguoiDungController(BikeyDbContext context, IUserService userService)
+        public NguoiDungController(IUserService userService, INguoiDungService nguoiDungService)
+            : base(userService)
         {
-            _context = context;
-            _userService = userService;
+            _nguoiDungService = nguoiDungService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var userId = _userService.GetUserIdFromClaims(User);
-            if (userId is null || !await _userService.HasManageUsersPermissionAsync(userId.Value))
-            {
-                return Redirect("/AccessDenied");
-            }
+            var result = await RequirePermissionAsync(p => p.CanViewUser);
+            if (result != null) return result;
 
             return View(await BuildViewModelAsync());
         }
@@ -38,11 +32,8 @@ namespace bikey.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateNguoiDungInput input)
         {
-            var userId = _userService.GetUserIdFromClaims(User);
-            if (userId is null || !await _userService.HasCreateUserPermissionAsync(userId.Value))
-            {
-                return Redirect("/AccessDenied");
-            }
+            var result = await RequirePermissionAsync(p => p.CanCreateUser);
+            if (result != null) return result;
 
             if (!ModelState.IsValid)
             {
@@ -50,37 +41,23 @@ namespace bikey.Controllers
                 return View("Index", await BuildViewModelAsync());
             }
 
-            var normalizedEmail = NormalizeEmail(input.Email);
+            var normalizedEmail = StringHelpers.NormalizeEmail(input.Email);
 
-            if (await _context.NguoiDung.AnyAsync(item => item.Email != null && item.Email.ToLower() == normalizedEmail))
+            if (await _nguoiDungService.EmailExistsAsync(input.Email))
             {
                 TempData["UserManagementError"] = "Email đã tồn tại.";
                 return View("Index", await BuildViewModelAsync());
             }
 
-            if (await _context.NguoiDung.AnyAsync(item => item.SoDienThoai == input.SoDienThoai))
+            if (await _nguoiDungService.PhoneExistsAsync(input.SoDienThoai))
             {
                 TempData["UserManagementError"] = "Số điện thoại đã tồn tại.";
                 return View("Index", await BuildViewModelAsync());
             }
 
-            var user = new Models.NguoiDung
-            {
-                Ten = input.HoTen.Trim(),
-                Email = normalizedEmail,
-                SoDienThoai = input.SoDienThoai.Trim(),
-                MatKhau = input.MatKhau,
-                VaiTro = input.VaiTro,
-                IsActive = true,
-                NgayTao = DateTime.Now
-            };
+            var user = await _nguoiDungService.CreateAsync(input.HoTen, normalizedEmail, input.SoDienThoai, input.MatKhau, input.VaiTro);
 
-            _context.NguoiDung.Add(user);
-            await _context.SaveChangesAsync();
-
-            var permission = CreatePermissionEntity(user.Id, GetDefaultPermissionsByRole(user.VaiTro));
-            _context.PhanQuyen.Add(permission);
-            await _context.SaveChangesAsync();
+            await _nguoiDungService.CreateDefaultPermissionsAsync(user.Id, user.VaiTro);
 
             TempData["UserManagementSuccess"] = "Thêm người dùng mới thành công.";
             return RedirectToAction(nameof(Index));
@@ -90,13 +67,8 @@ namespace bikey.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EditNguoiDungInput input)
         {
-            var userId = _userService.GetUserIdFromClaims(User);
-            var permission = userId.HasValue ? await _userService.GetPermissionAsync(userId.Value) : null;
-
-            if (permission?.CanEditUser != true)
-            {
-                return Redirect("/AccessDenied");
-            }
+            var result = await RequirePermissionAsync(p => p.CanEditUser);
+            if (result != null) return result;
 
             if (!ModelState.IsValid)
             {
@@ -104,40 +76,26 @@ namespace bikey.Controllers
                 return View("Index", await BuildViewModelAsync());
             }
 
-            var user = await _context.NguoiDung.FirstOrDefaultAsync(item => item.Id == input.Id);
+            var user = await _nguoiDungService.GetByIdAsync(input.Id);
             if (user is null)
             {
                 return NotFound();
             }
 
-            var normalizedEmail = NormalizeEmail(input.Email);
-
-            if (await _context.NguoiDung.AnyAsync(item => item.Id != input.Id && item.Email != null && item.Email.ToLower() == normalizedEmail))
+            if (await _nguoiDungService.EmailExistsAsync(input.Email, input.Id))
             {
                 TempData["UserManagementError"] = "Email đã tồn tại.";
                 return RedirectToAction(nameof(Index));
             }
 
-            if (await _context.NguoiDung.AnyAsync(item => item.Id != input.Id && item.SoDienThoai == input.SoDienThoai))
+            if (await _nguoiDungService.PhoneExistsAsync(input.SoDienThoai, input.Id))
             {
                 TempData["UserManagementError"] = "Số điện thoại đã tồn tại.";
                 return RedirectToAction(nameof(Index));
             }
 
-            user.Ten = input.HoTen.Trim();
-            user.Email = normalizedEmail;
-            user.SoDienThoai = input.SoDienThoai.Trim();
-            user.DiaChi = string.IsNullOrWhiteSpace(input.DiaChi) ? null : input.DiaChi.Trim();
-            user.VaiTro = input.VaiTro;
-            user.IsActive = input.IsActive;
-
-            if (!string.IsNullOrWhiteSpace(input.MatKhauMoi))
-            {
-                user.MatKhau = input.MatKhauMoi;
-            }
-
-            var userPermission = await EnsurePermissionEntityAsync(user.Id, user.VaiTro);
-            await _context.SaveChangesAsync();
+            var normalizedEmail = StringHelpers.NormalizeEmail(input.Email);
+            await _nguoiDungService.UpdateAsync(input.Id, input.HoTen, normalizedEmail, input.SoDienThoai, input.DiaChi, input.VaiTro, input.IsActive, input.MatKhauMoi);
 
             TempData["UserManagementSuccess"] = "Cập nhật thông tin người dùng thành công.";
             return RedirectToAction(nameof(Index));
@@ -147,15 +105,12 @@ namespace bikey.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            var currentUserId = _userService.GetUserIdFromClaims(User);
-            var userPermission = currentUserId.HasValue ? await _userService.GetPermissionAsync(currentUserId.Value) : null;
+            var result = await RequirePermissionAsync(p => p.CanDeleteUser);
+            if (result != null) return result;
 
-            if (userPermission?.CanDeleteUser != true)
-            {
-                return Redirect("/AccessDenied");
-            }
+            var currentUserId = GetCurrentUserId();
 
-            var user = await _context.NguoiDung.FirstOrDefaultAsync(item => item.Id == id);
+            var user = await _nguoiDungService.GetByIdAsync(id);
             if (user is null)
             {
                 return NotFound();
@@ -167,14 +122,7 @@ namespace bikey.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var permission = await _context.PhanQuyen.FirstOrDefaultAsync(item => item.UserId == user.Id);
-            if (permission is not null)
-            {
-                _context.PhanQuyen.Remove(permission);
-            }
-
-            _context.NguoiDung.Remove(user);
-            await _context.SaveChangesAsync();
+            await _nguoiDungService.DeleteAsync(id);
 
             TempData["UserManagementSuccess"] = "Xóa người dùng thành công.";
             return RedirectToAction(nameof(Index));
@@ -183,17 +131,10 @@ namespace bikey.Controllers
         [HttpGet]
         public async Task<IActionResult> Permission(int id)
         {
-            var currentUserId = _userService.GetUserIdFromClaims(User);
-            var currentUserPermission = currentUserId.HasValue ? await _userService.GetPermissionAsync(currentUserId.Value) : null;
+            var result = await RequirePermissionAsync(p => p.CanEditUser);
+            if (result != null) return result;
 
-            if (currentUserPermission?.CanEditUser != true)
-            {
-                return Redirect("/AccessDenied");
-            }
-
-            var user = await _context.NguoiDung
-                .AsNoTracking()
-                .FirstOrDefaultAsync(item => item.Id == id);
+            var user = await _nguoiDungService.GetByIdAsync(id);
 
             if (user is null)
             {
@@ -206,9 +147,7 @@ namespace bikey.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var permission = await _context.PhanQuyen
-                .AsNoTracking()
-                .FirstOrDefaultAsync(item => item.UserId == id);
+            var permission = await _userService.GetPermissionAsync(id);
 
             var model = new UserPermissionEditorViewModel
             {
@@ -216,7 +155,7 @@ namespace bikey.Controllers
                 UserName = user.Ten ?? string.Empty,
                 UserEmail = user.Email ?? string.Empty,
                 UserRole = user.VaiTro,
-                Permissions = permission is not null ? MapPermissionSet(permission) : GetDefaultPermissionsByRole(user.VaiTro)
+                Permissions = permission is not null ? _nguoiDungService.MapPermissionSet(permission) : _nguoiDungService.GetDefaultPermissionsByRole(user.VaiTro)
             };
 
             return View(model);
@@ -226,15 +165,10 @@ namespace bikey.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Permission(UserPermissionEditorViewModel model)
         {
-            var currentUserId = _userService.GetUserIdFromClaims(User);
-            var currentUserPermission = currentUserId.HasValue ? await _userService.GetPermissionAsync(currentUserId.Value) : null;
+            var result = await RequirePermissionAsync(p => p.CanEditUser);
+            if (result != null) return result;
 
-            if (currentUserPermission?.CanEditUser != true)
-            {
-                return Redirect("/AccessDenied");
-            }
-
-            var user = await _context.NguoiDung.FirstOrDefaultAsync(item => item.Id == model.UserId);
+            var user = await _nguoiDungService.GetByIdAsync(model.UserId);
             if (user is null)
             {
                 return NotFound();
@@ -246,10 +180,7 @@ namespace bikey.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var permission = await EnsurePermissionEntityAsync(user.Id, user.VaiTro);
-            ApplyPermissionSet(permission, model.Permissions);
-            EnforceViewPermissionLogic(permission);
-            await _context.SaveChangesAsync();
+            await _nguoiDungService.UpdatePermissionsAsync(user.Id, user.VaiTro, model.Permissions);
 
             TempData["UserManagementSuccess"] = $"Cập nhật quyền cho tài khoản {user.Ten} thành công.";
             return RedirectToAction(nameof(Index));
@@ -259,14 +190,7 @@ namespace bikey.Controllers
         {
             ViewBag.Roles = BuildRoleSelectList();
 
-            var users = await _context.NguoiDung
-                .AsNoTracking()
-                .OrderByDescending(item => item.NgayTao)
-                .ToListAsync();
-
-            var permissions = await _context.PhanQuyen
-                .AsNoTracking()
-                .ToListAsync();
+            var users = await _nguoiDungService.GetAllAsync();
 
             return new NguoiDungManagementViewModel
             {
@@ -282,199 +206,6 @@ namespace bikey.Controllers
                 new SelectListItem("Nhân viên", "Staff"),
                 new SelectListItem("Khách hàng", "User")
             ];
-        }
-
-        private static string NormalizeEmail(string email)
-        {
-            return email.Trim().ToLowerInvariant();
-        }
-
-        private async Task<PhanQuyen> EnsurePermissionEntityAsync(int userId, string role)
-        {
-            var permission = await _context.PhanQuyen.FirstOrDefaultAsync(item => item.UserId == userId);
-            if (permission is not null)
-            {
-                return permission;
-            }
-
-            permission = CreatePermissionEntity(userId, GetDefaultPermissionsByRole(role));
-            _context.PhanQuyen.Add(permission);
-            return permission;
-        }
-
-        private static PhanQuyen CreatePermissionEntity(int userId, PermissionSetInput input)
-        {
-            var permission = new PhanQuyen
-            {
-                UserId = userId
-            };
-
-            ApplyPermissionSet(permission, input);
-            return permission;
-        }
-
-        private static PermissionSetInput MapPermissionSet(PhanQuyen permission)
-        {
-            return new PermissionSetInput
-            {
-                CanViewXe = permission.CanViewXe,
-                CanCreateXe = permission.CanCreateXe,
-                CanEditXe = permission.CanEditXe,
-                CanDeleteXe = permission.CanDeleteXe,
-                CanViewLoaiXe = permission.CanViewLoaiXe,
-                CanCreateLoaiXe = permission.CanCreateLoaiXe,
-                CanEditLoaiXe = permission.CanEditLoaiXe,
-                CanDeleteLoaiXe = permission.CanDeleteLoaiXe,
-                CanViewHopDong = permission.CanViewHopDong,
-                CanProcessBooking = permission.CanProcessBooking,
-                CanReturnVehicle = permission.CanReturnVehicle,
-                CanPrintHopDong = permission.CanPrintHopDong,
-                CanViewHoaDon = permission.CanViewHoaDon,
-                CanPrintHoaDon = permission.CanPrintHoaDon,
-                CanViewUser = permission.CanViewUser,
-                CanCreateUser = permission.CanCreateUser,
-                CanEditUser = permission.CanEditUser,
-                CanDeleteUser = permission.CanDeleteUser,
-                CanViewBaoCao = permission.CanViewBaoCao,
-                CanViewThongKe = permission.CanViewThongKe,
-                CanExportBaoCao = permission.CanExportBaoCao,
-                CanDatCho = permission.CanDatCho,
-                CanViewDatCho = permission.CanViewDatCho
-            };
-        }
-
-        private static void ApplyPermissionSet(PhanQuyen target, PermissionSetInput input)
-        {
-            target.CanViewXe = input.CanViewXe;
-            target.CanCreateXe = input.CanCreateXe;
-            target.CanEditXe = input.CanEditXe;
-            target.CanDeleteXe = input.CanDeleteXe;
-
-            target.CanViewLoaiXe = input.CanViewLoaiXe;
-            target.CanCreateLoaiXe = input.CanCreateLoaiXe;
-            target.CanEditLoaiXe = input.CanEditLoaiXe;
-            target.CanDeleteLoaiXe = input.CanDeleteLoaiXe;
-
-            target.CanViewHopDong = input.CanViewHopDong;
-            target.CanProcessBooking = input.CanProcessBooking;
-            target.CanReturnVehicle = input.CanReturnVehicle;
-            target.CanPrintHopDong = input.CanPrintHopDong;
-
-            target.CanViewHoaDon = input.CanViewHoaDon;
-            target.CanPrintHoaDon = input.CanPrintHoaDon;
-
-            target.CanViewUser = input.CanViewUser;
-            target.CanCreateUser = input.CanCreateUser;
-            target.CanEditUser = input.CanEditUser;
-            target.CanDeleteUser = input.CanDeleteUser;
-
-            target.CanViewBaoCao = input.CanViewBaoCao;
-            target.CanViewThongKe = input.CanViewThongKe;
-            target.CanExportBaoCao = input.CanExportBaoCao;
-
-            target.CanDatCho = input.CanDatCho;
-            target.CanViewDatCho = input.CanViewDatCho;
-        }
-
-        private static void EnforceViewPermissionLogic(PhanQuyen permission)
-        {
-            if (!permission.CanViewXe)
-            {
-                permission.CanCreateXe = false;
-                permission.CanEditXe = false;
-                permission.CanDeleteXe = false;
-            }
-
-            if (!permission.CanViewLoaiXe)
-            {
-                permission.CanCreateLoaiXe = false;
-                permission.CanEditLoaiXe = false;
-                permission.CanDeleteLoaiXe = false;
-            }
-
-            if (!permission.CanViewHopDong)
-            {
-                permission.CanProcessBooking = false;
-                permission.CanReturnVehicle = false;
-                permission.CanPrintHopDong = false;
-            }
-
-            if (!permission.CanViewHoaDon)
-            {
-                permission.CanPrintHoaDon = false;
-            }
-
-            if (!permission.CanViewUser)
-            {
-                permission.CanCreateUser = false;
-                permission.CanEditUser = false;
-                permission.CanDeleteUser = false;
-            }
-
-        }
-
-        private static PermissionSetInput GetDefaultPermissionsByRole(string role)
-        {
-            if (string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
-            {
-                return new PermissionSetInput
-                {
-                    CanViewXe = true,
-                    CanCreateXe = true,
-                    CanEditXe = true,
-                    CanDeleteXe = true,
-                    CanViewLoaiXe = true,
-                    CanCreateLoaiXe = true,
-                    CanEditLoaiXe = true,
-                    CanDeleteLoaiXe = true,
-                    CanViewHopDong = true,
-                    CanProcessBooking = true,
-                    CanReturnVehicle = true,
-                    CanPrintHopDong = true,
-                    CanViewHoaDon = true,
-                    CanPrintHoaDon = true,
-                    CanViewUser = true,
-                    CanCreateUser = true,
-                    CanEditUser = true,
-                    CanDeleteUser = true,
-                    CanViewBaoCao = true,
-                    CanViewThongKe = true,
-                    CanExportBaoCao = true,
-                    CanDatCho = true,
-                    CanViewDatCho = true
-                };
-            }
-
-            if (string.Equals(role, "Staff", StringComparison.OrdinalIgnoreCase))
-            {
-                return new PermissionSetInput
-                {
-                    CanViewXe = true,
-                    CanCreateXe = true,
-                    CanEditXe = true,
-                    CanDeleteXe = false,
-                    CanViewLoaiXe = true,
-                    CanCreateLoaiXe = true,
-                    CanEditLoaiXe = true,
-                    CanDeleteLoaiXe = false,
-                    CanViewHopDong = true,
-                    CanProcessBooking = true,
-                    CanReturnVehicle = true,
-                    CanPrintHopDong = true,
-                    CanViewHoaDon = true,
-                    CanPrintHoaDon = true,
-                    CanViewUser = false,
-                    CanCreateUser = false,
-                    CanEditUser = false,
-                    CanDeleteUser = false,
-                    CanViewBaoCao = true,
-                    CanViewThongKe = true,
-                    CanExportBaoCao = true,
-                    CanDatCho = true,
-                    CanViewDatCho = true
-                };
-            }
-            return new PermissionSetInput();
         }
     }
 }

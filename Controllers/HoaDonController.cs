@@ -1,20 +1,19 @@
-using System;
-using System.Threading.Tasks;
-using bikey.Repository;
+using bikey.Services;
+using bikey.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace bikey.Controllers
 {
     [Authorize(Roles = "Admin,Staff")]
-    public class HoaDonController : Controller
+    public class HoaDonController : BaseController
     {
-        private readonly BikeyDbContext _context;
+        private readonly IHoaDonService _hoaDonService;
 
-        public HoaDonController(BikeyDbContext context)
+        public HoaDonController(IUserService userService, IHoaDonService hoaDonService)
+            : base(userService)
         {
-            _context = context;
+            _hoaDonService = hoaDonService;
         }
 
         [HttpGet]
@@ -25,65 +24,27 @@ namespace bikey.Controllers
             int page = 1,
             int pageSize = 10)
         {
-            page = page < 1 ? 1 : page;
-            pageSize = pageSize < 1 ? 10 : pageSize;
-            searchString = searchString?.Trim();
+            page = Math.Max(1, page);
+            pageSize = Math.Clamp(pageSize, 1, 100);
 
-            var query = _context.HoaDon
-                .AsNoTracking()
-                .Include(h => h.HopDong)
-                    .ThenInclude(hd => hd.ChiTietHopDong)
-                        .ThenInclude(ct => ct.Xe)
-                .Include(h => h.NguoiTao)
-                .AsQueryable();
+            var result = await _hoaDonService.GetPaginatedAsync(page, pageSize, searchString, tuNgay, denNgay);
+            var todayCount = await _hoaDonService.GetCountTodayAsync();
+            var revenue = result.Items.Sum(h => h.SoTien);
 
-            if (!string.IsNullOrWhiteSpace(searchString))
+            var viewModel = new HoaDonIndexViewModel
             {
-                var keyword = searchString;
-                query = query.Where(h =>
-                    h.HopDong != null &&
-                    (
-                        (h.HopDong.HoTenKhach != null && h.HopDong.HoTenKhach.Contains(keyword)) ||
-                        (h.HopDong.SoDienThoai != null && h.HopDong.SoDienThoai.Contains(keyword))
-                    ));
-            }
+                HoaDonList = result.Items,
+                TotalItems = result.Total,
+                PageSize = pageSize,
+                CurrentPage = page,
+                SearchString = searchString,
+                TuNgay = tuNgay,
+                DenNgay = denNgay,
+                TongDoanhThu = revenue,
+                SoHoaDonHomNay = todayCount
+            };
 
-            if (tuNgay.HasValue)
-            {
-                query = query.Where(h => h.NgayThanhToan.Date >= tuNgay.Value.Date);
-            }
-
-            if (denNgay.HasValue)
-            {
-                query = query.Where(h => h.NgayThanhToan.Date <= denNgay.Value.Date);
-            }
-
-            var totalItems = await query.CountAsync();
-            var tongDoanhThu = (await query.SumAsync(h => (decimal?)h.SoTien)) ?? 0m;
-
-            // "Hóa đơn hôm nay" hiển thị theo toàn hệ thống (không áp filter tìm kiếm).
-            var soHoaDonHomNay = await _context.HoaDon
-                .AsNoTracking()
-                .CountAsync(h => h.NgayThanhToan.Date == DateTime.Today);
-
-            var hoaDons = await query
-                .OrderByDescending(h => h.NgayThanhToan)
-                .ThenByDescending(h => h.MaHoaDon)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            ViewBag.TotalItems = totalItems;
-            ViewBag.TongDoanhThu = tongDoanhThu;
-            ViewBag.SoHoaDonHomNay = soHoaDonHomNay;
-
-            ViewBag.SearchString = searchString;
-            ViewBag.TuNgay = tuNgay;
-            ViewBag.DenNgay = denNgay;
-            ViewBag.PageSize = pageSize;
-            ViewBag.CurrentPage = page;
-
-            return View(hoaDons);
+            return View(viewModel);
         }
 
         [HttpGet]
@@ -91,14 +52,7 @@ namespace bikey.Controllers
         {
             if (id <= 0) return NotFound();
 
-            var hoaDon = await _context.HoaDon
-                .AsNoTracking()
-                .Include(h => h.HopDong)
-                    .ThenInclude(hd => hd.ChiTietHopDong)
-                        .ThenInclude(ct => ct.Xe)
-                .Include(h => h.NguoiTao)
-                .FirstOrDefaultAsync(h => h.MaHoaDon == id);
-
+            var hoaDon = await _hoaDonService.GetByIdAsync(id);
             return hoaDon is null ? NotFound() : View(hoaDon);
         }
 
@@ -107,14 +61,7 @@ namespace bikey.Controllers
         {
             if (id <= 0) return NotFound();
 
-            var hoaDon = await _context.HoaDon
-                .AsNoTracking()
-                .Include(h => h.HopDong)
-                    .ThenInclude(hd => hd.ChiTietHopDong)
-                        .ThenInclude(ct => ct.Xe)
-                .Include(h => h.NguoiTao)
-                .FirstOrDefaultAsync(h => h.MaHoaDon == id);
-
+            var hoaDon = await _hoaDonService.GetByIdAsync(id);
             if (hoaDon is null) return NotFound();
 
             ViewBag.AutoPrint = true;

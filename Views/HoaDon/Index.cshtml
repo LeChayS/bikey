@@ -1,16 +1,16 @@
-@model IEnumerable<bikey.Models.HoaDon>
+@model bikey.ViewModels.HoaDonIndexViewModel
 @{
     Layout = "_AdminLayout";
     ViewData["Title"] = "Quản lý hóa đơn";
-    int totalItems = ViewBag.TotalItems ?? 0;
-    int pageSize = ViewBag.PageSize ?? 10;
-    int currentPage = ViewBag.CurrentPage ?? 1;
+    int totalItems = Model.TotalItems;
+    int pageSize = Model.PageSize;
+    int currentPage = Model.CurrentPage;
     int totalPages = pageSize > 0 ? (int)Math.Ceiling((double)totalItems / pageSize) : 1;
-    decimal tongDoanhThu = ViewBag.TongDoanhThu is decimal td ? td : 0m;
-    int soHoaDonHomNay = ViewBag.SoHoaDonHomNay ?? 0;
-    var tuNgayVal = ViewBag.TuNgay as DateTime?;
-    var denNgayVal = ViewBag.DenNgay as DateTime?;
-    var searchVal = ViewBag.SearchString as string;
+    decimal tongDoanhThu = Model.TongDoanhThu;
+    int soHoaDonHomNay = Model.SoHoaDonHomNay;
+    var tuNgayVal = Model.TuNgay;
+    var denNgayVal = Model.DenNgay;
+    var searchVal = Model.SearchString;
 }
 @section Styles{
     <link rel="stylesheet" href="~/css/components/stat-card.css" asp-append-version="true"/>
@@ -119,9 +119,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if (Model != null && Model.Any())
+                    @if (Model.HoaDonList != null && Model.HoaDonList.Any())
                     {
-                        @foreach (var hoaDon in Model)
+                        @foreach (var hoaDon in Model.HoaDonList)
                         {
                             <tr>
                                 <td><strong>HD@(hoaDon.MaHoaDon.ToString("D6"))</strong></td>

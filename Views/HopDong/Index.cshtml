@@ -1,18 +1,11 @@
-@model IEnumerable<bikey.Models.HopDong>
-@inject bikey.Repository.BikeyDbContext DbContext
-@using System.Security.Claims
-@using Microsoft.EntityFrameworkCore
+@model bikey.ViewModels.HopDongIndexViewModel
 @{
     Layout = "_AdminLayout";
     ViewData["Title"] = "Quản lý hợp đồng";
-    int totalItems = ViewBag.TotalItems ?? 0;
-    int pageSize = ViewBag.PageSize ?? 10;
-    int currentPage = ViewBag.CurrentPage ?? 1;
-    int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
-
-    var userId = int.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var parsedUserId) ? parsedUserId : 0;
-    var permission = userId > 0 ? await DbContext.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId) : null;
-    var canProcessBooking = permission?.CanProcessBooking ?? false;
+    int totalItems = Model.TotalItems;
+    int pageSize = Model.PageSize;
+    int currentPage = Model.CurrentPage;
+    int totalPages = pageSize > 0 ? (int)Math.Ceiling((double)totalItems / pageSize) : 1;
 }
 
 @section Styles {
@@ -42,12 +35,12 @@
     }
 
     @* thông báo đơn chờ xử lý *@
-    @if (canProcessBooking && (ViewBag.DonChoXuLy ?? 0) > 0)
+    @if (Model.DonChoXuLy > 0)
     {
         <div class="alert alert-danger alert-dismissible fade show">
             <i class="bi bi-check-circle me-2 mt-1" style="font-size: 28px;"></i>
             <div class="flex-grow-1">
-                <strong>Có @ViewBag.DonChoXuLy đơn đặt xe đang chờ xử lý!</strong>
+                <strong>Có @Model.DonChoXuLy đơn đặt xe đang chờ xử lý!</strong>
                 <div style="font-size:14px; opacity:0.9; margin-top:2px;">
                     Các đơn đang chờ xử lý cần được xác nhận và tạo hợp đồng.
                 </div>
@@ -75,7 +68,7 @@
             <div class="col-lg-3 col-md-6">
                 <a asp-action="DonChoXuLy" class="text-decoration-none">
                     <stat-card label="Đơn chờ xử lý"
-                               value="@ViewBag.DonChoXuLy"
+                               value="@Model.DonChoXuLy"
                                tone="red"
                                align="center"
                                style="cursor: pointer; transition: all 0.3s; border: 2px solid transparent;">
@@ -85,7 +78,7 @@
             </div>
             <div class="col-lg-3 col-md-6">
                 <stat-card label="Đang thuê"
-                           value="@ViewBag.TongDangThue"
+                           value="@Model.TongDangThue"
                            tone="purple"
                            align="center">
                     <div class="stat-extra-container"></div>
@@ -93,7 +86,7 @@
             </div>
             <div class="col-lg-3 col-md-6">
                 <stat-card label="Hoàn thành"
-                           value="@ViewBag.TongHoanThanh"
+                           value="@Model.TongHoanThanh"
                            tone="green"
                            align="center">
                     <div class="stat-extra-container"></div>
@@ -107,63 +100,63 @@
         @* filter *@
         <div class="filter-section">
             <form method="get" asp-controller="HopDong" asp-action="Index" class="row g-3 align-items-end filter-bar">
-                    @{
-                        var trangThaiChon = ViewBag.TrangThai as string;
-                    }
-                    <div class="col filter-bar-field">
-                        <label class="form-label" for="filterTrangThai">Trạng thái</label>
-                        <select name="trangThai" id="filterTrangThai" class="form-select">
-                            @if (string.IsNullOrEmpty(trangThaiChon))
-                            {
-                                <option value="" selected>Tất cả trạng thái</option>
-                            }
-                            else
-                            {
-                                <option value="">Tất cả trạng thái</option>
-                            }
-                            @if (trangThaiChon == "Đang thuê")
-                            {
-                                <option value="Đang thuê" selected>Đang thuê</option>
-                            }
-                            else
-                            {
-                                <option value="Đang thuê">Đang thuê</option>
-                            }
-                            @if (trangThaiChon == "Hoàn thành")
-                            {
-                                <option value="Hoàn thành" selected>Hoàn thành</option>
-                            }
-                            else
-                            {
-                                <option value="Hoàn thành">Hoàn thành</option>
-                            }
-                            @if (trangThaiChon == "Hủy")
-                            {
-                                <option value="Hủy" selected>Hủy</option>
-                            }
-                            else
-                            {
-                                <option value="Hủy">Hủy</option>
-                            }
-                        </select>
-                    </div>
-                    <div class="col filter-bar-field">
-                        <label class="form-label" for="filterTuKhoa">Tìm theo tên khách hoặc tên xe</label>
-                        <input type="search" name="tuKhoa" id="filterTuKhoa" class="form-control"
-                            value="@ViewBag.TuKhoa" placeholder="Ví dụ: Nguyễn, Honda, 51A…" autocomplete="off" />
-                    </div>
-                    <div class="col-auto filter-bar-action">
-                        <label class="form-label d-block">&nbsp;</label>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-funnel"></i> Lọc dữ liệu
-                        </button>
-                    </div>
-                    <div class="col-auto filter-bar-action">
-                        <label class="form-label d-block">&nbsp;</label>
-                        <a asp-controller="HopDong" asp-action="Index" class="btn btn-secondary">
-                            <i class="bi bi-arrow-clockwise"></i> Làm mới
-                        </a>
-                    </div>
+                @{
+                    var trangThaiChon = Model.TrangThai;
+                }
+                <div class="col filter-bar-field">
+                    <label class="form-label" for="filterTrangThai">Trạng thái</label>
+                    <select name="trangThai" id="filterTrangThai" class="form-select">
+                        @if (string.IsNullOrEmpty(trangThaiChon))
+                        {
+                            <option value="" selected>Tất cả trạng thái</option>
+                        }
+                        else
+                        {
+                            <option value="">Tất cả trạng thái</option>
+                        }
+                        @if (trangThaiChon == "Đang thuê")
+                        {
+                            <option value="Đang thuê" selected>Đang thuê</option>
+                        }
+                        else
+                        {
+                            <option value="Đang thuê">Đang thuê</option>
+                        }
+                        @if (trangThaiChon == "Hoàn thành")
+                        {
+                            <option value="Hoàn thành" selected>Hoàn thành</option>
+                        }
+                        else
+                        {
+                            <option value="Hoàn thành">Hoàn thành</option>
+                        }
+                        @if (trangThaiChon == "Hủy")
+                        {
+                            <option value="Hủy" selected>Hủy</option>
+                        }
+                        else
+                        {
+                            <option value="Hủy">Hủy</option>
+                        }
+                    </select>
+                </div>
+                <div class="col filter-bar-field">
+                    <label class="form-label" for="filterTuKhoa">Tìm theo tên khách hoặc tên xe</label>
+                    <input type="search" name="tuKhoa" id="filterTuKhoa" class="form-control"
+                        value="@Model.TuKhoa" placeholder="Ví dụ: Nguyễn, Honda, 51A…" autocomplete="off" />
+                </div>
+                <div class="col-auto filter-bar-action">
+                    <label class="form-label d-block">&nbsp;</label>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-funnel"></i> Lọc dữ liệu
+                    </button>
+                </div>
+                <div class="col-auto filter-bar-action">
+                    <label class="form-label d-block">&nbsp;</label>
+                    <a asp-controller="HopDong" asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-clockwise"></i> Làm mới
+                    </a>
+                </div>
             </form>
         </div>
 
@@ -184,9 +177,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if (Model.Any())
+                    @if (Model.HopDongList.Any())
                     {
-                        @foreach (var item in Model)
+                        @foreach (var item in Model.HopDongList)
                         {
                             var firstXe = item.ChiTietHopDong?.FirstOrDefault();
                             var tongTienHienThi = (item.ChiTietHopDong?.Sum(ct => ct.ThanhTienTinhToan) ?? 0m)
@@ -220,26 +213,26 @@
                                     {
                                         <span class="text-muted">Chưa có xe</span>
                                     }
-                            </td>
-                            <td>@item.NgayNhanXe.ToString("dd/MM/yyyy")</td>
-                            <td>
-                                @(item.NgayTraXeThucTe?.ToString("dd/MM/yyyy") ??
+                                </td>
+                                <td>@item.NgayNhanXe.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    @(item.NgayTraXeThucTe?.ToString("dd/MM/yyyy") ??
                                                             item.NgayTraXeDuKien.ToString("dd/MM/yyyy"))
-                        </td>
-                        <td class="text-danger fw-bold">@tongTienHienThi.ToString("N0")đ</td>
-                        <td><span class="status-badge @statusClass">@item.TrangThai</span></td>
-                        <td>
-                            @if (item.HoaDon != null)
-                            {
-                                <a asp-controller="HoaDon" asp-action="ChiTiet" asp-route-id="@item.HoaDon.MaHoaDon"
-                                    class="badge bg-success text-decoration-none"
-                                    title="Xem chi tiết hóa đơn">HD@(item.HoaDon.MaHoaDon.ToString("D6"))</a>
-                            }
-                            else
-                            {
-                                <span class="badge bg-secondary">-</span>
-                            }
-                        </td>
+                                </td>
+                                <td class="text-danger fw-bold">@tongTienHienThi.ToString("N0")đ</td>
+                                <td><span class="status-badge @statusClass">@item.TrangThai</span></td>
+                                <td>
+                                    @if (item.HoaDon != null)
+                                    {
+                                        <a asp-controller="HoaDon" asp-action="ChiTiet" asp-route-id="@item.HoaDon.MaHoaDon"
+                                            class="badge bg-success text-decoration-none"
+                                            title="Xem chi tiết hóa đơn">HD@(item.HoaDon.MaHoaDon.ToString("D6"))</a>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">-</span>
+                                    }
+                                </td>
                                 <td>
                                     <a asp-action="ChiTiet" asp-route-id="@item.MaHopDong" class="btn btn-sm btn-info"
                                         title="Chi tiết">
@@ -274,7 +267,7 @@
                             {
                                 <li class="page-item">
                                     <a class="page-link"
-                                        href="@Url.Action("Index", new { trangThai = ViewBag.TrangThai, tuKhoa = ViewBag.TuKhoa, page = currentPage - 1 })">
+                                        href="@Url.Action("Index", new { trangThai = Model.TrangThai, tuKhoa = Model.TuKhoa, page = currentPage - 1 })">
                                         <i class="bi bi-chevron-left"></i>
                                     </a>
                                 </li>
@@ -296,7 +289,7 @@
                                 {
                                     <li class="page-item">
                                         <a class="page-link"
-                                            href="@Url.Action("Index", new { trangThai = ViewBag.TrangThai, tuKhoa = ViewBag.TuKhoa, page = i })">@i</a>
+                                            href="@Url.Action("Index", new { trangThai = Model.TrangThai, tuKhoa = Model.TuKhoa, page = i })">@i</a>
                                     </li>
                                 }
                             }
@@ -305,7 +298,7 @@
                             {
                                 <li class="page-item">
                                     <a class="page-link"
-                                        href="@Url.Action("Index", new { trangThai = ViewBag.TrangThai, tuKhoa = ViewBag.TuKhoa, page = currentPage + 1 })">
+                                        href="@Url.Action("Index", new { trangThai = Model.TrangThai, tuKhoa = Model.TuKhoa, page = currentPage + 1 })">
                                         <i class="bi bi-chevron-right"></i>
                                     </a>
                                 </li>

@@ -1,5 +1,7 @@
 using System.Security.Claims;
+using bikey.Common;
 using bikey.Repository;
+using bikey.Services;
 using bikey.ViewModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -12,10 +14,12 @@ namespace bikey.Controllers
     public class AccountController : Controller
     {
         private readonly BikeyDbContext _context;
+        private readonly INguoiDungService _nguoiDungService;
 
-        public AccountController(BikeyDbContext context)
+        public AccountController(BikeyDbContext context, INguoiDungService nguoiDungService)
         {
             _context = context;
+            _nguoiDungService = nguoiDungService;
         }
 
         [AllowAnonymous]
@@ -40,7 +44,7 @@ namespace bikey.Controllers
                 return View(model);
             }
 
-            var normalizedEmail = NormalizeEmail(model.Email);
+            var normalizedEmail = StringHelpers.NormalizeEmail(model.Email);
 
             var matchedUser = await _context.NguoiDung
                 .AsNoTracking()
@@ -93,39 +97,21 @@ namespace bikey.Controllers
                 return View(model);
             }
 
-            var normalizedEmail = NormalizeEmail(model.Email);
+            var normalizedEmail = StringHelpers.NormalizeEmail(model.Email);
 
-            var emailExists = await _context.NguoiDung
-                .AnyAsync(user => user.Email != null && user.Email.ToLower() == normalizedEmail);
-
-            if (emailExists)
+            if (await _nguoiDungService.EmailExistsAsync(model.Email))
             {
                 ModelState.AddModelError(nameof(model.Email), "Email này đã được sử dụng.");
                 return View(model);
             }
 
-            var phoneExists = await _context.NguoiDung
-                .AnyAsync(user => user.SoDienThoai == model.SoDienThoai);
-
-            if (phoneExists)
+            if (await _nguoiDungService.PhoneExistsAsync(model.SoDienThoai))
             {
                 ModelState.AddModelError(nameof(model.SoDienThoai), "Số điện thoại này đã được sử dụng.");
                 return View(model);
             }
 
-            var newUser = new Models.NguoiDung
-            {
-                Ten = model.HoTen,
-                Email = normalizedEmail,
-                SoDienThoai = model.SoDienThoai,
-                MatKhau = model.MatKhau,
-                VaiTro = "User",
-                IsActive = true,
-                NgayTao = DateTime.Now
-            };
-
-            _context.NguoiDung.Add(newUser);
-            await _context.SaveChangesAsync();
+            var newUser = await _nguoiDungService.CreateAsync(model.HoTen, normalizedEmail, model.SoDienThoai, model.MatKhau, "User");
 
             await SignInUserAsync(newUser);
 
@@ -149,7 +135,7 @@ namespace bikey.Controllers
                 return View(model);
             }
 
-            var normalizedEmail = NormalizeEmail(model.Email);
+            var normalizedEmail = StringHelpers.NormalizeEmail(model.Email);
             var user = await _context.NguoiDung
                 .FirstOrDefaultAsync(item => item.Email != null && item.Email.ToLower() == normalizedEmail);
 
@@ -224,11 +210,6 @@ namespace bikey.Controllers
         {
             return string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase) ||
                    string.Equals(role, "Staff", StringComparison.OrdinalIgnoreCase);
-        }
-
-        private static string NormalizeEmail(string email)
-        {
-            return email.Trim().ToLowerInvariant();
         }
 
         [Authorize]
