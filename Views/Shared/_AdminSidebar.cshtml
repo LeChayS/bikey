@@ -42,7 +42,8 @@
     </div>
     @if (donChoXuLyMoiHomNay > 0)
     {
-        <div class="p-2 text-white" style="background: #dc3545;">
+        <!-- Banner đầy đủ khi sidebar mở rộng -->
+        <div class="sidebar-notify-expanded p-2 text-white" style="background: #dc3545;">
             <div class="d-flex align-items-center justify-content-between gap-2">
                 <div>
                     <div class="fw-semibold small">Đơn chờ xử lý mới</div>
@@ -51,6 +52,11 @@
                 <a asp-controller="HopDong" asp-action="DonChoXuLy" class="btn btn-light btn-sm">Xem</a>
             </div>
         </div>
+        <!-- Icon nhỏ gọn khi sidebar thu gọn -->
+        <a asp-controller="HopDong" asp-action="DonChoXuLy" class="sidebar-notify-collapsed" title="@donChoXuLyMoiHomNay đơn chờ xử lý mới hôm nay">
+            <i class="bi bi-bell-fill"></i>
+            <span class="sidebar-notify-badge">@donChoXuLyMoiHomNay</span>
+        </a>
     }
     <ul class="sidebar-menu">
         @if (canSeeDashboard)

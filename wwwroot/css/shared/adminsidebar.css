@@ -147,6 +147,50 @@
     text-align: center;
 }
 
+/* Notification: expanded banner visible by default, collapsed icon hidden */
+.sidebar-notify-expanded {
+    display: block;
+}
+
+.sidebar-notify-collapsed {
+    display: none;
+    text-align: center;
+    padding: 12px 0;
+    background: #dc3545;
+    color: white !important;
+    text-decoration: none;
+    position: relative;
+    transition: background 0.2s;
+}
+
+.sidebar-notify-collapsed:hover {
+    background: #c82333;
+    color: white !important;
+}
+
+.sidebar-notify-collapsed i {
+    font-size: 22px;
+    color: white;
+}
+
+.sidebar-notify-badge {
+    position: absolute;
+    top: 6px;
+    right: 12px;
+    background: white;
+    color: #dc3545;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: bold;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    animation: pulse-sidebar 2s infinite;
+}
+
 /* .collapsed sidebar */
 .sidebar.collapsed {
     width: 70px;
@@ -158,8 +202,19 @@
 
 .sidebar.collapsed .sidebar-header{
     background-color: white;
+    display: none;
 }
 
 .sidebar.collapsed .sidebar-header h3 {
     font-size: 0;
+}
+
+/* Collapsed: hide full banner, show compact icon */
+.sidebar.collapsed .sidebar-notify-expanded {
+    display: none;
+}
+
+.sidebar.collapsed .sidebar-notify-collapsed {
+    display: block;
+    height: 70px;
 }
