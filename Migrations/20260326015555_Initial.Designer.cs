@@ -12,7 +12,7 @@ using bikey.Repository;
 namespace bikey.Migrations
 {
     [DbContext(typeof(BikeyDbContext))]
-    [Migration("20260325150622_Initial")]
+    [Migration("20260326015555_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
