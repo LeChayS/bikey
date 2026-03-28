@@ -24,6 +24,9 @@ namespace bikey.Controllers
             int page = 1,
             int pageSize = 10)
         {
+            var permissionCheck = await RequirePermissionAsync(p => p.CanViewHoaDon);
+            if (permissionCheck != null) return permissionCheck;
+
             page = Math.Max(1, page);
             pageSize = Math.Clamp(pageSize, 1, 100);
 
@@ -52,6 +55,9 @@ namespace bikey.Controllers
         {
             if (id <= 0) return NotFound();
 
+            var permissionCheck = await RequirePermissionAsync(p => p.CanViewHoaDon);
+            if (permissionCheck != null) return permissionCheck;
+
             var hoaDon = await _hoaDonService.GetByIdAsync(id);
             return hoaDon is null ? NotFound() : View(hoaDon);
         }
@@ -60,6 +66,9 @@ namespace bikey.Controllers
         public async Task<IActionResult> InHoaDon(int id)
         {
             if (id <= 0) return NotFound();
+
+            var permissionCheck = await RequirePermissionAsync(p => p.CanViewHoaDon);
+            if (permissionCheck != null) return permissionCheck;
 
             var hoaDon = await _hoaDonService.GetByIdAsync(id);
             if (hoaDon is null) return NotFound();

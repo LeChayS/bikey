@@ -10,6 +10,7 @@
         "Đang thuê" => "status-renting",
         "Bảo trì" => "status-maintenance",
         "Hư hỏng" => "status-broken",
+        "Đã xóa" => "status-deleted",
         _ => "status-ready"
     };
 
@@ -102,16 +103,36 @@
                         </a>
                     </div>
                     <div class="chart-cart col-md-3">
-                        <a class="btn red w-100" asp-action="Index" asp-controller="HopDong">
-                            <i class="bi bi-receipt"></i><br>
-                            Quản lý hợp đồng
-                        </a>
+                        @if (Model.CanViewHopDong)
+                        {
+                            <a class="btn red w-100" asp-action="Index" asp-controller="HopDong">
+                                <i class="bi bi-receipt"></i><br>
+                                Quản lý hợp đồng
+                            </a>
+                        }
+                        else
+                        {
+                            <button class="btn btn-secondary w-100" disabled>
+                                <i class="bi bi-receipt"></i><br>
+                                Quản lý hợp đồng
+                            </button>
+                        }
                     </div>
                     <div class="chart-cart col-md-3">
-                        <a class="btn green w-100" asp-action="Index" asp-controller="HoaDon">
-                            <i class="bi bi-receipt-cutoff"></i><br>
-                            Quản lý hóa đơn
-                        </a>
+                        @if (Model.CanViewHoaDon)
+                        {
+                            <a class="btn green w-100" asp-action="Index" asp-controller="HoaDon">
+                                <i class="bi bi-receipt-cutoff"></i><br>
+                                Quản lý hóa đơn
+                            </a>
+                        }
+                        else
+                        {
+                            <button class="btn btn-secondary w-100" disabled>
+                                <i class="bi bi-receipt-cutoff"></i><br>
+                                Quản lý hóa đơn
+                            </button>
+                        }
                     </div>
                     <div class="chart-cart col-md-3">
                         <a class="btn orange w-100" asp-action="Index" asp-controller="Xe">

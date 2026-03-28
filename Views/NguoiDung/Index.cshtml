@@ -134,7 +134,7 @@
                                 </td>
                                 <td>@user.NgayTao.ToString("dd/MM/yyyy HH:mm")</td>
                                 <td>
-                                    @if (canEditUser)
+                                    @if (canEditUser && (user.Id != 1 || userId == 1))
                                     {
                                         <button type="button"
                                                 class="btn btn-warning btn-sm btn-action"
@@ -151,11 +151,18 @@
                                             <i class="bi bi-pencil"></i>
                                         </button>
                                     }
+                                    else if (user.Id == 1)
+                                    {
+                                        <button type="button" class="btn btn-warning btn-sm btn-action" disabled title="Tài khoản admin mặc định chỉ được chỉnh bởi chính chủ">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                    }
+
                                     @if (canEditUser)
                                     {
-                                        @if (user.Id == 1)
+                                        if (user.Id == 1 && userId != 1)
                                         {
-                                            <button type="button" class="btn btn-info btn-sm btn-action" disabled title="Tài khoản admin mặc định không thể thay đổi quyền">
+                                            <button type="button" class="btn btn-info btn-sm btn-action" disabled title="Tài khoản admin mặc định chỉ được phân quyền bởi chính chủ">
                                                 <i class="bi bi-shield-lock"></i>
                                             </button>
                                         }
@@ -166,6 +173,7 @@
                                             </a>
                                         }
                                     }
+
                                     @if (canDeleteUser)
                                     {
                                         <button type="button"
@@ -175,7 +183,7 @@
                                                 data-bs-target="#deleteUser"
                                                 data-id="@user.Id"
                                                 data-name="@user.Ten"
-                                                @(user.Id == 1 || user.Id == int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0") ? "disabled" : null)>
+                                                @(user.Id == 1 || user.Id == userId ? "disabled" : null)>
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     }

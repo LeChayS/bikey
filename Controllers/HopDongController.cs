@@ -21,6 +21,9 @@ namespace bikey.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string? trangThai, string? tuKhoa, int page = 1)
         {
+            var permissionCheck = await RequirePermissionAsync(p => p.CanViewHopDong);
+            if (permissionCheck != null) return permissionCheck;
+
             const int pageSize = 10;
             page = Math.Max(1, page);
 
@@ -47,7 +50,7 @@ namespace bikey.Controllers
         [HttpGet]
         public async Task<IActionResult> DonChoXuLy(string? searchString, DateTime? tuNgay, DateTime? denNgay)
         {
-            var permissionCheck = await RequirePermissionAsync(p => p.CanProcessBooking);
+            var permissionCheck = await RequirePermissionAsync(p => p.CanViewHopDong && p.CanProcessBooking);
             if (permissionCheck != null) return permissionCheck;
 
             var model = await _hopDongService.GetDonChoXuLyAsync(searchString, tuNgay, denNgay);
@@ -149,6 +152,9 @@ namespace bikey.Controllers
         [HttpGet]
         public async Task<IActionResult> ChiTiet(int id)
         {
+            var permissionCheck = await RequirePermissionAsync(p => p.CanViewHopDong);
+            if (permissionCheck != null) return permissionCheck;
+
             var hopDong = await _hopDongService.GetChiTietAsync(id);
             if (hopDong is null)
             {
@@ -161,7 +167,7 @@ namespace bikey.Controllers
         [HttpGet]
         public async Task<IActionResult> TraXe(int id)
         {
-            var permissionCheck = await RequirePermissionAsync(p => p.CanReturnVehicle);
+            var permissionCheck = await RequirePermissionAsync(p => p.CanViewHopDong && p.CanReturnVehicle);
             if (permissionCheck != null) return permissionCheck;
 
             var hopDong = await _hopDongService.GetChiTietAsync(id);

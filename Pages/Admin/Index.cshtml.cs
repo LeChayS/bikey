@@ -18,10 +18,28 @@ namespace bikey.Pages.Admin
         }
 
         public AdminDashboardViewModel Dashboard { get; private set; } = new();
+        public bool CanViewHopDong { get; private set; }
+        public bool CanViewHoaDon { get; private set; }
 
         public async Task OnGetAsync()
         {
+            await BuildPermissionsAsync();
             Dashboard = await BuildDashboardAsync();
+        }
+
+        private async Task BuildPermissionsAsync()
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (!int.TryParse(userIdClaim, out var userId))
+            {
+                CanViewHopDong = false;
+                CanViewHoaDon = false;
+                return;
+            }
+
+            var permission = await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId);
+            CanViewHopDong = permission?.CanViewHopDong == true || permission?.CanProcessBooking == true || permission?.CanReturnVehicle == true || permission?.CanPrintHopDong == true;
+            CanViewHoaDon = permission?.CanViewHoaDon == true || permission?.CanPrintHoaDon == true;
         }
 
         private async Task<AdminDashboardViewModel> BuildDashboardAsync()
@@ -94,8 +112,7 @@ namespace bikey.Pages.Admin
                 .Include(c => c.Xe)
                 .Include(c => c.HopDong)
                 .Where(c => c.HopDong.TrangThai == TrangHoanThanh
-                    && c.Xe != null
-                    && c.Xe.TrangThai != "Đã xóa")
+                    && c.Xe != null)
                 .ToListAsync();
 
             return rows

@@ -70,6 +70,12 @@ namespace bikey.Controllers
             var result = await RequirePermissionAsync(p => p.CanEditUser);
             if (result != null) return result;
 
+            var currentUserId = GetCurrentUserId();
+            if (input.Id == 1 && currentUserId != 1)
+            {
+                return Redirect("/AccessDenied");
+            }
+
             if (!ModelState.IsValid)
             {
                 TempData["UserManagementError"] = "Thông tin không hợp lệ.";
@@ -108,6 +114,11 @@ namespace bikey.Controllers
             var result = await RequirePermissionAsync(p => p.CanDeleteUser);
             if (result != null) return result;
 
+            if (id == 1)
+            {
+                return Redirect("/AccessDenied");
+            }
+
             var currentUserId = GetCurrentUserId();
 
             var user = await _nguoiDungService.GetByIdAsync(id);
@@ -141,10 +152,10 @@ namespace bikey.Controllers
                 return NotFound();
             }
 
-            if (user.Id == 1)
+            var currentUserId = GetCurrentUserId();
+            if (user.Id == 1 && currentUserId != 1)
             {
-                TempData["UserManagementError"] = "Không thể thay đổi quyền cho tài khoản admin mặc định.";
-                return RedirectToAction(nameof(Index));
+                return Redirect("/AccessDenied");
             }
 
             var permission = await _userService.GetPermissionAsync(id);
@@ -174,10 +185,10 @@ namespace bikey.Controllers
                 return NotFound();
             }
 
-            if (user.Id == 1)
+            var currentUserId = GetCurrentUserId();
+            if (user.Id == 1 && currentUserId != 1)
             {
-                TempData["UserManagementError"] = "Không thể thay đổi quyền cho tài khoản admin mặc định.";
-                return RedirectToAction(nameof(Index));
+                return Redirect("/AccessDenied");
             }
 
             await _nguoiDungService.UpdatePermissionsAsync(user.Id, user.VaiTro, model.Permissions);

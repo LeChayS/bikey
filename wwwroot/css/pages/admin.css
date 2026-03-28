@@ -117,6 +117,15 @@
         .status-maintenance::before {
             background: #F59E0B;
         }
+
+        .status-deleted {
+            color: #6B7280;
+        }
+
+        .status-deleted::before {
+            background: #9CA3AF;
+        }
+
 /* hợp đồng gần đây */
 .status-hopdong {
     padding: 5px 12px;
