@@ -263,9 +263,6 @@
 
             <!-- Action buttons -->
             <div class="action-section no-print">
-                <a class="btn print">
-                    <i class="bi bi-printer"></i> In hợp đồng
-                </a>
                 @if (string.Equals(Model.TrangThai, "Đang thuê", StringComparison.OrdinalIgnoreCase) && canReturnVehicle)
                 {
                     <a asp-action="TraXe" asp-route-id="@Model.MaHopDong" class="btn return">
