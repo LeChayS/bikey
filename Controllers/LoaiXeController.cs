@@ -16,6 +16,12 @@ namespace bikey.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
+            var userId = GetCurrentUserId();
+            var permission = userId.HasValue ? await _userService.GetPermissionAsync(userId.Value) : null;
+            ViewBag.CanCreateLoaiXe = permission?.CanCreateLoaiXe ?? false;
+            ViewBag.CanEditLoaiXe = permission?.CanEditLoaiXe ?? false;
+            ViewBag.CanDeleteLoaiXe = permission?.CanDeleteLoaiXe ?? false;
+
             var loaiXeList = await _loaiXeService.GetAllAsync();
             return View(loaiXeList);
         }

@@ -12,9 +12,6 @@ $(document).ready(function () {
     // Thiết lập event listeners cho lọc real-time
     setupFilterEvents();
     setupDeleteEvents();
-
-    // Kiểm tra trạng thái filter ban đầu và hiển thị/ẩn button xóa lọc
-    checkFilterStatus();
 });
 
 // Thiết lập các event listeners cho bộ lọc
@@ -31,11 +28,6 @@ function setupFilterEvents() {
     $('#loaiXe, #hangXe, #trangThai').on('change', function () {
         filterXe();
     });
-
-    // Nút lọc
-    // $('#filterBtn').on('click', function () {
-    //     filterXe();
-    // });
 
     // Nút xóa lọc
     $('#clearFilterBtn').on('click', function () {
@@ -117,16 +109,6 @@ function filterXe() {
     // showDeleted lấy từ query string để JS chạy độc lập với Razor
     const showDeleted = new URLSearchParams(window.location.search).get('showDeleted') === 'true';
 
-    // Kiểm tra xem có filter nào được áp dụng không
-    const hasFilters = searchString || loaiXe || hangXe || trangThai;
-
-    // Hiển thị/ẩn button xóa lọc dựa trên việc có filter hay không
-    if (hasFilters) {
-        $('#clearFilterBtn').show();
-    } else {
-        $('#clearFilterBtn').hide();
-    }
-
     // Hiển thị loading
     $('#xeTableContainer').html('<div class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Đang tải...</span></div><br><small class="text-muted">Đang lọc dữ liệu...</small></div>');
 
@@ -156,21 +138,6 @@ function filterXe() {
     });
 }
 
-// Hàm kiểm tra trạng thái filter và hiển thị/ẩn button xóa lọc
-function checkFilterStatus() {
-    const searchString = $('#searchString').val();
-    const loaiXe = $('#loaiXe').val();
-    const hangXe = $('#hangXe').val();
-    const trangThai = $('#trangThai').val();
-
-    const hasFilters = searchString || loaiXe || hangXe || trangThai;
-
-    if (hasFilters) {
-        $('#clearFilterBtn').show();
-    } else {
-        $('#clearFilterBtn').hide();
-    }
-}
 
 // Hàm xóa tất cả bộ lọc
 function clearFilters() {
@@ -178,9 +145,6 @@ function clearFilters() {
     $('#loaiXe').val('');
     $('#hangXe').val('');
     $('#trangThai').val('');
-
-    // Ẩn button xóa lọc
-    $('#clearFilterBtn').hide();
 
     // Lọc lại với dữ liệu rỗng
     filterXe();

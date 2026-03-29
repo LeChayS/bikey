@@ -99,10 +99,8 @@ namespace bikey.ViewModels
         public bool CanViewHopDong { get; set; }
         public bool CanProcessBooking { get; set; }
         public bool CanReturnVehicle { get; set; }
-        public bool CanPrintHopDong { get; set; }
 
         public bool CanViewHoaDon { get; set; }
-        public bool CanPrintHoaDon { get; set; }
 
         public bool CanViewUser { get; set; }
         public bool CanCreateUser { get; set; }
@@ -159,8 +157,7 @@ namespace bikey.ViewModels
                 [
                     new PermissionItemMetadata("CanViewHopDong", "Xem"),
                     new PermissionItemMetadata("CanProcessBooking", "Xử lý đơn đặt chỗ"),
-                    new PermissionItemMetadata("CanReturnVehicle", "Trả xe"),
-                    new PermissionItemMetadata("CanPrintHopDong", "In hợp đồng")
+                    new PermissionItemMetadata("CanReturnVehicle", "Trả xe")
                 ]
             },
             new PermissionGroupMetadata
@@ -169,8 +166,7 @@ namespace bikey.ViewModels
                 Icon = "bi-receipt-cutoff",
                 Items =
                 [
-                    new PermissionItemMetadata("CanViewHoaDon", "Xem"),
-                    new PermissionItemMetadata("CanPrintHoaDon", "In hóa đơn")
+                    new PermissionItemMetadata("CanViewHoaDon", "Xem")
                 ]
             },
             new PermissionGroupMetadata

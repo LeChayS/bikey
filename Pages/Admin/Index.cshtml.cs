@@ -38,8 +38,8 @@ namespace bikey.Pages.Admin
             }
 
             var permission = await _context.PhanQuyen.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId);
-            CanViewHopDong = permission?.CanViewHopDong == true || permission?.CanProcessBooking == true || permission?.CanReturnVehicle == true || permission?.CanPrintHopDong == true;
-            CanViewHoaDon = permission?.CanViewHoaDon == true || permission?.CanPrintHoaDon == true;
+            CanViewHopDong = permission?.CanViewHopDong == true || permission?.CanProcessBooking == true || permission?.CanReturnVehicle == true;
+            CanViewHoaDon = permission?.CanViewHoaDon == true;
         }
 
         private async Task<AdminDashboardViewModel> BuildDashboardAsync()

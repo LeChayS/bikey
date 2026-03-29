@@ -415,10 +415,8 @@ namespace bikey.Repository
                             CanViewHopDong = true,
                             CanProcessBooking = true,
                             CanReturnVehicle = true,
-                            CanPrintHopDong = true,
 
                             CanViewHoaDon = true,
-                            CanPrintHoaDon = true,
 
                             CanViewUser = true,
                             CanCreateUser = true,
@@ -449,10 +447,8 @@ namespace bikey.Repository
                             CanViewHopDong = true,
                             CanProcessBooking = true,
                             CanReturnVehicle = true,
-                            CanPrintHopDong = true,
 
                             CanViewHoaDon = true,
-                            CanPrintHoaDon = true,
 
                             CanViewUser = true,
                             CanCreateUser = true,

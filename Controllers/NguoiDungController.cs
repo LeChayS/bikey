@@ -153,6 +153,11 @@ namespace bikey.Controllers
             }
 
             var currentUserId = GetCurrentUserId();
+            if (user.Id == currentUserId)
+            {
+                return Redirect("/AccessDenied");
+            }
+
             if (user.Id == 1 && currentUserId != 1)
             {
                 return Redirect("/AccessDenied");
@@ -186,6 +191,11 @@ namespace bikey.Controllers
             }
 
             var currentUserId = GetCurrentUserId();
+            if (user.Id == currentUserId)
+            {
+                return Redirect("/AccessDenied");
+            }
+
             if (user.Id == 1 && currentUserId != 1)
             {
                 return Redirect("/AccessDenied");

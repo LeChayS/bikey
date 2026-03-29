@@ -26,11 +26,9 @@ namespace bikey.Models
         public bool CanViewHopDong { get; set; } = true;
         public bool CanProcessBooking { get; set; } = false;
         public bool CanReturnVehicle { get; set; } = false;
-        public bool CanPrintHopDong { get; set; } = false;
 
         // Quyền quản lý hóa đơn
         public bool CanViewHoaDon { get; set; } = true;
-        public bool CanPrintHoaDon { get; set; } = false;
 
         // Quyền quản lý người dùng
         public bool CanViewUser { get; set; } = false;

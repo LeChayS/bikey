@@ -148,9 +148,7 @@ namespace bikey.Services
                 CanViewHopDong = permission.CanViewHopDong,
                 CanProcessBooking = permission.CanProcessBooking,
                 CanReturnVehicle = permission.CanReturnVehicle,
-                CanPrintHopDong = permission.CanPrintHopDong,
                 CanViewHoaDon = permission.CanViewHoaDon,
-                CanPrintHoaDon = permission.CanPrintHoaDon,
                 CanViewUser = permission.CanViewUser,
                 CanCreateUser = permission.CanCreateUser,
                 CanEditUser = permission.CanEditUser,
@@ -176,9 +174,7 @@ namespace bikey.Services
             target.CanViewHopDong = input.CanViewHopDong;
             target.CanProcessBooking = input.CanProcessBooking;
             target.CanReturnVehicle = input.CanReturnVehicle;
-            target.CanPrintHopDong = input.CanPrintHopDong;
             target.CanViewHoaDon = input.CanViewHoaDon;
-            target.CanPrintHoaDon = input.CanPrintHoaDon;
             target.CanViewUser = input.CanViewUser;
             target.CanCreateUser = input.CanCreateUser;
             target.CanEditUser = input.CanEditUser;
@@ -210,12 +206,10 @@ namespace bikey.Services
             {
                 permission.CanProcessBooking = false;
                 permission.CanReturnVehicle = false;
-                permission.CanPrintHopDong = false;
             }
 
             if (!permission.CanViewHoaDon)
             {
-                permission.CanPrintHoaDon = false;
             }
 
             if (!permission.CanViewUser)
@@ -258,9 +252,7 @@ namespace bikey.Services
                     CanViewHopDong = true,
                     CanProcessBooking = true,
                     CanReturnVehicle = true,
-                    CanPrintHopDong = true,
                     CanViewHoaDon = true,
-                    CanPrintHoaDon = true,
                     CanViewUser = true,
                     CanCreateUser = true,
                     CanEditUser = true,
@@ -288,9 +280,7 @@ namespace bikey.Services
                     CanViewHopDong = true,
                     CanProcessBooking = true,
                     CanReturnVehicle = true,
-                    CanPrintHopDong = true,
                     CanViewHoaDon = true,
-                    CanPrintHoaDon = true,
                     CanViewUser = false,
                     CanCreateUser = false,
                     CanEditUser = false,

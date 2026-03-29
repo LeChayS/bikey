@@ -13,8 +13,8 @@
 
     var canSeeDashboard = userRole == "Admin" || userRole == "Staff";
     var canSeeBaoCao = permission?.CanViewBaoCao == true || permission?.CanViewThongKe == true || permission?.CanExportBaoCao == true;
-    var canSeeHopDong = permission?.CanViewHopDong == true || permission?.CanProcessBooking == true || permission?.CanReturnVehicle == true || permission?.CanPrintHopDong == true;
-    var canSeeHoaDon = permission?.CanViewHoaDon == true || permission?.CanPrintHoaDon == true;
+    var canSeeHopDong = permission?.CanViewHopDong == true || permission?.CanProcessBooking == true || permission?.CanReturnVehicle == true;
+    var canSeeHoaDon = permission?.CanViewHoaDon == true;
     var canSeeXe = permission?.CanViewXe == true || permission?.CanCreateXe == true || permission?.CanEditXe == true || permission?.CanDeleteXe == true;
     var canSeeLoaiXe = permission?.CanViewLoaiXe == true || permission?.CanCreateLoaiXe == true || permission?.CanEditLoaiXe == true || permission?.CanDeleteLoaiXe == true;
     var canSeeNguoiDung = permission?.CanViewUser == true || permission?.CanCreateUser == true || permission?.CanEditUser == true || permission?.CanDeleteUser == true;

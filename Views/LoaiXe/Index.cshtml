@@ -16,9 +16,12 @@
 <div class="top-header">
     <h1 class="mb-0"><i class="bi bi-tags"></i> Quản Lý Loại Xe</h1>
     <div>
-        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createLoai">
-            <i class="bi bi-plus-circle"></i> Thêm mới
-        </a>
+        @if ((bool?)ViewBag.CanCreateLoaiXe == true)
+        {
+            <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createLoai">
+                <i class="bi bi-plus-circle"></i> Thêm mới
+            </a>
+        }
     </div>
 </div>
 
@@ -64,22 +67,28 @@
                                 <td>@item.NgayTao.ToString("dd/MM/yyyy")</td>
                                 <td>@(item.NgayCapNhat.HasValue ? item.NgayCapNhat.Value.ToString("dd/MM/yyyy") : "-")</td>
                                 <td>
-                                    <button type="button"
-                                            class="btn btn-sm btn-warning"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#editLoai"
-                                            data-id="@item.MaLoaiXe"
-                                            data-ten="@item.TenLoaiXe">
-                                        Sửa
-                                    </button>
-                                    <button type="button"
-                                            class="btn btn-sm btn-danger"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#deleteLoai"
-                                            data-id="@item.MaLoaiXe"
-                                            data-ten="@item.TenLoaiXe">
-                                        Xóa
-                                    </button>
+                                    @if ((bool?)ViewBag.CanEditLoaiXe == true)
+                                    {
+                                        <button type="button"
+                                                class="btn btn-sm btn-warning"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#editLoai"
+                                                data-id="@item.MaLoaiXe"
+                                                data-ten="@item.TenLoaiXe">
+                                            Sửa
+                                        </button>
+                                    }
+                                    @if ((bool?)ViewBag.CanDeleteLoaiXe == true)
+                                    {
+                                        <button type="button"
+                                                class="btn btn-sm btn-danger"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteLoai"
+                                                data-id="@item.MaLoaiXe"
+                                                data-ten="@item.TenLoaiXe">
+                                            Xóa
+                                        </button>
+                                    }
                                 </td>
                             </tr>
                         }
