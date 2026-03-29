@@ -28,7 +28,7 @@ namespace bikey.Models
         public string? HoTen { get; set; }
 
         [Display(Name = "Số điện thoại")]
-        [StringLength(20)]
+        [StringLength(10)]
         public string? SoDienThoai { get; set; }
 
         [Display(Name = "Địa chỉ")]

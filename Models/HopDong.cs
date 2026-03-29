@@ -30,8 +30,8 @@ namespace bikey.Models
 
         [Display(Name = "Số điện thoại")]
         [Required(ErrorMessage = "Số điện thoại là bắt buộc")]
-        [StringLength(11, MinimumLength = 10, ErrorMessage = "Số điện thoại phải có từ 10 đến 11 số")]
-        [RegularExpression(@"^\d{10,11}$", ErrorMessage = "Số điện thoại chỉ được nhập số và phải có từ 10 đến 11 số")]
+        [StringLength(10, MinimumLength = 10, ErrorMessage = "Số điện thoại phải có 10 số")]
+        [RegularExpression(@"^\d{10}$", ErrorMessage = "Số điện thoại chỉ được nhập số và phải có từ 10 số")]
         public string? SoDienThoai { get; set; }
 
         [Display(Name = "CCCD/CMND")]
