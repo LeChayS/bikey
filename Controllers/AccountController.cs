@@ -15,11 +15,13 @@ namespace bikey.Controllers
     {
         private readonly BikeyDbContext _context;
         private readonly INguoiDungService _nguoiDungService;
+        private readonly IOnlineUserService _onlineUserService;
 
-        public AccountController(BikeyDbContext context, INguoiDungService nguoiDungService)
+        public AccountController(BikeyDbContext context, INguoiDungService nguoiDungService, IOnlineUserService onlineUserService)
         {
             _context = context;
             _nguoiDungService = nguoiDungService;
+            _onlineUserService = onlineUserService;
         }
 
         [AllowAnonymous]
@@ -192,6 +194,9 @@ namespace bikey.Controllers
                     IsPersistent = true,
                     ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
                 });
+
+            // Track user as online
+            _onlineUserService.UserLoggedIn(user.Id);
         }
 
         private IActionResult RedirectToDefaultPageByRole(string? role = null)
@@ -217,6 +222,13 @@ namespace bikey.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
+            // Get current user ID before signing out
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim != null && int.TryParse(userIdClaim.Value, out var userId))
+            {
+                _onlineUserService.UserLoggedOut(userId);
+            }
+
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "TrangChu");
         }

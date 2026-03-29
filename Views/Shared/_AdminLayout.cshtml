@@ -108,6 +108,9 @@
                 }
             </div>
         </div>
+        <div class="alert-container">
+            @RenderSection("Alerts", required: false)
+        </div>
         @RenderBody()
     </div>
     @RenderSection("Modals", required: false)

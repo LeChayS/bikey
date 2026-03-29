@@ -21,6 +21,7 @@
 
 @section Styles {
     <link rel="stylesheet" href="/css/nguoidung/index.css" asp-append-version="true" />
+    <link href="~/css/components/alert-box.css" rel="stylesheet" asp-append-version="true">
 }
 
 @section Scripts {
@@ -74,22 +75,23 @@
     }
 </div>
 
+@section Alerts {
+    @if (TempData["UserManagementSuccess"] is string successMessage)
+    {
+        <alert-box type="success" closable="true" title="Thành công">
+            @successMessage
+        </alert-box>
+    }
+    @if (TempData["UserManagementError"] is string errorMessage)
+    {
+        <alert-box type="danger" closable="true" title="Lỗi">
+            @errorMessage
+        </alert-box>
+    }
+}
+
+
 <div class="wrapper">
-        @if (TempData["UserManagementSuccess"] is string successMessage)
-        {
-            <div class="alert alert-success mb-3" role="alert">
-                @successMessage
-            </div>
-        }
-
-        @if (TempData["UserManagementError"] is string errorMessage)
-        {
-            <div class="alert alert-danger mb-3" role="alert">
-                @errorMessage
-            </div>
-        }
-
-
     <div class="container-fluid">
         <div class="table-container">
             <table class="table table-hover mb-0">
@@ -101,6 +103,7 @@
                         <th>SĐT</th>
                         <th>Vai trò</th>
                         <th>Trạng thái</th>
+                        <th>Online</th>
                         <th>Ngày tạo</th>
                         <th>Thao tác</th>
                     </tr>
@@ -118,6 +121,7 @@
                         {
                             var roleCssClass = user.VaiTro == "Admin" ? "role-admin" : user.VaiTro == "Staff" ? "role-staff" : "role-user";
                             var roleDisplay = user.VaiTro == "Admin" ? "Quản trị" : user.VaiTro == "Staff" ? "Nhân viên" : "Khách hàng";
+                            var isOnline = Model.OnlineUserIds.Contains(user.Id);
 
                             <tr>
                                 <td>#@user.Id</td>
@@ -130,6 +134,11 @@
                                 <td>
                                     <span class="status-badge @(user.IsActive ? "status-active" : "status-inactive")">
                                         @(user.IsActive ? "Hoạt động" : "Khóa")
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="status-badge @(isOnline ? "status-online" : "status-offline")">
+                                        @(isOnline ? "Online" : "Offline")
                                     </span>
                                 </td>
                                 <td>@user.NgayTao.ToString("dd/MM/yyyy HH:mm")</td>
@@ -184,12 +193,12 @@
                                     {
                                         <button type="button"
                                                 class="btn btn-danger btn-sm btn-action"
-                                                title="Xóa"
+                                                title="@(user.Id == 1 ? "Tài khoản admin mặc định không thể xóa" : user.Id == userId ? "Không thể xóa tài khoản đang đăng nhập" : isOnline ? "Không thể xóa tài khoản đang hoạt động" : "Xóa")"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#deleteUser"
                                                 data-id="@user.Id"
                                                 data-name="@user.Ten"
-                                                @(user.Id == 1 || user.Id == userId ? "disabled" : null)>
+                                                @(user.Id == 1 || user.Id == userId || isOnline ? "disabled" : null)>
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     }
@@ -202,7 +211,6 @@
         </div>
     </div>
 </div>
-
 
 <div class="modal fade" id="createUser" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
@@ -224,7 +232,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="CreateUser_SoDienThoai" class="form-label">Số điện thoại *</label>
-                        <input id="CreateUser_SoDienThoai" name="SoDienThoai" class="form-control" required />
+                        <input id="CreateUser_SoDienThoai" name="SoDienThoai" class="form-control" maxlength="10" pattern="[0-9]{10}" required />
                     </div>
                     <div class="mb-3">
                         <label for="CreateUser_MatKhau" class="form-label">Mật khẩu *</label>
@@ -270,7 +278,7 @@
                         </div>
                         <div class="col-md-6">
                             <label for="EditUser_SoDienThoai" class="form-label">Số điện thoại</label>
-                            <input id="EditUser_SoDienThoai" name="SoDienThoai" class="form-control" />
+                            <input id="EditUser_SoDienThoai" name="SoDienThoai" class="form-control" maxlength="10" pattern="[0-9]{10}" />
                         </div>
                         <div class="col-md-6">
                             <label for="EditUser_DiaChi" class="form-label">Địa chỉ</label>

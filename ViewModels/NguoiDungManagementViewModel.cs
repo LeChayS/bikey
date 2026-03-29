@@ -7,6 +7,8 @@ namespace bikey.ViewModels
     {
         public IReadOnlyList<NguoiDung> Users { get; init; } = [];
 
+        public IReadOnlyList<int> OnlineUserIds { get; init; } = [];
+
         public CreateNguoiDungInput CreateUser { get; init; } = new();
 
         public EditNguoiDungInput EditUser { get; init; } = new();
@@ -22,7 +24,7 @@ namespace bikey.ViewModels
         public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Vui lòng nhập số điện thoại.")]
-        [RegularExpression(@"^\d{10,11}$", ErrorMessage = "Số điện thoại phải có từ 10 đến 11 chữ số.")]
+        [RegularExpression(@"^\d{10}$", ErrorMessage = "Số điện thoại phải có đúng 10 chữ số.")]
         public string SoDienThoai { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Vui lòng nhập mật khẩu.")]
@@ -52,7 +54,7 @@ namespace bikey.ViewModels
         public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Vui lòng nhập số điện thoại.")]
-        [RegularExpression(@"^\d{10,11}$", ErrorMessage = "Số điện thoại phải có từ 10 đến 11 chữ số.")]
+        [RegularExpression(@"^\d{10}$", ErrorMessage = "Số điện thoại phải có đúng 10 chữ số.")]
         public string SoDienThoai { get; set; } = string.Empty;
 
         public string? DiaChi { get; set; }

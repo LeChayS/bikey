@@ -12,11 +12,13 @@ namespace bikey.Controllers
     public class NguoiDungController : BaseController
     {
         private readonly INguoiDungService _nguoiDungService;
+        private readonly IOnlineUserService _onlineUserService;
 
-        public NguoiDungController(IUserService userService, INguoiDungService nguoiDungService)
+        public NguoiDungController(IUserService userService, INguoiDungService nguoiDungService, IOnlineUserService onlineUserService)
             : base(userService)
         {
             _nguoiDungService = nguoiDungService;
+            _onlineUserService = onlineUserService;
         }
 
         [HttpGet]
@@ -133,6 +135,12 @@ namespace bikey.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            if (_onlineUserService.IsUserOnline(user.Id))
+            {
+                TempData["UserManagementError"] = "Không thể xóa tài khoản đang hoạt động. Vui lòng yêu cầu người dùng đăng xuất trước.";
+                return RedirectToAction(nameof(Index));
+            }
+
             await _nguoiDungService.DeleteAsync(id);
 
             TempData["UserManagementSuccess"] = "Xóa người dùng thành công.";
@@ -212,10 +220,12 @@ namespace bikey.Controllers
             ViewBag.Roles = BuildRoleSelectList();
 
             var users = await _nguoiDungService.GetAllAsync();
+            var onlineUserIds = _onlineUserService.GetOnlineUserIds();
 
             return new NguoiDungManagementViewModel
             {
-                Users = users
+                Users = users,
+                OnlineUserIds = onlineUserIds.ToList()
             };
         }
 
