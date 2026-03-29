@@ -6,11 +6,13 @@ namespace bikey.Controllers
     public class LoaiXeController : BaseController
     {
         private readonly ILoaiXeService _loaiXeService;
+        private readonly IDataChangeCheckService _dataChangeCheckService;
 
-        public LoaiXeController(IUserService userService, ILoaiXeService loaiXeService)
+        public LoaiXeController(IUserService userService, ILoaiXeService loaiXeService, IDataChangeCheckService dataChangeCheckService)
             : base(userService)
         {
             _loaiXeService = loaiXeService;
+            _dataChangeCheckService = dataChangeCheckService;
         }
 
         [HttpGet]
@@ -113,6 +115,33 @@ namespace bikey.Controllers
 
             TempData["Success"] = "Xóa loại xe thành công.";
             return RedirectToAction(nameof(Index));
+        }
+
+        /// <summary>
+        /// API endpoint for auto-refresh feature - returns checksum of current vehicle type list
+        /// </summary>
+        [HttpPost]
+        [Route("LoaiXe/GetDataChecksum")]
+        public async Task<IActionResult> GetDataChecksum([FromBody] DataChecksumRequest request)
+        {
+            var userId = GetCurrentUserId();
+            var permission = userId.HasValue ? await _userService.GetPermissionAsync(userId.Value) : null;
+
+            if (permission == null || !permission.CanViewXe)
+            {
+                return Json(new { success = false, checksum = Guid.NewGuid().ToString() });
+            }
+
+            try
+            {
+                var types = await _loaiXeService.GetAllAsync();
+                var checksum = _dataChangeCheckService.GenerateChecksum(types);
+                return Json(new { success = true, checksum = checksum });
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, checksum = Guid.NewGuid().ToString() });
+            }
         }
     }
 }

@@ -33,6 +33,7 @@ builder.Services.AddScoped<INguoiDungService, NguoiDungService>();
 builder.Services.AddScoped<ITrangChuService, TrangChuService>();
 builder.Services.AddScoped<IDatXeService, DatXeService>();
 builder.Services.AddScoped<IOnlineUserService, OnlineUserService>();
+builder.Services.AddScoped<IDataChangeCheckService, DataChangeCheckService>();
 
 // Cấu hình Entity Framework với SQL Server - tối ưu performance
 builder.Services.AddDbContext<BikeyDbContext>(options =>

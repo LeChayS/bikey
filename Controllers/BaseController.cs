@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using bikey.Services;
 using bikey.Models;
+using System.Text.Json.Serialization;
 
 namespace bikey.Controllers
 {
@@ -50,5 +51,24 @@ namespace bikey.Controllers
             }
             return null;
         }
+
+        /// <summary>
+        /// API endpoint to get data checksum for auto-refresh detection
+        /// Override this method in child controllers to implement specific data checksum logic
+        /// </summary>
+        [HttpPost]
+        [Route("{controller}/GetDataChecksum")]
+        public virtual async Task<IActionResult> GetDataChecksum([FromBody] DataChecksumRequest request)
+        {
+            // Default implementation - should be overridden in child controllers
+            return Json(new { checksum = Guid.NewGuid().ToString() });
+        }
+    }
+
+    public class DataChecksumRequest
+    {
+        [JsonPropertyName("action")]
+        public string? Action { get; set; }
     }
 }
+

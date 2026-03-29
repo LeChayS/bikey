@@ -26,13 +26,13 @@
 </div>
 
 @section Alerts {
-    @if (TempData["UserManagementSuccess"] is string successMessage)
+    @if (TempData["LoaiXeManagementSuccess"] is string successMessage)
     {
         <alert-box type="success" closable="true" title="Thành công">
             @successMessage
         </alert-box>
     }
-    @if (TempData["UserManagementError"] is string errorMessage)
+    @if (TempData["LoaiXeManagementError"] is string errorMessage)
     {
         <alert-box type="danger" closable="true" title="Lỗi">
             @errorMessage
@@ -41,23 +41,6 @@
 }
 
 <div class="wrapper">
-    @* server-side alerts *@
-    <div>
-        @if (TempData["Success"] != null)
-        {
-            <div class="alert alert-success alert-dismissible fade show loaiXe-alert" role="alert">
-                <span class="loaiXe-alert__message"><i class="bi bi-check-circle"></i> @TempData["Success"]</span>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        }
-        @if (TempData["Error"] != null)
-        {
-            <div class="alert alert-danger alert-dismissible fade show loaiXe-alert" role="alert">
-                <span class="loaiXe-alert__message"><i class="bi bi-exclamation-circle"></i> @TempData["Error"]</span>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        }
-    </div>
 
     <div class="container-fluid">
         <div class="table-container">

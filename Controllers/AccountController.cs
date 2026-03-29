@@ -232,5 +232,41 @@ namespace bikey.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "TrangChu");
         }
+
+        /// <summary>
+        /// API endpoint to check current user account status (IsActive)
+        /// Used for auto-logout when account is deactivated
+        /// </summary>
+        [Authorize]
+        [HttpPost]
+        [Route("Account/GetUserAccountStatus")]
+        public async Task<IActionResult> GetUserAccountStatus()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out var userId))
+            {
+                return Json(new { success = false, isActive = false });
+            }
+
+            try
+            {
+                var user = await _nguoiDungService.GetByIdAsync(userId);
+                if (user == null)
+                {
+                    return Json(new { success = false, isActive = false });
+                }
+
+                return Json(new {
+                    success = true,
+                    isActive = user.IsActive,
+                    userId = userId,
+                    userName = user.Ten
+                });
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, isActive = false });
+            }
+        }
     }
 }
