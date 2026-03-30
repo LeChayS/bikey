@@ -11,13 +11,11 @@ namespace bikey.Controllers
     public class HopDongController : BaseController
     {
         private readonly IHopDongService _hopDongService;
-        private readonly IDataChangeCheckService _dataChangeCheckService;
 
-        public HopDongController(IUserService userService, IHopDongService hopDongService, IDataChangeCheckService dataChangeCheckService)
+        public HopDongController(IUserService userService, IHopDongService hopDongService)
             : base(userService)
         {
             _hopDongService = hopDongService;
-            _dataChangeCheckService = dataChangeCheckService;
         }
 
         [HttpGet]
@@ -235,26 +233,5 @@ namespace bikey.Controllers
             return RedirectToAction(nameof(ChiTiet), new { id });
         }
 
-        /// <summary>
-        /// API endpoint for auto-refresh feature - returns checksum of current contract list
-        /// </summary>
-        [HttpPost]
-        [Route("HopDong/GetDataChecksum")]
-        public async Task<IActionResult> GetDataChecksum([FromBody] DataChecksumRequest request)
-        {
-            var result = await RequirePermissionAsync(p => p.CanViewHopDong);
-            if (result != null) return result;
-
-            try
-            {
-                var contracts = await _hopDongService.GetAllAsync();
-                var checksum = _dataChangeCheckService.GenerateChecksum(contracts);
-                return Json(new { success = true, checksum = checksum });
-            }
-            catch (Exception)
-            {
-                return Json(new { success = false, checksum = Guid.NewGuid().ToString() });
-            }
-        }
     }
 }

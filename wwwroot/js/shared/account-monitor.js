@@ -1,30 +1,21 @@
 /**
  * Account status monitor for all authenticated users
- * Automatically logs out user if their account is deactivated
- * Runs on all pages, not just admin pages
+ * Automatically logs out user IMMEDIATELY if their account is deactivated or deleted
  */
 
 (function () {
-    const ACCOUNT_CHECK_INTERVAL = 30000; // 30 seconds
+    const ACCOUNT_CHECK_INTERVAL = 10000; // Check every 10 seconds
     let accountCheckInterval = null;
     let lastAccountStatus = null;
     let isChecking = false;
-
-    /**
-     * Check if user is authenticated by looking for auth token/cookie
-     */
-    function isUserAuthenticated() {
-        // Check if there's a non-empty body with authenticated content
-        // A better approach would be to check a meta tag set by the server
-        return document.documentElement.innerHTML.length > 0;
-    }
+    let hasLoggedOut = false;
 
     /**
      * Fetch current user account status
      */
     async function fetchUserAccountStatus() {
-        if (isChecking) {
-            return null; // Prevent concurrent requests
+        if (isChecking || hasLoggedOut) {
+            return null;
         }
 
         isChecking = true;
@@ -54,54 +45,81 @@
     }
 
     /**
-     * Check user account status and logout if deactivated
+     * Logout immediately when account is deactivated or deleted
+     */
+    function logoutImmediately(reason) {
+        if (hasLoggedOut) return;
+        hasLoggedOut = true;
+
+        console.log('Account status changed: ' + reason + '. Logging out immediately...');
+        
+        // Show warning toast before logout
+        if (window.toastr) {
+            toastr.warning('Tài khoản của bạn đã bị khóa, vui lòng đăng nhập lại!', 'Thông báo', {
+                positionClass: 'toast-top-right',
+                timeOut: 1000,
+                onHidden: performLogout
+            });
+        } else {
+            alert('Tài khoản của bạn đã bị khóa. Vui lòng đăng nhập lại!');
+            performLogout();
+        }
+    }
+
+    /**
+     * Perform the actual logout
+     */
+    function performLogout() {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/Account/Logout';
+        
+        // Add anti-forgery token if available
+        const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
+        if (tokenElement) {
+            form.appendChild(tokenElement.cloneNode(true));
+        }
+        
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+    /**
+     * Combined monitor function - checks if account is still active
      */
     async function monitorAccountStatus() {
         const status = await fetchUserAccountStatus();
 
         if (!status || !status.success) {
-            return; // Skip if we couldn't fetch status or user not authenticated
+            return; // Skip if we couldn't fetch status
         }
 
-        // Initialize on first check
+        // First check - initialize status
         if (lastAccountStatus === null) {
-            lastAccountStatus = status.isActive;
+            lastAccountStatus = {
+                isActive: status.isActive,
+                exists: true
+            };
             return;
         }
 
-        // Check if account was deactivated
-        if (lastAccountStatus && !status.isActive) {
-            console.log('Account has been deactivated, logging out...');
-
-            // Show warning toast before logout
-            if (window.toastr) {
-                toastr.warning('Tài khoản của bạn đã bị khóa, vui lòng đăng nhập lại!', 'Thông báo', {
-                    positionClass: 'toast-top-right',
-                    timeOut: 3000
-                });
-            } else {
-                alert('Tài khoản của bạn đã bị khóa. Vui lòng đăng nhập lại!');
-            }
-
-            // Redirect to logout after a short delay
-            setTimeout(() => {
-                // Force logout by posting to logout endpoint
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '/Account/Logout';
-
-                // Add anti-forgery token if available
-                const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
-                if (tokenElement) {
-                    form.appendChild(tokenElement.cloneNode(true));
-                }
-
-                document.body.appendChild(form);
-                form.submit();
-            }, 2000);
+        // Account was deleted (can't find user)
+        if (lastAccountStatus.exists && !status.success) {
+            logoutImmediately('Account deleted');
+            return;
         }
 
-        lastAccountStatus = status.isActive;
+        // Account was deactivated
+        if (lastAccountStatus.isActive && !status.isActive) {
+            logoutImmediately('Account deactivated');
+            return;
+        }
+
+        // Update current status
+        lastAccountStatus = {
+            isActive: status.isActive,
+            exists: status.success
+        };
     }
 
     /**
@@ -110,10 +128,8 @@
     function startAccountMonitoring() {
         console.log('Starting account status monitoring...');
 
-        // Initial check after a short delay
-        setTimeout(() => {
-            monitorAccountStatus();
-        }, 2000);
+        // Initial check immediately
+        monitorAccountStatus();
 
         // Set up interval polling for account status
         accountCheckInterval = setInterval(() => {
@@ -134,11 +150,8 @@
 
     // Initialize when DOM is ready
     document.addEventListener('DOMContentLoaded', function () {
-        // Check if user is authenticated - simple way is to check if there's a logout button/link
-        const logoutForm = document.querySelector('form[action*="Logout"]');
-        if (logoutForm || document.querySelector('a[href*="Logout"]')) {
-            startAccountMonitoring();
-        }
+        // Start monitoring immediately (user must be authenticated to access this page)
+        startAccountMonitoring();
     });
 
     // Cleanup when leaving the page

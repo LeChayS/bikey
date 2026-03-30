@@ -10,13 +10,11 @@ namespace bikey.Controllers
     public class DatXeController : BaseController
     {
         private readonly IDatXeService _datXeService;
-        private readonly IDataChangeCheckService _dataChangeCheckService;
 
-        public DatXeController(IUserService userService, IDatXeService datXeService, IDataChangeCheckService dataChangeCheckService)
+        public DatXeController(IUserService userService, IDatXeService datXeService)
             : base(userService)
         {
             _datXeService = datXeService;
-            _dataChangeCheckService = dataChangeCheckService;
         }
 
         [Authorize]
@@ -96,24 +94,5 @@ namespace bikey.Controllers
             return View(datCho);
         }
 
-        /// <summary>
-        /// API endpoint for auto-refresh feature - returns checksum (DatXe is not a typical admin list)
-        /// </summary>
-        [HttpPost]
-        [Route("DatXe/GetDataChecksum")]
-        public async Task<IActionResult> GetDataChecksum([FromBody] DataChecksumRequest request)
-        {
-            try
-            {
-                // DatXeService doesn't expose GetAllAsync, so we return a static checksum
-                // This is adequate for the DatXe monitoring scenario
-                var checksum = _dataChangeCheckService.GenerateChecksum(new { timestamp = DateTime.Now.Ticks / 1000 });
-                return Json(new { success = true, checksum = checksum });
-            }
-            catch (Exception)
-            {
-                return Json(new { success = false, checksum = Guid.NewGuid().ToString() });
-            }
-        }
     }
 }

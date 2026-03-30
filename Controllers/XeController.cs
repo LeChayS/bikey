@@ -17,18 +17,15 @@ namespace bikey.Controllers
     {
         private readonly IXeService _xeService;
         private readonly ILoaiXeService _loaiXeService;
-        private readonly IDataChangeCheckService _dataChangeCheckService;
 
         public XeController(
             IUserService userService,
             IXeService xeService,
-            ILoaiXeService loaiXeService,
-            IDataChangeCheckService dataChangeCheckService)
+            ILoaiXeService loaiXeService)
             : base(userService)
         {
             _xeService = xeService;
             _loaiXeService = loaiXeService;
-            _dataChangeCheckService = dataChangeCheckService;
         }
 
         [HttpGet]
@@ -260,28 +257,6 @@ namespace bikey.Controllers
             var loaiXeList = await _loaiXeService.GetAllAsync();
             ViewBag.MaLoaiXe = new SelectList(loaiXeList.OrderBy(x => x.TenLoaiXe), "MaLoaiXe", "TenLoaiXe", xeModel?.MaLoaiXe);
             ViewBag.TrangThaiList = new SelectList(StatusConstants.XeStatus.AllStatuses, xeModel?.TrangThai);
-        }
-
-        /// <summary>
-        /// API endpoint for auto-refresh feature - returns checksum of current vehicle list
-        /// </summary>
-        [HttpPost]
-        [Route("Xe/GetDataChecksum")]
-        public async Task<IActionResult> GetDataChecksum([FromBody] DataChecksumRequest request)
-        {
-            var result = await RequirePermissionAsync(p => p.CanViewXe);
-            if (result != null) return result;
-
-            try
-            {
-                var vehicles = await _xeService.GetAllAsync();
-                var checksum = _dataChangeCheckService.GenerateChecksum(vehicles);
-                return Json(new { success = true, checksum = checksum });
-            }
-            catch (Exception)
-            {
-                return Json(new { success = false, checksum = Guid.NewGuid().ToString() });
-            }
         }
     }
 }

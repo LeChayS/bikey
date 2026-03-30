@@ -149,3 +149,34 @@
     background: #2563EB;
     color: white;
 }
+
+.status-onl {
+    padding: 5px 12px;
+    border-radius: 15px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 15px;
+    font-weight: 500;
+    font-weight: bold;
+}
+
+.status-onl::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+    .status-online {
+        color: #16A34A;
+    }
+    .status-online::before {
+        background: #22C55E;
+    }
+    .status-offline {
+        color: #6B7280;
+    }
+    .status-offline::before {
+        background: #9CA3AF;
+    }

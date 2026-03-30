@@ -13,14 +13,12 @@ namespace bikey.Controllers
     {
         private readonly INguoiDungService _nguoiDungService;
         private readonly IOnlineUserService _onlineUserService;
-        private readonly IDataChangeCheckService _dataChangeCheckService;
 
-        public NguoiDungController(IUserService userService, INguoiDungService nguoiDungService, IOnlineUserService onlineUserService, IDataChangeCheckService dataChangeCheckService)
+        public NguoiDungController(IUserService userService, INguoiDungService nguoiDungService, IOnlineUserService onlineUserService)
             : base(userService)
         {
             _nguoiDungService = nguoiDungService;
             _onlineUserService = onlineUserService;
-            _dataChangeCheckService = dataChangeCheckService;
         }
 
         [HttpGet]
@@ -239,28 +237,6 @@ namespace bikey.Controllers
                 new SelectListItem("Nhân viên", "Staff"),
                 new SelectListItem("Khách hàng", "User")
             ];
-        }
-
-        /// <summary>
-        /// API endpoint for auto-refresh feature - returns checksum of current user list
-        /// </summary>
-        [HttpPost]
-        [Route("NguoiDung/GetDataChecksum")]
-        public async Task<IActionResult> GetDataChecksum([FromBody] DataChecksumRequest request)
-        {
-            var result = await RequirePermissionAsync(p => p.CanViewUser);
-            if (result != null) return result;
-
-            try
-            {
-                var users = await _nguoiDungService.GetAllAsync();
-                var checksum = _dataChangeCheckService.GenerateChecksum(users);
-                return Json(new { success = true, checksum = checksum });
-            }
-            catch (Exception)
-            {
-                return Json(new { success = false, checksum = Guid.NewGuid().ToString() });
-            }
         }
     }
 }
