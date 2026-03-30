@@ -220,13 +220,6 @@
                     <span>@Model.Contract.TongTien.ToString("N0")đ</span>
                 </div>
             </div>
-
-            @if (Model.Contract.DaCoHoaDon)
-            {
-                <div class="alert alert-success mb-2">
-                    <i class="bi bi-receipt"></i> Đã có hóa đơn
-                </div>
-            }
             <a asp-page="/Account/Orders" class="btn btn-outline-secondary w-100">
                 <i class="bi bi-arrow-left"></i> Quay lại danh sách
             </a>

@@ -243,15 +243,6 @@ namespace bikey.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // [HttpPost]
-        // [ValidateAntiForgeryToken]
-        // public async Task<IActionResult> Restore(int id)
-        // {
-        //     await _xeService.RestoreAsync(id);
-        //     TempData["XeManagementSuccess"] = "Khôi phục xe thành công.";
-        //     return Redirect("/Xe/DaXoa");
-        // }
-
         private async Task PopulateCreateViewBagsAsync(Xe? xeModel = null)
         {
             var loaiXeList = await _loaiXeService.GetAllAsync();

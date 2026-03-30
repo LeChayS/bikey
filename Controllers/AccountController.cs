@@ -198,7 +198,6 @@ namespace bikey.Controllers
                     ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
                 });
 
-            // Track user as online
             _onlineUserService.UserLoggedIn(user.Id);
         }
 
@@ -216,8 +215,7 @@ namespace bikey.Controllers
 
         private static bool IsAdminOrStaff(string? role)
         {
-            return string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase) ||
-                   string.Equals(role, "Staff", StringComparison.OrdinalIgnoreCase);
+            return string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase) || string.Equals(role, "Staff", StringComparison.OrdinalIgnoreCase);
         }
 
         [Authorize]
@@ -225,7 +223,6 @@ namespace bikey.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            // Get current user ID before signing out
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim != null && int.TryParse(userIdClaim.Value, out var userId))
             {
@@ -236,10 +233,6 @@ namespace bikey.Controllers
             return RedirectToAction("Index", "TrangChu");
         }
 
-        /// <summary>
-        /// API endpoint to check current user account status (IsActive)
-        /// Used for auto-logout when account is deactivated
-        /// </summary>
         [Authorize]
         [HttpPost]
         [Route("Account/GetUserAccountStatus")]

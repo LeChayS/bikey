@@ -5,10 +5,6 @@ using System.Text.Json.Serialization;
 
 namespace bikey.Controllers
 {
-    /// <summary>
-    /// Base controller class that provides common functionality for all controllers.
-    /// Includes permission checking and user ID retrieval methods.
-    /// </summary>
     public class BaseController : Controller
     {
         protected readonly IUserService _userService;

@@ -40,7 +40,6 @@ namespace bikey.Pages.History
                 return NotFound();
             }
 
-            // Check if user has permission to view this order
             if (userId.HasValue && order.MaUser == userId.Value)
             {
                 Order = order;

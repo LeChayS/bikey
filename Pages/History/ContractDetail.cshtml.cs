@@ -39,8 +39,7 @@ namespace bikey.Pages.History
             }
 
             // Check if user has permission to view this order
-            var hasPermission = (userId.HasValue && order.MaUser == userId.Value) ||
-                               (!string.IsNullOrWhiteSpace(phone) && order.SoDienThoai == phone);
+            var hasPermission = (userId.HasValue && order.MaUser == userId.Value) || (!string.IsNullOrWhiteSpace(phone) && order.SoDienThoai == phone);
 
             if (!hasPermission)
             {
