@@ -81,11 +81,11 @@ namespace bikey.Controllers
             catch (Exception ex)
             {
                 var rootError = ex.InnerException?.Message ?? ex.Message;
-                TempData["HopDongMessage"] = $"Có lỗi khi tạo hợp đồng từ đơn chờ xử lý: {rootError}";
+                TempData["HopDongError"] = $"Có lỗi khi tạo hợp đồng từ đơn chờ xử lý: {rootError}";
                 return RedirectToAction(nameof(DonChoXuLy));
             }
 
-            TempData["HopDongMessage"] = "Đã xác nhận đơn và tạo hợp đồng thành công.";
+            TempData["HopDongSuccess"] = "Đã xác nhận đơn và tạo hợp đồng thành công.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -106,11 +106,11 @@ namespace bikey.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                TempData["HopDongMessage"] = ex.Message;
+                TempData["HopDongError"] = ex.Message;
                 return RedirectToAction(nameof(DonChoXuLy));
             }
 
-            TempData["HopDongMessage"] = "Đã hủy đơn chờ xử lý.";
+            TempData["HopDongSuccess"] = "Đã hủy đơn chờ xử lý.";
             return RedirectToAction(nameof(DonChoXuLy));
         }
 
@@ -178,13 +178,13 @@ namespace bikey.Controllers
 
             if (hopDong.TrangThai != StatusConstants.HopDongStatus.DangThue)
             {
-                TempData["HopDongMessage"] = "Hợp đồng này không còn ở trạng thái đang thuê để thực hiện trả xe.";
+                TempData["HopDongError"] = "Hợp đồng này không còn ở trạng thái đang thuê để thực hiện trả xe.";
                 return RedirectToAction(nameof(ChiTiet), new { id });
             }
 
             if (hopDong.ChiTietHopDong == null || !hopDong.ChiTietHopDong.Any())
             {
-                TempData["HopDongMessage"] = "Hợp đồng này không có thông tin xe thuê.";
+                TempData["HopDongError"] = "Hợp đồng này không có thông tin xe thuê.";
                 return RedirectToAction(nameof(ChiTiet), new { id });
             }
 
@@ -210,7 +210,7 @@ namespace bikey.Controllers
             var maNguoiTao = GetCurrentUserId();
             if (!maNguoiTao.HasValue)
             {
-                TempData["HopDongMessage"] = "Không thể xác định người dùng hiện tại.";
+                TempData["HopDongError"] = "Không thể xác định người dùng hiện tại.";
                 return RedirectToAction(nameof(ChiTiet), new { id });
             }
 
@@ -225,11 +225,11 @@ namespace bikey.Controllers
             catch (Exception ex)
             {
                 var rootError = ex.InnerException?.Message ?? ex.Message;
-                TempData["HopDongMessage"] = $"Có lỗi khi xử lý trả xe: {rootError}";
+                TempData["HopDongError"] = $"Có lỗi khi xử lý trả xe: {rootError}";
                 return RedirectToAction(nameof(ChiTiet), new { id });
             }
 
-            TempData["HopDongMessage"] = "Đã xử lý trả xe và tạo hóa đơn thành công.";
+            TempData["HopDongSuccess"] = "Đã xử lý trả xe và tạo hóa đơn thành công.";
             return RedirectToAction(nameof(ChiTiet), new { id });
         }
 

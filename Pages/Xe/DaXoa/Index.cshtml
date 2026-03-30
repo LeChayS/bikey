@@ -8,6 +8,7 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/css/pages/xedaxoa.css" asp-append-version="true" />
+    <link href="~/css/components/alert-box.css" rel="stylesheet" asp-append-version="true">
 }
 
 
@@ -21,13 +22,6 @@
 </div>
 
 <div class="wrapper">
-    @if (TempData["Success"] is string successMsg)
-    {
-        <div class="alert alert-success mt-3">
-            @successMsg
-        </div>
-    }
-
     <div class="container-fluid">
 
         <div class="card-body">
@@ -36,3 +30,11 @@
     </div>
 
 </div>
+@section Alerts {
+    @if (TempData["XeManagementSuccess"] is string successMessage)
+    {
+        <alert-box type="success" closable="true" title="Thành công">
+            @successMessage
+        </alert-box>
+    }
+}

@@ -1,7 +1,7 @@
 @model TrangChuViewModel
 
 @{
-    ViewData["Title"] = "Trang Chu";
+    ViewData["Title"] = "Trang Chủ";
 }
 
 @section Styles {
@@ -104,3 +104,12 @@
         </div>
     </div>
 </section>
+
+@section Alerts {
+    @if (TempData["AccountSuccess"] is string successMessage)
+    {
+        <alert-box type="success" closable="true" title="Thành công">
+            @successMessage
+        </alert-box>
+    }
+}

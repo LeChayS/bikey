@@ -45,7 +45,7 @@ namespace bikey.Pages.Xe.DaXoa
 
             xe.TrangThai = "Sẵn sàng";
             await _context.SaveChangesAsync();
-            TempData["Success"] = "Khôi phục xe thành công.";
+            TempData["XeManagementSuccess"] = "Khôi phục xe thành công.";
             return RedirectToPage();
         }
     }

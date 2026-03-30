@@ -64,6 +64,8 @@ namespace bikey.Controllers
 
             await SignInUserAsync(matchedUser);
 
+            TempData["AccountSuccess"] = "Đăng nhập thành công! Chào mừng bạn quay trở lại.";
+
             if (IsAdminOrStaff(matchedUser.VaiTro))
             {
                 return RedirectToAction("Index", "Admin");
@@ -117,6 +119,7 @@ namespace bikey.Controllers
 
             await SignInUserAsync(newUser);
 
+            TempData["AccountSuccess"] = "Đăng ký tài khoản thành công! Chào mừng bạn đến với Bikey.";
             return RedirectToAction("Index", "TrangChu");
         }
 

@@ -12,6 +12,22 @@
     <link rel="stylesheet" href="~/css/components/stat-card.css" asp-append-version="true" />
     <link rel="stylesheet" href="/css/hopdong/index.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/shared/admin-filter-bar.css" asp-append-version="true" />
+    <link href="~/css/components/alert-box.css" rel="stylesheet" asp-append-version="true">
+}
+
+@section Alerts {
+    @if (TempData["HopDongSuccess"] is string successMessage)
+    {
+        <alert-box type="success" closable="true" title="Thành công">
+            @successMessage
+        </alert-box>
+    }
+    @if (TempData["HopDongError"] is string errorMessage)
+    {
+        <alert-box type="danger" closable="true" title="Lỗi">
+            @errorMessage
+        </alert-box>
+    }
 }
 
 <!-- Top Header -->
@@ -28,12 +44,6 @@
 </div>
 
 <div class="wrapper">
-    @* alert *@
-    @if (TempData["HopDongMessage"] is string message)
-    {
-        <div class="alert alert-info">@message</div>
-    }
-
     @* thông báo đơn chờ xử lý *@
     @if (Model.DonChoXuLy > 0)
     {

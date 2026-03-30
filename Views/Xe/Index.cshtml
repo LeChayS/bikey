@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="~/css/xe/index.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/shared/admin-filter-bar.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/shared/responsive.css" asp-append-version="true" />
+    <link href="~/css/components/alert-box.css" rel="stylesheet" asp-append-version="true">
 }
 
 @section Scripts {
@@ -273,3 +274,18 @@
     </div>
 
 </div>
+
+@section Alerts {
+    @if (TempData["XeManagementSuccess"] is string successMessage)
+    {
+        <alert-box type="success" closable="true" title="Thành công">
+            @successMessage
+        </alert-box>
+    }
+    @if (TempData["XeManagementError"] is string errorMessage)
+    {
+        <alert-box type="danger" closable="true" title="Lỗi">
+            @errorMessage
+        </alert-box>
+    }
+}

@@ -115,7 +115,7 @@ namespace bikey.Controllers
 
             await _xeService.CreateAsync(xe, hinhAnh, subImages);
 
-            TempData["Success"] = "Thêm xe thành công.";
+            TempData["XeManagementSuccess"] = "Thêm xe thành công.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -182,7 +182,7 @@ namespace bikey.Controllers
 
             if (xe is null)
             {
-                TempData["Error"] = "Không tìm thấy xe cần chỉnh sửa.";
+                TempData["XeManagementError"] = "Không tìm thấy xe cần chỉnh sửa.";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -208,11 +208,11 @@ namespace bikey.Controllers
             try
             {
                 await _xeService.UpdateAsync(model, hinhAnh, hinhAnhKhac, removeImageIds);
-                TempData["Success"] = "Cập nhật xe thành công.";
+                TempData["XeManagementSuccess"] = "Cập nhật xe thành công.";
             }
             catch (Exception ex)
             {
-                TempData["Error"] = $"Lỗi khi cập nhật xe: {ex.Message}";
+                TempData["XeManagementError"] = $"Lỗi khi cập nhật xe: {ex.Message}";
                 return RedirectToAction(nameof(Edit), new { id });
             }
 
@@ -228,29 +228,29 @@ namespace bikey.Controllers
             var xe = await _xeService.GetByIdAsync(id);
             if (xe is null)
             {
-                TempData["Error"] = "Không tìm thấy xe để xóa.";
+                TempData["XeManagementError"] = "Không tìm thấy xe để xóa.";
                 return RedirectToAction(nameof(Index));
             }
 
             if (xe.TrangThai == StatusConstants.XeStatus.DangThue)
             {
-                TempData["Error"] = "Không thể xóa xe đang cho thuê.";
+                TempData["XeManagementError"] = "Không thể xóa xe đang cho thuê.";
                 return RedirectToAction(nameof(Index));
             }
 
             await _xeService.DeleteAsync(id);
-            TempData["Success"] = "Đã xóa xe (soft-delete) và có thể khôi phục lại từ trang xe đã xóa.";
+            TempData["XeManagementSuccess"] = "Đã xóa xe và có thể khôi phục lại từ trang xe đã xóa.";
             return RedirectToAction(nameof(Index));
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Restore(int id)
-        {
-            await _xeService.RestoreAsync(id);
-            TempData["Success"] = "Khôi phục xe thành công.";
-            return RedirectToAction(nameof(Index));
-        }
+        // [HttpPost]
+        // [ValidateAntiForgeryToken]
+        // public async Task<IActionResult> Restore(int id)
+        // {
+        //     await _xeService.RestoreAsync(id);
+        //     TempData["XeManagementSuccess"] = "Khôi phục xe thành công.";
+        //     return Redirect("/Xe/DaXoa");
+        // }
 
         private async Task PopulateCreateViewBagsAsync(Xe? xeModel = null)
         {

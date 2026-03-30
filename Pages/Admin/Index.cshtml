@@ -232,3 +232,12 @@
         </table>
     </div>
 </div>
+
+@section Alerts {
+    @if (TempData["AccountSuccess"] is string successMessage)
+    {
+        <alert-box type="success" closable="true" title="Thành công">
+            @successMessage
+        </alert-box>
+    }
+}

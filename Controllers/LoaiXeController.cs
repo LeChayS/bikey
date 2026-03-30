@@ -36,24 +36,24 @@ namespace bikey.Controllers
             TenLoaiXe = TenLoaiXe?.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(TenLoaiXe))
             {
-                TempData["Error"] = "Tên loại xe không được để trống.";
+                TempData["LoaiXeManagementError"] = "Tên loại xe không được để trống.";
                 return RedirectToAction(nameof(Index));
             }
 
             if (TenLoaiXe.Length > 50)
             {
-                TempData["Error"] = "Tên loại xe không được vượt quá 50 ký tự.";
+                TempData["LoaiXeManagementError"] = "Tên loại xe không được vượt quá 50 ký tự.";
                 return RedirectToAction(nameof(Index));
             }
 
             if (await _loaiXeService.ExistsAsync(TenLoaiXe))
             {
-                TempData["Error"] = "Loại xe này đã tồn tại.";
+                TempData["LoaiXeManagementError"] = "Loại xe này đã tồn tại.";
                 return RedirectToAction(nameof(Index));
             }
 
             await _loaiXeService.CreateAsync(TenLoaiXe);
-            TempData["Success"] = "Thêm loại xe thành công.";
+            TempData["LoaiXeManagementSuccess"] = "Thêm loại xe thành công.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -67,20 +67,20 @@ namespace bikey.Controllers
             TenLoaiXe = TenLoaiXe?.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(TenLoaiXe))
             {
-                TempData["Error"] = "Tên loại xe không được để trống.";
+                TempData["LoaiXeManagementError"] = "Tên loại xe không được để trống.";
                 return RedirectToAction(nameof(Index));
             }
 
             if (TenLoaiXe.Length > 50)
             {
-                TempData["Error"] = "Tên loại xe không được vượt quá 50 ký tự.";
+                TempData["LoaiXeManagementError"] = "Tên loại xe không được vượt quá 50 ký tự.";
                 return RedirectToAction(nameof(Index));
             }
 
             try
             {
                 await _loaiXeService.UpdateAsync(MaLoaiXe, TenLoaiXe);
-                TempData["Success"] = "Cập nhật loại xe thành công.";
+                TempData["LoaiXeManagementSuccess"] = "Cập nhật loại xe thành công.";
             }
             catch (KeyNotFoundException)
             {
@@ -105,13 +105,13 @@ namespace bikey.Controllers
 
             if (await _loaiXeService.HasVehiclesAsync(id))
             {
-                TempData["Error"] = "Không thể xóa loại xe này vì vẫn còn xe thuộc loại đó.";
+                TempData["LoaiXeManagementError"] = "Không thể xóa loại xe này vì vẫn còn xe thuộc loại đó.";
                 return RedirectToAction(nameof(Index));
             }
 
             await _loaiXeService.DeleteAsync(id);
 
-            TempData["Success"] = "Xóa loại xe thành công.";
+            TempData["LoaiXeManagementSuccess"] = "Xóa loại xe thành công.";
             return RedirectToAction(nameof(Index));
         }
 
