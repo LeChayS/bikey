@@ -12,7 +12,7 @@ using bikey.Repository;
 namespace bikey.Migrations
 {
     [DbContext(typeof(BikeyDbContext))]
-    [Migration("20260326015555_Initial")]
+    [Migration("20260403062827_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -133,8 +133,8 @@ namespace bikey.Migrations
                         .HasColumnType("nvarchar(12)");
 
                     b.Property<string>("SoDienThoai")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("TrangThai")
                         .IsRequired()
@@ -298,8 +298,8 @@ namespace bikey.Migrations
 
                     b.Property<string>("SoDienThoai")
                         .IsRequired()
-                        .HasMaxLength(11)
-                        .HasColumnType("nvarchar(11)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<decimal>("TienCoc")
                         .HasColumnType("decimal(18, 2)");
@@ -440,12 +440,6 @@ namespace bikey.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("CanExportBaoCao")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanPrintHoaDon")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanPrintHopDong")
                         .HasColumnType("bit");
 
                     b.Property<bool>("CanProcessBooking")

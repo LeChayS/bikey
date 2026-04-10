@@ -130,8 +130,8 @@ namespace bikey.Migrations
                         .HasColumnType("nvarchar(12)");
 
                     b.Property<string>("SoDienThoai")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("TrangThai")
                         .IsRequired()
@@ -295,8 +295,8 @@ namespace bikey.Migrations
 
                     b.Property<string>("SoDienThoai")
                         .IsRequired()
-                        .HasMaxLength(11)
-                        .HasColumnType("nvarchar(11)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<decimal>("TienCoc")
                         .HasColumnType("decimal(18, 2)");
